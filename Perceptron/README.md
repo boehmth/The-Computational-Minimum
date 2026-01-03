@@ -1,4 +1,4 @@
-# Milestone 1: The Perceptron
+# AI Milestone 1: The Perceptron
 
 ## 📖 Introduction
 In 1958, psychologist **Frank Rosenblatt** introduced the *Perceptron* in his landmark paper *“The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain”* (Psychological Review, Vol. 65, No. 6, pp. 386–408). This work is widely regarded as the **first algorithmically described neural network**, bridging psychology, neuroscience, and computer science.
@@ -13,11 +13,16 @@ In this milestone we implement a simple **Perceptron** to learn the rule:
 
 This is a linearly separable problem: the decision boundary is the line  
 
-\[
-x_1 = x_2
-\]
+$x_1 = x_2$
   
-in the two-dimensional input space. All points below this line (where \(x_1 < x_2\)) belong to class `1`, all points on or above the line belong to class `0`.
+in the two-dimensional input space. All points below this line (where $x_1 < x_2$) belong to class `1`, all points on or above the line belong to class `0`. We will see that this rather simplistic rule already allows for implementing powerful tasks, but it also shows the basic principles of modern machine learning, i.e.
+
+- **learning from data rather than explicit rules**,  
+- **adjusting parameters (weights and bias) based on errors**,  
+- **iteratively improving performance over multiple training epochs**, and  
+- **generalizing beyond the examples seen during training**.
+
+Even though the perceptron is a very simple model, it already captures the essence of what makes machine learning powerful: the ability to discover structure in data through repeated exposure and incremental updates. In this milestone, we implement and explore this mechanism in its purest form, using a minimal dataset and a transparent learning rule to illustrate how a machine can learn a decision boundary from scratch.
 
 ---
 
@@ -28,31 +33,16 @@ in the two-dimensional input space. All points below this line (where \(x_1 < x_
 - Recognize the **limits of the perceptron**: it only works for linearly separable problems.  
 - See how the **amount and diversity of training data** affect generalisation accuracy.  
 
----
-
-## ▶️ How to run the program
-The Python code for this milestone is located in:
-
-milestones/src/perceptron.py
-
-### Steps
-1. Open a terminal and navigate to the project root.  
-2. Run the program with:  
-   ```bash
-   python milestones/src/perceptron.py
-
-Observe the output:
-
-The program prints the trained weights and bias after learning.
-
-You will see how the perceptron adjusts its weights to correctly separate these cases.
-
 ## 📊 Conceptual diagram
+
+```
 
    x1 (first number) ----->(W1)---\
                                    +--> [ SUMMATION + BIAS ] --> [ STEP FUNCTION ] --> OUTPUT (0/1)
    x2 (second number) ---->(W2)---/
-     
+
+```
+
 
 ## ⚙️ Mathematical formulation
 
@@ -77,7 +67,27 @@ $$
 b \leftarrow b + \eta \cdot (t - y)
 $$
 
+## ▶️ How to run the program
+The Python code for this milestone is located in:
+
+```bash
+python milestones/src/perceptron.py
+```
+
+### Steps
+1. Open a terminal and navigate to the project root.  
+2. Run the program with.
+
+Observe the output:
+
+The program prints the trained weights and bias after learning.
+
+You will see how the perceptron adjusts its weights to correctly separate these cases.
+
+
 ## 📈 Example output (Learning rate = 0.01)
+
+```
 
 Epoch  1: errors=7, accuracy=0.56, weights=['-0.07', '0.02'], bias=-0.01
 Epoch  2: errors=6, accuracy=0.62, weights=['-0.10', '0.08'], bias=-0.01
@@ -100,6 +110,8 @@ x1 | x2 | target | pred | correct?
 12 | 12 |   0    |   0   | ✓
 
 Test accuracy: 77.8%
+
+```
 
 ## 🧪 Key observations
 With full training coverage (e.g. numbers 1–7), the perceptron learns the rule almost perfectly and generalises well.
@@ -127,11 +139,35 @@ Change the rule: Modify the target to x1 > x2 and retrain. Observe how the weigh
 Noise: Add contradictory examples (e.g. [2, 6] labeled as 0) and see how the perceptron struggles.
 
 ## 🧠 Closing remarks
-The perceptron is more than just a mathematical curiosity. It represents a reductionist model of a biological neuron: inputs are weighted, summed, and passed through a threshold to produce an output. This abstraction mirrors the scientific understanding of the time, when neurophysiologists such as Alan Hodgkin and Andrew Huxley had already described how nerve cells integrate signals and fire an action potential once a critical threshold is reached.
 
-By deliberately simplifying the biochemical and temporal complexity of real neurons, Rosenblatt created a model that was both tractable for computation and faithful to the essential principle of neuronal firing. This reductionism was not a weakness but a strength: it allowed the perceptron to become the first formal framework for machine learning, inspiring generations of researchers to build more sophisticated architectures.
+The perceptron implemented in this milestone illustrates a fundamental geometric fact:  
+a single-layer perceptron is always a **linear classifier**. It computes a weighted sum
+
+$$
+w_1 x_1 + w_2 x_2 + \dots + w_n x_n + b
+$$
+
+and applies a step function to decide between two classes. The equation
+
+$$
+w_1 x_1 + w_2 x_2 + \dots + w_n x_n + b = 0
+$$
+
+defines a **hyperplane** in an \(n\)-dimensional space — a line in 2D, a plane in 3D, and a linear separating surface in any number of dimensions.  
+As a consequence, a perceptron can only learn **linearly separable** patterns.
+
+This explains why the model succeeds on the rule *x₁ < x₂*: the decision boundary is a straight line.  
+But it also explains why the perceptron fails on the circle dataset: no single line (or plane, or hyperplane) can separate the inside of a circle (or sphere) from the outside. This limitation is not an implementation detail but a fundamental representational constraint.
+
+This insight was formalized by **Minsky & Papert (1969)** in their influential book *Perceptrons*, where they proved that single-layer perceptrons cannot represent non-linear functions such as parity, symmetry, or simple geometric shapes. Their analysis marked a turning point in the history of neural networks and motivated the development of **multi-layer architectures** capable of learning non-linear decision boundaries.
+
+In the next milestone, we extend the perceptron into a **multi-layer perceptron (MLP)** and introduce the **backpropagation algorithm**, enabling the network to learn complex, non-linear patterns such as circles, letters, or arbitrary shapes.
+
 
 ## 📚 References
-Rosenblatt, F. (1958). The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain. Psychological Review, 65(6), 386–408.
 
-Hodgkin, A. L., & Huxley, A. F. (1952). A quantitative description of membrane current and its application to conduction and excitation in nerve. Journal of Physiology, 117(4), 500–544.
+Hodgkin, A. L., & Huxley, A. F. (1952). *A quantitative description of membrane current and its application to conduction and excitation in nerve*. Journal of Physiology, 117(4), 500–544.
+
+Minsky, M., & Papert, S. (1969). *Perceptrons: An Introduction to Computational Geometry*. MIT Press.
+
+Rosenblatt, F. (1958). *The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain*. Psychological Review, 65(6), 386–408.
