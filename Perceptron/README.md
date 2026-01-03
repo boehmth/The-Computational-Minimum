@@ -87,6 +87,37 @@ The program prints the trained weights and bias after learning.
 
 You will see how the perceptron adjusts its weights to correctly separate these cases.
 
+## 🧩 Example task: visualising the training data
+
+To understand the task geometrically, it helps to look at the labels as a **matrix**.  
+Each row corresponds to a fixed value of **x₁**, each column to a fixed value of **x₂**.  
+The label is `1` if $x_1$ < $x_2$, and `0` otherwise.
+
+Below is the label matrix for the range **3–9**:
+
+```
+      x2 →     3  4  5  6  7  8  9
+x1 ↓
+3           [ 0  1  1  1  1  1  1 ]
+4           [ 0  0  1  1  1  1  1 ]
+5           [ 0  0  0  1  1  1  1 ]
+6           [ 0  0  0  0  1  1  1 ]
+7           [ 0  0  0  0  0  1  1 ]
+8           [ 0  0  0  0  0  0  1 ]
+9           [ 0  0  0  0  0  0  0 ]
+```
+
+
+This matrix makes the structure of the task visible:
+
+- All `1`s lie **above** the diagonal $x_1$ = $x_2$.  
+- All `0`s lie **on or below** that diagonal.  
+- The decision boundary is therefore a **straight line** through the matrix.  
+
+This visualisation shows that the rule $x_1$ < $x_2$ is fundamentally a **geometric separation problem**, which is exactly what a perceptron is designed to learn.
+
+
+
 
 ## 📈 Example output (Learning rate = 0.01)
 
@@ -120,27 +151,31 @@ Test accuracy: 77.8%
 
 ## 📝 Exercises
 
-### **1. Use the expanded linear dataset (all pairs from 3–10)**
+### **1. Use the expanded linear dataset (all pairs from 3–9)**
 
-Switch the dataset to the fully expanded version: ```python train_features, train_labels = get_large_dataset()```.This dataset contains all pairs ($x_1$, $x_2$) for numbers 3–10, giving the perceptron a broad and diverse set of examples for the linear rule $x_1$ < $x_2$.
+Switch the dataset to the fully expanded version: ```python train_features, train_labels = get_large_dataset()```.This dataset contains all pairs ($x_1$, $x_2$) for numbers 3–9, giving the perceptron a broad and diverse set of examples for the linear rule $x_1$ < $x_2$.
 
 **What to observe:**
 - Fast and stable convergence
 - Meaningful weights
-- Strong generalisation to unseen values (e.g., 11–12)
+- Strong generalisation to unseen values (e.g., 10–12)
 
 **Learning goal:**
 A perceptron performs well when the problem is linearly separable and the training data covers the relevant input space.
 
 ### **2. Use the circle dataset (contradictory / non‑linear example)**
 
-Replace the dataset selection with: ```train_features, train_labels = get_circle_dataset()```
+Replace the dataset selection with: ```python train_features, train_labels = get_circle_dataset()```
 This dataset labels points inside a circle as 1 and points outside as 0. No straight line can separate these two regions.
 
 **What to observe:**
 - The perceptron fails to converge
 - Accuracy stagnates or fluctuates
 - The learned weights do not form a meaningful decision boundary
+
+Note: For the circle dataset, you do not need a separate test set. The perceptron already fails to learn the pattern on the training data itself,  
+so evaluating on a test set would not provide additional insight. If you do use a test set, it must also consist of circle data.
+
 
 **Learning goal:**
 - This exercise demonstrates the fundamental limitation of the perceptron: it cannot learn non‑linear decision boundaries, regardless of training time.
@@ -151,7 +186,7 @@ The following observations summarise what you should see when running the two ex
 
 - With the **expanded linear dataset (all pairs from 3–10)**, the perceptron converges quickly, learns stable weights, and generalises well to unseen values. This demonstrates that a linearly separable problem is solved reliably when the training data covers the relevant input space.
 
-- With the **circle dataset**, the perceptron fails to converge because the pattern is **not linearly separable**. Accuracy fluctuates, the weights do not stabilise, and the learned decision boundary remains meaningless. This directly illustrates the fundamental limitation described by Minsky & Papert (1969).
+- With the **circle dataset**, the perceptron fails to converge because the pattern is not linearly separable. Accuracy fluctuates, the weights do not stabilise, and the learned decision boundary remains meaningless. In practice, the perceptron reaches an accuracy of about 50%. This happens because the true decision boundary is circular, while a perceptron can only learn a straight line. Any straight line cuts the circle into two regions of comparable size, so the model inevitably misclassifies roughly half of the points. In other words, the best possible linear separator performs no better than random guessing.
 
 - Even for linear problems, **insufficient or poorly distributed training data** can reduce accuracy — as seen in the example output using the small dataset.
 
