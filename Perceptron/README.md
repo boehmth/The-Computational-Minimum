@@ -81,7 +81,6 @@ The Python code for this milestone is located in: `milestones/src/perceptron.py`
     python milestones/src/perceptron.py
     ```
 
-
 Observe the output:
 
 The program prints the trained weights and bias after learning.
@@ -90,6 +89,8 @@ You will see how the perceptron adjusts its weights to correctly separate these 
 
 
 ## 📈 Example output (Learning rate = 0.01)
+
+The following example uses the small training dataset (4–7). Because the perceptron only sees a limited range of input pairs during training, it does not fully generalise to the test range (10–12). This is intentional: the example illustrates how reduced training diversity leads to imperfect generalisation, even for a linearly separable problem.
 
 ```
 
@@ -117,30 +118,45 @@ Test accuracy: 77.8%
 
 ```
 
-## 🧪 Key observations
-With full training coverage (e.g. numbers 1–7), the perceptron learns the rule almost perfectly and generalises well.
-
-With reduced training coverage (e.g. only 4–7), the model achieves ~88.9% accuracy on test data (10–12).
-
-This illustrates:
-
-Dependence on training data: fewer examples → less stable weights → imperfect generalisation.
-
-Limits of the perceptron: even for linearly separable problems, insufficient data can lead to errors.
-
-Realism: in practice, models rarely achieve 100% accuracy.
-
 ## 📝 Exercises
 
-Expand the dataset: Generate all pairs (x1, x2) for numbers 1–10.
+### **1. Use the expanded linear dataset (all pairs from 3–10)**
 
-Visualize: Plot the points in a 2D plane and draw the learned decision boundary.
+Switch the dataset to the fully expanded version: ```python train_features, train_labels = get_large_dataset()```.This dataset contains all pairs ($x_1$, $x_2$) for numbers 3–10, giving the perceptron a broad and diverse set of examples for the linear rule $x_1$ < $x_2$.
 
-Interpret weights: Check that the weight for x1 is negative and for x2 positive.
+**What to observe:**
+- Fast and stable convergence
+- Meaningful weights
+- Strong generalisation to unseen values (e.g., 11–12)
 
-Change the rule: Modify the target to x1 > x2 and retrain. Observe how the weights flip.
+**Learning goal:**
+A perceptron performs well when the problem is linearly separable and the training data covers the relevant input space.
 
-Noise: Add contradictory examples (e.g. [2, 6] labeled as 0) and see how the perceptron struggles.
+### **2. Use the circle dataset (contradictory / non‑linear example)**
+
+Replace the dataset selection with: ```train_features, train_labels = get_circle_dataset()```
+This dataset labels points inside a circle as 1 and points outside as 0. No straight line can separate these two regions.
+
+**What to observe:**
+- The perceptron fails to converge
+- Accuracy stagnates or fluctuates
+- The learned weights do not form a meaningful decision boundary
+
+**Learning goal:**
+- This exercise demonstrates the fundamental limitation of the perceptron: it cannot learn non‑linear decision boundaries, regardless of training time.
+
+## 🧪 Key observations
+
+The following observations summarise what you should see when running the two exercises above:
+
+- With the **expanded linear dataset (all pairs from 3–10)**, the perceptron converges quickly, learns stable weights, and generalises well to unseen values. This demonstrates that a linearly separable problem is solved reliably when the training data covers the relevant input space.
+
+- With the **circle dataset**, the perceptron fails to converge because the pattern is **not linearly separable**. Accuracy fluctuates, the weights do not stabilise, and the learned decision boundary remains meaningless. This directly illustrates the fundamental limitation described by Minsky & Papert (1969).
+
+- Even for linear problems, **insufficient or poorly distributed training data** can reduce accuracy — as seen in the example output using the small dataset.
+
+- In practical machine‑learning scenarios, models rarely achieve perfect accuracy; the perceptron is no exception, especially when data is limited or contradictory.
+
 
 ## 🧠 Closing remarks
 
@@ -175,4 +191,3 @@ Hodgkin, A. L., & Huxley, A. F. (1952). *A quantitative description of membrane 
 Minsky, M., & Papert, S. (1969). *Perceptrons: An Introduction to Computational Geometry*. MIT Press.
 
 Rosenblatt, F. (1958). *The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain*. Psychological Review, 65(6), 386–408.
-
