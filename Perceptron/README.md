@@ -78,7 +78,7 @@ The Python code for this milestone is located in: `milestones/src/perceptron.py`
 2. Run the program with:
 
     ```bash
-    python milestones/src/perceptron.py
+    python src/perceptron.py
     ```
 
 Observe the output:
@@ -226,3 +226,4 @@ Hodgkin, A. L., & Huxley, A. F. (1952). *A quantitative description of membrane 
 Minsky, M., & Papert, S. (1969). *Perceptrons: An Introduction to Computational Geometry*. MIT Press.
 
 Rosenblatt, F. (1958). *The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain*. Psychological Review, 65(6), 386–408.
+
