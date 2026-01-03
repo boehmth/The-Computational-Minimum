@@ -35,6 +35,8 @@ Even though the perceptron is a very simple model, it already captures the essen
 
 ## 📊 Conceptual diagram
 
+This diagram shows the perceptron in its simplest form for this milestone: it takes **two inputs** (the two numbers to be compared), multiplies each by a **weight** (W1, W2), adds a **bias**, and then passes the result through a **step function** to produce a binary output (0 or 1).
+
 ```
 
    x1 (first number) ----->(W1)---\
@@ -43,6 +45,7 @@ Even though the perceptron is a very simple model, it already captures the essen
 
 ```
 
+In the general case, a perceptron can have any number of inputs $x_1, x_2, \dots, x_n$ with corresponding weights $w_1, w_2, \dots, w_n$. The structure of the computation remains the same — only the number of input lines and weights grows. For this milestone, we deliberately restrict ourselves to two inputs to keep the geometry and the learned decision boundary easy to visualise in a 2D plane.
 
 ## ⚙️ Mathematical formulation
 
@@ -52,10 +55,10 @@ $$
 y = f\Big(\sum_{i=1}^{n} w_i \cdot x_i + b\Big)
 $$
 
-- \(x_i\): inputs (features)  
-- \(w_i\): weights (importance of each input)  
-- \(b\): bias (shifts the decision boundary)  
-- \(f(\cdot)\): activation function (here: step function → outputs `1` if ≥ 0, else `0`)  
+- $x_i$: inputs (features)  
+- $w_i$: weights (importance of each input)  
+- $b$: bias (shifts the decision boundary)  
+- $f(\cdot)$: activation function (here: step function → outputs `1` if ≥ 0, else `0`)  
 
 Update rule:
 
@@ -68,15 +71,16 @@ b \leftarrow b + \eta \cdot (t - y)
 $$
 
 ## ▶️ How to run the program
-The Python code for this milestone is located in:
-
-```bash
-python milestones/src/perceptron.py
-```
+The Python code for this milestone is located in: `milestones/src/perceptron.py`
 
 ### Steps
 1. Open a terminal and navigate to the project root.  
-2. Run the program with.
+2. Run the program with:
+
+    ```bash
+    python milestones/src/perceptron.py
+    ```
+
 
 Observe the output:
 
@@ -171,3 +175,4 @@ Hodgkin, A. L., & Huxley, A. F. (1952). *A quantitative description of membrane 
 Minsky, M., & Papert, S. (1969). *Perceptrons: An Introduction to Computational Geometry*. MIT Press.
 
 Rosenblatt, F. (1958). *The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain*. Psychological Review, 65(6), 386–408.
+
