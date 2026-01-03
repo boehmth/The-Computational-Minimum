@@ -133,10 +133,10 @@ def main():
     use_large_dataset = True  # <--- hier umschalten
 
     if use_large_dataset:
-        train_features, train_labels = get_small_dataset()
+        train_features, train_labels = get_large_dataset()
         print("Training mit großem Datensatz (3–9)")
     else:
-        train_features, train_labels = get_circle_dataset()
+        train_features, train_labels = get_small_dataset()
         print("Training mit kleinem Datensatz (4–7)")
 
     # Testdaten: Zahlen 10–12 als statisches Raster
@@ -162,3 +162,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
