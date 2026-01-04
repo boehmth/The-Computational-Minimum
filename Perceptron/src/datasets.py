@@ -80,8 +80,8 @@ class DatasetFactory:
     def _circle_dataset():
         features = [
             (x1, x2)
-            for x1 in range(0, 9)
-            for x2 in range(0, 9)
+            for x1 in range(1, 10)
+            for x2 in range(1, 10)
         ]
 
         # 7×7 circle mask (centered)
@@ -97,3 +97,4 @@ class DatasetFactory:
             0,0,0,0,0,0,0,0,0
         ]
         return features, circle_labels
+
