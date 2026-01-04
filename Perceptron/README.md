@@ -87,7 +87,7 @@ The program prints the trained weights and bias after learning.
 
 You will see how the perceptron adjusts its weights to correctly separate these cases.
 
-## 🧩 Example task: visualising the training data
+## 🧩 Example task
 
 To understand the task geometrically, it helps to look at the labels as a **matrix**.  
 Each row corresponds to a fixed value of **x₁**, each column to a fixed value of **x₂**.  
@@ -96,7 +96,7 @@ The label is `1` if $x_1$ < $x_2$, and `0` otherwise.
 Below is the label matrix for the range **3–9**:
 
 ```
-      x2 →     3  4  5  6  7  8  9
+      x2 →    3  4  5  6  7  8  9
 x1 ↓
 3           [ 0  1  1  1  1  1  1 ]
 4           [ 0  0  1  1  1  1  1 ]
@@ -121,7 +121,7 @@ This visualisation shows that the rule $x_1$ < $x_2$ is fundamentally a **geomet
 
 ## 📈 Example output (Learning rate = 0.01)
 
-The following example uses the small training dataset (4–7). Because the perceptron only sees a limited range of input pairs during training, it does not fully generalise to the test range (10–12). This is intentional: the example illustrates how reduced training diversity leads to imperfect generalisation, even for a linearly separable problem.
+The following example uses the **small training dataset (4–7)**. Because the perceptron only sees a limited range of input pairs during training, it does not fully generalise to the test range (10–12). This is intentional: the example illustrates how reduced training diversity leads to imperfect generalisation, even for a linearly separable problem.
 
 ```
 
@@ -184,7 +184,7 @@ so evaluating on a test set would not provide additional insight. If you do use 
 
 The following observations summarise what you should see when running the two exercises above:
 
-- With the **expanded linear dataset (all pairs from 3–10)**, the perceptron converges quickly, learns stable weights, and generalises well to unseen values. This demonstrates that a linearly separable problem is solved reliably when the training data covers the relevant input space.
+- With the **expanded linear dataset (all pairs from 3–9)**, the perceptron converges quickly, learns stable weights, and generalises well to unseen values. This demonstrates that a linearly separable problem is solved reliably when the training data covers the relevant input space.
 
 - With the **circle dataset**, the perceptron fails to converge because the pattern is not linearly separable. Accuracy fluctuates, the weights do not stabilise, and the learned decision boundary remains meaningless. In practice, the perceptron reaches an accuracy of about 50%. This happens because the true decision boundary is circular, while a perceptron can only learn a straight line. Any straight line cuts the circle into two regions of comparable size, so the model inevitably misclassifies roughly half of the points. In other words, the best possible linear separator performs no better than random guessing.
 
@@ -226,4 +226,5 @@ Hodgkin, A. L., & Huxley, A. F. (1952). *A quantitative description of membrane 
 Minsky, M., & Papert, S. (1969). *Perceptrons: An Introduction to Computational Geometry*. MIT Press.
 
 Rosenblatt, F. (1958). *The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain*. Psychological Review, 65(6), 386–408.
+
 
