@@ -1,23 +1,24 @@
-
 # ============================================================
-#  Evaluation Utility
+#  Hilfsfunktionen fuer die Auswertung
 # ============================================================
 
-def evaluate(model, features, labels, name="Test"):
-    """Evaluate the model on a dataset and print detailed results."""
-    correct = 0
 
-    print(f"\n{name} results:")
-    print("x1 | x2 | target | pred | correct?")
-    print("-----------------------------------")
+def evaluate(modell, merkmale, labels, name="Test"):
+    """Wertet das Modell auf einem Datensatz aus und gibt eine
+    detaillierte Ergebnistabelle in der Konsole aus."""
+    korrekt = 0
 
-    for (x1, x2), target in zip(features, labels):
-        pred = model.predict(x1, x2)
-        if pred == target:
-            correct += 1
+    print(f"\nErgebnisse ({name}):")
+    print("x1 | x2 | Ziel | Vorhersage | korrekt?")
+    print("-------------------------------------")
 
-        print(f"{x1:2d} | {x2:2d} |   {target}    |   {pred}   | "
-              f"{'✓' if pred == target else '✗'}")
+    for (x1, x2), ziel in zip(merkmale, labels):
+        vorhersage = modell.vorhersagen(x1, x2)
+        if vorhersage == ziel:
+            korrekt += 1
 
-    accuracy = correct / len(labels)
-    print(f"\n{name} accuracy: {accuracy * 100:.1f}%")
+        print(f"{x1:2d} | {x2:2d} |  {ziel}   |     {vorhersage}      |  "
+              f"{'ok' if vorhersage == ziel else 'X'}")
+
+    genauigkeit = korrekt / len(labels)
+    print(f"\n{name}-Genauigkeit: {genauigkeit * 100:.1f}%")

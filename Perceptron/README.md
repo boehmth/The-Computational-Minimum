@@ -1,66 +1,69 @@
-# AI Milestone 1: The Perceptron
+# KI‑Meilenstein 1: Das Perceptron
 
-## 📖 Introduction
-In 1958, psychologist **Frank Rosenblatt** introduced the *Perceptron* in his landmark paper *“The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain”* (Psychological Review, Vol. 65, No. 6, pp. 386–408). This work is widely regarded as the **first algorithmically described neural network**, bridging psychology, neuroscience, and computer science.
+> **🎯 Warum ist das cool?**
+> Ein neuronales Netz mit **einem einzigen Neuron** lernt selbstständig, kleinere von größeren Zahlen zu unterscheiden — nur aus Beispielen, ohne dass ihm jemand die Regel „x₁ < x₂" erklärt hat. Das ist das kleinstmögliche funktionierende „lernende System" — und der Grund­baustein für alles, was danach kommt (auch für ChatGPT).
 
-Rosenblatt, working at the **Cornell Aeronautical Laboratory** in Buffalo, New York, combined insights from psychology, neuroscience, and computing. His interdisciplinary background allowed him to conceptualize the perceptron not only as a mathematical model but also as a step toward understanding how the brain might process information.  
+## 📖 Einleitung
+1958 stellte der Psychologe **Frank Rosenblatt** in seiner wegweisenden Arbeit *„The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain"* (Psychological Review, Bd. 65, Nr. 6, S. 386–408) das **Perceptron** vor. Diese Arbeit gilt weithin als **das erste algorithmisch beschriebene neuronale Netz** und schlägt eine Brücke zwischen Psychologie, Neurowissenschaft und Informatik.
 
-The perceptron demonstrated that machines could **learn to classify patterns** by adjusting weights based on errors, foreshadowing modern machine learning. Rosenblatt even built a hardware implementation, the *Mark I Perceptron*, which could recognize simple visual patterns. While limited to linearly separable problems (it could not solve tasks like XOR), its publication marked a **milestone in artificial intelligence research**, sparking decades of exploration into neural networks.
+Rosenblatt, damals am **Cornell Aeronautical Laboratory** in Buffalo (New York) tätig, verband Erkenntnisse aus Psychologie, Neurowissenschaft und Informatik. Sein interdisziplinärer Hintergrund erlaubte ihm, das Perceptron nicht nur als mathematisches Modell zu formulieren, sondern es zugleich als einen ersten Schritt zum Verständnis der Informations­verarbeitung im Gehirn zu begreifen.
 
-In this milestone we implement a simple **Perceptron** to learn the rule:
+Das Perceptron zeigte, dass Maschinen **Muster klassifizieren lernen** können, indem sie ihre Gewichte anhand von Fehlern anpassen — ein Vorgriff auf das moderne maschinelle Lernen. Rosenblatt baute sogar eine Hardware‑Umsetzung, den **Mark I Perceptron**, der einfache visuelle Muster erkennen konnte. Auch wenn das Modell auf linear trennbare Probleme beschränkt war (das XOR-Problem konnte es nicht lösen), war seine Veröffentlichung ein **Meilenstein der KI‑Forschung** und entfachte jahrzehntelange Erkundungen zu neuronalen Netzen.
 
-> **Is the first number smaller than the second?**
+In diesem Meilenstein programmieren wir ein einfaches **Perceptron**, das die Regel lernen soll:
 
-This is a linearly separable problem: the decision boundary is the line  
+> **Ist die erste Zahl kleiner als die zweite?**
+
+Das ist ein linear trennbares Problem: Die Entscheidungsgrenze ist die Gerade
 
 $x_1 = x_2$
-  
-in the two-dimensional input space. All points below this line (where $x_1 < x_2$) belong to class `1`, all points on or above the line belong to class `0`. We will see that this rather simplistic rule already allows for implementing powerful tasks, but it also shows the basic principles of modern machine learning, i.e.
 
-- **learning from data rather than explicit rules**,  
-- **adjusting parameters (weights and bias) based on errors**,  
-- **iteratively improving performance over multiple training epochs**, and  
-- **generalizing beyond the examples seen during training**.
+im zweidimensionalen Eingaberaum. Alle Punkte unterhalb dieser Geraden (bei denen $x_1 < x_2$) gehören zur Klasse `1`, alle Punkte auf oder oberhalb gehören zur Klasse `0`. Wir werden sehen, dass diese scheinbar einfache Regel bereits die grundlegenden Prinzipien modernen maschinellen Lernens erlebbar macht:
 
-Even though the perceptron is a very simple model, it already captures the essence of what makes machine learning powerful: the ability to discover structure in data through repeated exposure and incremental updates. In this milestone, we implement and explore this mechanism in its purest form, using a minimal dataset and a transparent learning rule to illustrate how a machine can learn a decision boundary from scratch.
+- **Lernen aus Daten statt aus expliziten Regeln**,
+- **Anpassung der Parameter (Gewichte und Bias) auf Grundlage von Fehlern**,
+- **iterative Verbesserung über mehrere Trainings­durchläufe (Epochen) hinweg**, und
+- **Generalisierung über die im Training gesehenen Beispiele hinaus**.
+
+So schlicht das Perceptron auch ist — es enthält bereits den Kern dessen, was maschinelles Lernen so kraftvoll macht: die Fähigkeit, Struktur in Daten durch wiederholtes Sehen und kleine Anpassungen zu entdecken. In diesem Meilenstein bauen und erkunden wir diesen Mechanismus in seiner reinsten Form — mit einem minimalen Datensatz und einer transparenten Lernregel, die zeigt, wie eine Maschine eine Entscheidungsgrenze von Grund auf lernt.
 
 ---
 
-## 🎯 Learning goals
-- Understand how a perceptron separates two classes with a straight line.  
-- Observe how weights and bias adapt during training.  
-- Interpret the learned parameters: one weight becomes negative (for the first number), the other positive (for the second number).  
-- Recognize the **limits of the perceptron**: it only works for linearly separable problems.  
-- See how the **amount and diversity of training data** affect generalisation accuracy.  
+## 🎯 Lernziele
+- Verstehen, wie ein Perceptron zwei Klassen mit einer Geraden trennt.
+- Beobachten, wie sich Gewichte und Bias während des Trainings anpassen.
+- Die gelernten Parameter deuten: Ein Gewicht wird negativ (für die erste Zahl), das andere positiv (für die zweite Zahl).
+- Die **Grenzen des Perceptrons** erkennen: Es funktioniert nur bei linear trennbaren Problemen.
+- Sehen, wie **Menge und Vielfalt der Trainingsdaten** die Generalisierungs­fähigkeit beeinflussen.
 
-## 📊 Conceptual diagram
+## 📊 Konzeptuelles Diagramm
 
-This diagram shows the perceptron in its simplest form for this milestone: it takes **two inputs** (the two numbers to be compared), multiplies each by a **weight** (W1, W2), adds a **bias**, and then passes the result through a **step function** to produce a binary output (0 or 1).
-
-```
-
-   x1 (first number) ----->(W1)---\
-                                   +--> [ SUMMATION + BIAS ] --> [ STEP FUNCTION ] --> OUTPUT (0/1)
-   x2 (second number) ---->(W2)---/
+Das folgende Diagramm zeigt das Perceptron in seiner einfachsten Form für diesen Meilenstein: Es nimmt **zwei Eingaben** (die beiden zu vergleichenden Zahlen), multipliziert jede mit einem **Gewicht** (W1, W2), addiert einen **Bias** und gibt das Ergebnis durch eine **Sprungfunktion**, um eine binäre Ausgabe (0 oder 1) zu erzeugen.
 
 ```
 
-In the general case, a perceptron can have any number of inputs $x_1, x_2, \dots, x_n$ with corresponding weights $w_1, w_2, \dots, w_n$. The structure of the computation remains the same — only the number of input lines and weights grows. For this milestone, we deliberately restrict ourselves to two inputs to keep the geometry and the learned decision boundary easy to visualise in a 2D plane.
+   x1 (erste Zahl)  -----> (W1) ---\
+                                    +--> [ SUMME + BIAS ] --> [ SPRUNGFUNKTION ] --> AUSGABE (0/1)
+   x2 (zweite Zahl) -----> (W2) ---/
 
-## ⚙️ Mathematical formulation
+```
 
-The perceptron computes its output as:
+Im allgemeinen Fall kann ein Perceptron beliebig viele Eingaben $x_1, x_2, \dots, x_n$ mit zugehörigen Gewichten $w_1, w_2, \dots, w_n$ verarbeiten. Die Struktur der Rechnung bleibt gleich — nur die Anzahl der Eingaben und Gewichte wächst. In diesem Meilenstein beschränken wir uns bewusst auf zwei Eingaben, damit die Geometrie und die gelernte Entscheidungsgrenze in der 2D-Ebene leicht zu veranschaulichen sind.
+
+## ⚙️ Mathematische Formulierung
+
+Das Perceptron berechnet seine Ausgabe als:
 
 $$
 y = f\Big(\sum_{i=1}^{n} w_i \cdot x_i + b\Big)
 $$
 
-- $x_i$: inputs (features)  
-- $w_i$: weights (importance of each input)  
-- $b$: bias (shifts the decision boundary)  
-- $f(\cdot)$: activation function (here: step function → outputs `1` if ≥ 0, else `0`)  
+- $x_i$: Eingaben (Merkmale)
+- $w_i$: Gewichte (Wichtigkeit jeder Eingabe)
+- $b$: Bias (verschiebt die Entscheidungsgrenze)
+- $f(\cdot)$: Aktivierungsfunktion (hier: Sprungfunktion → gibt `1` aus, wenn Eingabe ≥ 0, sonst `0`)
 
-Update rule:
+Update-Regel:
 
 $$
 w_i \leftarrow w_i + \eta \cdot (t - y) \cdot x_i
@@ -70,33 +73,31 @@ $$
 b \leftarrow b + \eta \cdot (t - y)
 $$
 
-## ▶️ How to run the program
-The Python code for this milestone is located in: `milestones/src/perceptron.py`
+## ▶️ So startest du das Programm
+Der Python-Code liegt in `Perceptron/src/perceptron.py`.
 
-### Steps
-1. Open a terminal and navigate to the project root.  
-2. Run the program with:
+### Schritte
+1. Öffne ein Terminal und wechsele in das Projekt­verzeichnis.
+2. Starte das Programm mit:
 
     ```bash
     python src/perceptron.py
     ```
 
-Observe the output:
+Beobachte die Ausgabe:
 
-The program prints the trained weights and bias after learning.
+Das Programm gibt die gelernten Gewichte und den Bias nach dem Training aus.
 
-You will see how the perceptron adjusts its weights to correctly separate these cases.
+Du siehst, wie das Perceptron seine Gewichte anpasst, um die Fälle korrekt zu trennen.
 
-## 🧩 Example task
+## 🧩 Beispielaufgabe
 
-To understand the task geometrically, it helps to look at the labels as a **matrix**.  
-Each row corresponds to a fixed value of **x₁**, each column to a fixed value of **x₂**.  
-The label is `1` if $x_1$ < $x_2$, and `0` otherwise.
+Um die Aufgabe geometrisch zu verstehen, hilft es, die Zielwerte (Labels) als **Matrix** zu betrachten. Jede Zeile entspricht einem festen Wert von **x₁**, jede Spalte einem festen Wert von **x₂**. Der Wert ist `1`, wenn $x_1 < x_2$, und sonst `0`.
 
-Below is the label matrix for the range **3–9**:
+Unten sehen wir die Label-Matrix für den Bereich **3–9**:
 
 ```
-      x2 →    3  4  5  6  7  8  9
+       x2 →    3  4  5  6  7  8  9
 x1 ↓
 3           [ 0  1  1  1  1  1  1 ]
 4           [ 0  0  1  1  1  1  1 ]
@@ -107,124 +108,125 @@ x1 ↓
 9           [ 0  0  0  0  0  0  0 ]
 ```
 
+Diese Matrix macht die Struktur der Aufgabe sichtbar:
 
-This matrix makes the structure of the task visible:
+- Alle `1`en liegen **oberhalb** der Diagonalen $x_1 = x_2$.
+- Alle `0`en liegen **auf oder unterhalb** dieser Diagonalen.
+- Die Entscheidungsgrenze ist also eine **Gerade** durch die Matrix.
 
-- All `1`s lie **above** the diagonal $x_1$ = $x_2$.  
-- All `0`s lie **on or below** that diagonal.  
-- The decision boundary is therefore a **straight line** through the matrix.  
-
-This visualisation shows that the rule $x_1$ < $x_2$ is fundamentally a **geometric separation problem**, which is exactly what a perceptron is designed to learn.
-
+Diese Darstellung zeigt: Die Regel $x_1 < x_2$ ist im Kern ein **geometrisches Trennproblem** — und genau so etwas lernt das Perceptron.
 
 
+## 📈 Beispielausgabe (Lernrate = 0.01)
 
-## 📈 Example output (Learning rate = 0.01)
-
-The following example uses the **small training dataset (4–7)**. Because the perceptron only sees a limited range of input pairs during training, it does not fully generalise to the test range (10–12). This is intentional: the example illustrates how reduced training diversity leads to imperfect generalisation, even for a linearly separable problem.
+Das folgende Beispiel verwendet den **grossen Trainingsdatensatz (3–9)**. Weil dieser den relevanten Eingaberaum gut abdeckt, konvergiert das Perceptron sehr schnell und generalisiert perfekt auf den Testbereich (10–12).
 
 ```
+Training mit Datensatzmodus: large
+Epoche  1: Fehler=9, Genauigkeit=0.82, Gewichte=['-0.07', '0.07'], Bias=-0.01
+Epoche  2: Fehler=0, Genauigkeit=1.00, Gewichte=['-0.07', '0.07'], Bias=-0.01
+Epoche  3: Fehler=0, Genauigkeit=1.00, Gewichte=['-0.07', '0.07'], Bias=-0.01
+Epoche  4: Fehler=0, Genauigkeit=1.00, Gewichte=['-0.07', '0.07'], Bias=-0.01
+Epoche  5: Fehler=0, Genauigkeit=1.00, Gewichte=['-0.07', '0.07'], Bias=-0.01
 
-Epoch  1: errors=7, accuracy=0.56, weights=['-0.07', '0.02'], bias=-0.01
-Epoch  2: errors=6, accuracy=0.62, weights=['-0.10', '0.08'], bias=-0.01
-Epoch  3: errors=4, accuracy=0.75, weights=['-0.12', '0.11'], bias=-0.01
-Epoch  4: errors=0, accuracy=1.00, weights=['-0.12', '0.11'], bias=-0.01
-Epoch  5: errors=0, accuracy=1.00, weights=['-0.12', '0.11'], bias=-0.01
+Gelernte Parameter:
+Gewichte=['-0.07', '0.07'], Bias=-0.01
 
-Weights=[-0.12, 0.11], Bias=-0.01
+Ergebnisse (Test):
+x1 | x2 | Ziel | Vorhersage | korrekt?
+-------------------------------------
+10 | 10 |  0   |     0      |  ok
+10 | 11 |  1   |     1      |  ok
+10 | 12 |  1   |     1      |  ok
+11 | 10 |  0   |     0      |  ok
+11 | 11 |  0   |     0      |  ok
+11 | 12 |  1   |     1      |  ok
+12 | 10 |  0   |     0      |  ok
+12 | 11 |  0   |     0      |  ok
+12 | 12 |  0   |     0      |  ok
 
-x1 | x2 | target | pred | correct?
------------------------------------
-10 | 10 |   0    |   0   | ✓
-10 | 11 |   1    |   0   | ✗
-10 | 12 |   1    |   1   | ✓
-11 | 10 |   0    |   0   | ✓
-11 | 11 |   0    |   0   | ✓
-11 | 12 |   1    |   0   | ✗
-12 | 10 |   0    |   0   | ✓
-12 | 11 |   0    |   0   | ✓
-12 | 12 |   0    |   0   | ✓
-
-Test accuracy: 77.8%
-
+Test-Genauigkeit: 100.0%
 ```
 
-## 📝 Exercises
+**Was du hier siehst:**
 
-### **1. Use the expanded linear dataset (all pairs from 3–9)**
+- **Gewichte** haben nach dem Training ein klares Vorzeichen: $w_1 \approx -0.07$ (negativ, für die erste Zahl) und $w_2 \approx +0.07$ (positiv, für die zweite Zahl). Genau das braucht die Regel „$x_1 < x_2$": Je größer $x_2$ und je kleiner $x_1$, desto stärker ist die Ausgabe positiv.
+- **Der Bias** bleibt fast null — die Trennlinie geht durch den Ursprung.
+- **Nach nur einer Epoche** ist die Trainings­genauigkeit bereits sehr hoch, ab Epoche 2 keine Fehler mehr.
+- **Auf ungesehenen Werten (10–12) erreicht das Modell 100 %** — es hat die Regel wirklich verstanden, nicht nur die Trainingsdaten auswendig gelernt.
 
-Switch the dataset to the fully expanded version: ```python train_features, train_labels = get_large_dataset()```.This dataset contains all pairs ($x_1$, $x_2$) for numbers 3–9, giving the perceptron a broad and diverse set of examples for the linear rule $x_1$ < $x_2$.
+Setze `DATASET_MODE = "small"` am Anfang von `perceptron.py`, um zu sehen, wie zu wenig Trainings­vielfalt die Generalisierung verschlechtert.
 
-**What to observe:**
-- Fast and stable convergence
-- Meaningful weights
-- Strong generalisation to unseen values (e.g., 10–12)
+## 📝 Übungen
 
-**Learning goal:**
-A perceptron performs well when the problem is linearly separable and the training data covers the relevant input space.
+### **1. Den erweiterten linearen Datensatz nutzen (alle Paare aus 3–9)**
 
-### **2. Use the circle dataset (contradictory / non‑linear example)**
+Setze in `perceptron.py`: `DATASET_MODE = "large"`.
+Dieser Datensatz enthält alle Paare ($x_1$, $x_2$) für Zahlen 3–9 und bietet dem Perceptron eine breite und vielfältige Sammlung von Beispielen für die lineare Regel $x_1 < x_2$.
 
-Replace the dataset selection with: ```python train_features, train_labels = get_circle_dataset()```
-This dataset labels points inside a circle as 1 and points outside as 0. No straight line can separate these two regions.
+**Was du beobachten sollst:**
+- schnelle und stabile Konvergenz
+- sinnvolle Gewichte
+- gute Generalisierung auf nicht gesehene Werte (z. B. 10–12)
 
-**What to observe:**
-- The perceptron fails to converge
-- Accuracy stagnates or fluctuates
-- The learned weights do not form a meaningful decision boundary
+**Lernziel:**
+Ein Perceptron funktioniert gut, wenn das Problem linear trennbar ist **und** die Trainings­daten den relevanten Eingaberaum abdecken.
 
-Note: For the circle dataset, you do not need a separate test set. The perceptron already fails to learn the pattern on the training data itself,  
-so evaluating on a test set would not provide additional insight. If you do use a test set, it must also consist of circle data.
+### **2. Den Kreis-Datensatz nutzen (widersprüchliches / nicht-lineares Beispiel)**
+
+Setze in `perceptron.py`: `DATASET_MODE = "circle"`.
+Dieser Datensatz kennzeichnet Punkte innerhalb eines Kreises mit `1` und Punkte außerhalb mit `0`. Keine Gerade kann diese beiden Regionen trennen.
+
+**Was du beobachten sollst:**
+- Das Perceptron konvergiert nicht.
+- Die Genauigkeit bleibt niedrig oder schwankt.
+- Die gelernten Gewichte ergeben keine sinnvolle Entscheidungsgrenze.
+
+Hinweis: Für den Kreis-Datensatz brauchst du keinen separaten Testdatensatz. Das Perceptron scheitert schon bei den Trainingsdaten selbst, sodass ein zusätzlicher Test keinen weiteren Erkenntnisgewinn bringt. Wenn du dennoch einen Testdatensatz verwendest, muss er ebenfalls aus Kreisdaten bestehen.
+
+**Lernziel:**
+Diese Übung demonstriert die grundlegende Beschränkung des Perceptrons: Es kann keine nichtlinearen Entscheidungsgrenzen lernen, ganz gleich, wie lange man trainiert.
+
+## 🧪 Zentrale Beobachtungen
+
+Die folgenden Beobachtungen fassen zusammen, was du beim Ausführen der beiden Übungen sehen solltest:
+
+- Mit dem **erweiterten linearen Datensatz (alle Paare 3–9)** konvergiert das Perceptron schnell, lernt stabile Gewichte und generalisiert gut auf nicht gesehene Werte. Dies zeigt: Ein linear trennbares Problem wird zuverlässig gelöst, wenn die Trainings­daten den relevanten Eingaberaum abdecken.
+
+- Mit dem **Kreis-Datensatz** konvergiert das Perceptron nicht, weil das Muster nicht linear trennbar ist. Die Genauigkeit schwankt, die Gewichte stabilisieren sich nicht, und die gelernte Entscheidungsgrenze bleibt bedeutungslos. In der Praxis erreicht das Perceptron etwa 50 % Genauigkeit. Der Grund: Die tatsächliche Entscheidungsgrenze ist ein Kreis, während ein Perceptron nur eine Gerade lernen kann. Jede Gerade zerlegt den Kreis in zwei etwa gleich große Regionen, sodass das Modell zwangs­läufig rund die Hälfte der Punkte falsch klassifiziert. Anders gesagt: Die beste lineare Trennlinie ist hier nicht besser als zufälliges Raten.
+
+- Selbst bei linearen Problemen kann **unzureichende oder schlecht verteilte Trainings­daten** die Genauigkeit senken — wie in der Beispielausgabe mit dem kleinen Datensatz gezeigt.
+
+- In realen Anwendungen erreicht kein Modell zuverlässig 100 % Genauigkeit; das Perceptron bildet keine Ausnahme, besonders wenn die Daten begrenzt oder widersprüchlich sind.
 
 
-**Learning goal:**
-- This exercise demonstrates the fundamental limitation of the perceptron: it cannot learn non‑linear decision boundaries, regardless of training time.
+## 🧠 Abschließende Bemerkungen
 
-## 🧪 Key observations
-
-The following observations summarise what you should see when running the two exercises above:
-
-- With the **expanded linear dataset (all pairs from 3–9)**, the perceptron converges quickly, learns stable weights, and generalises well to unseen values. This demonstrates that a linearly separable problem is solved reliably when the training data covers the relevant input space.
-
-- With the **circle dataset**, the perceptron fails to converge because the pattern is not linearly separable. Accuracy fluctuates, the weights do not stabilise, and the learned decision boundary remains meaningless. In practice, the perceptron reaches an accuracy of about 50%. This happens because the true decision boundary is circular, while a perceptron can only learn a straight line. Any straight line cuts the circle into two regions of comparable size, so the model inevitably misclassifies roughly half of the points. In other words, the best possible linear separator performs no better than random guessing.
-
-- Even for linear problems, **insufficient or poorly distributed training data** can reduce accuracy — as seen in the example output using the small dataset.
-
-- In practical machine‑learning scenarios, models rarely achieve perfect accuracy; the perceptron is no exception, especially when data is limited or contradictory.
-
-
-## 🧠 Closing remarks
-
-The perceptron implemented in this milestone illustrates a fundamental geometric fact:  
-a single-layer perceptron is always a **linear classifier**. It computes a weighted sum
+Das in diesem Meilenstein umgesetzte Perceptron veranschaulicht eine fundamentale geometrische Tatsache: Ein einlagiges Perceptron ist immer ein **linearer Klassifikator**. Es berechnet eine gewichtete Summe
 
 $$
 w_1 x_1 + w_2 x_2 + \dots + w_n x_n + b
 $$
 
-and applies a step function to decide between two classes. The equation
+und wendet eine Sprungfunktion an, um zwischen zwei Klassen zu entscheiden. Die Gleichung
 
 $$
 w_1 x_1 + w_2 x_2 + \dots + w_n x_n + b = 0
 $$
 
-defines a **hyperplane** in an \(n\)-dimensional space — a line in 2D, a plane in 3D, and a linear separating surface in any number of dimensions.  
-As a consequence, a perceptron can only learn **linearly separable** patterns.
+definiert eine **Hyperebene** in einem $n$-dimensionalen Raum — eine Gerade in 2D, eine Ebene in 3D und eine linear trennende Fläche in beliebigen Dimensionen. Als Folge kann ein Perceptron nur **linear trennbare** Muster lernen.
 
-This explains why the model succeeds on the rule *x₁ < x₂*: the decision boundary is a straight line.  
-But it also explains why the perceptron fails on the circle dataset: no single line (or plane, or hyperplane) can separate the inside of a circle (or sphere) from the outside. This limitation is not an implementation detail but a fundamental representational constraint.
+Das erklärt, warum das Modell die Regel $x_1 < x_2$ mühelos lernt: Die Entscheidungsgrenze ist eine Gerade. Es erklärt aber auch, warum das Perceptron beim Kreis-Datensatz scheitert: Keine einzelne Gerade (oder Ebene, oder Hyperebene) kann das Innere eines Kreises (oder einer Kugel) vom Äußeren trennen. Diese Grenze ist kein Implementierungs­detail, sondern eine grundsätzliche Darstellungs­beschränkung.
 
-This insight was formalized by **Minsky & Papert (1969)** in their influential book *Perceptrons*, where they proved that single-layer perceptrons cannot represent non-linear functions such as parity, symmetry, or simple geometric shapes. Their analysis marked a turning point in the history of neural networks and motivated the development of **multi-layer architectures** capable of learning non-linear decision boundaries.
+Diese Einsicht wurde von **Minsky & Papert (1969)** in ihrem einflussreichen Buch *Perceptrons* formalisiert. Sie bewiesen, dass einlagige Perceptrons keine nichtlinearen Funktionen wie Parität, Symmetrie oder einfache geometrische Formen darstellen können. Diese Analyse markierte einen Wendepunkt in der Geschichte der neuronalen Netze und motivierte die Entwicklung **mehrschichtiger Architekturen**, die nichtlineare Entscheidungsgrenzen lernen können.
 
-In the next milestone, we extend the perceptron into a **multi-layer perceptron (MLP)** and introduce the **backpropagation algorithm**, enabling the network to learn complex, non-linear patterns such as circles, letters, or arbitrary shapes.
+Im nächsten Meilenstein erweitern wir das Perceptron zu einem **Multi-Layer-Perceptron (MLP)** und führen den **Backpropagation-Algorithmus** ein, mit dem das Netz komplexe, nichtlineare Muster wie Kreise, Buchstaben oder beliebige Formen lernen kann.
 
 
-## 📚 References
+## 📚 Referenzen
 
 Hodgkin, A. L., & Huxley, A. F. (1952). *A quantitative description of membrane current and its application to conduction and excitation in nerve*. Journal of Physiology, 117(4), 500–544.
 
 Minsky, M., & Papert, S. (1969). *Perceptrons: An Introduction to Computational Geometry*. MIT Press.
 
 Rosenblatt, F. (1958). *The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain*. Psychological Review, 65(6), 386–408.
-
-

@@ -1,191 +1,227 @@
-# AI Milestone 2: The Multi‑Layer Perceptron (MLP)
+# KI‑Meilenstein 2: Das Multi‑Layer‑Perzeptron (MLP)
 
-## 📖 Introduction
+> **🎯 Warum ist das cool?**
+> Wir stapeln nur eine **zweite Schicht Neuronen** auf das Perceptron drauf — und plötzlich kann das Netz nicht nur Geraden ziehen, sondern **beliebig geschwungene Formen** erkennen: Kreise, Buchstaben, komplizierte Muster. Dieser eine Baustein — mit dem Trainings­algorithmus **Backpropagation** — ist der Grund­stein von *Deep Learning* und läuft heute in jeder KI, von der Handschrift­erkennung deiner Bank bis zu ChatGPT.
 
-The Perceptron introduced the idea of **learning from data**, but it was limited to **linear** decision boundaries.  
-To recognize more complex patterns, we need a model capable of learning **non‑linear relationships**.
+## 📖 Einleitung
 
-This brings us to the **Multi‑Layer Perceptron (MLP)** — the first true step toward modern Deep Learning.
+Das Perceptron aus dem vorherigen Meilenstein zeigt bereits die Grundidee des maschinellen Lernens: **Lernen aus Daten**. Aber es hat eine harte Grenze — es kann nur Muster erkennen, die sich durch eine **Gerade** trennen lassen. Bei der Kreis-Aufgabe scheitert es zwangsläufig, weil kein einzelnes Neuron eine gebogene Grenze zeichnen kann.
 
-In this chapter, we will:
+Damit ein Netz komplexere Muster erkennen kann, braucht es zwei Zutaten:
 
-- build an **MLP from scratch**  
-- implement **forward pass**, **backpropagation**, and **gradient descent**  
-- train it on simple **9×9 bitmap characters** (A, L, R)  
-- test robustness using **noise** and **shifts**  
-- understand **why MLPs work — and where they fail**
+1. **Mehrere Schichten** von Neuronen (statt nur einer),
+2. eine **nicht-lineare Aktivierungsfunktion** dazwischen.
 
-## 🕰️ Historical Context: The Backpropagation Breakthrough (1986)
+Genau das leistet das **Multi‑Layer‑Perzeptron (MLP)** — der erste Schritt in Richtung dessen, was wir heute *Deep Learning* nennen.
 
-While the idea of multi‑layer neural networks existed since the 1960s, they were practically unusable for decades.  
-The reason was simple:
+In diesem Meilenstein werden wir:
 
-> Nobody knew how to train the hidden layers.
-
-This changed in 1986, when **David E. Rumelhart**, **Geoffrey E. Hinton**, and **Ronald J. Williams** published the landmark paper:
-
-**“Learning representations by back‑propagating errors” (Nature, 1986)**
-
-This paper introduced **Backpropagation**, the algorithm that made deep learning possible.
-
-Backpropagation enabled:
-
-- training networks with multiple layers  
-- learning internal representations  
-- solving non‑linear classification problems  
-- the birth of modern neural networks  
-
-It is no exaggeration to say:
-
-> Backpropagation is the foundation of all modern AI —  
-> CNNs, RNNs, Transformers, and LLMs all depend on it.
+- ein MLP **von Grund auf** in reinem Python bauen,
+- **Vorwärts­berechnung**, **Backpropagation** und **Gradienten­abstieg** selbst umsetzen,
+- es auf einfachen **9×9-Bitmap-Buchstaben** (A, L, R) trainieren,
+- die Robustheit anhand von **Rauschen** und **Verschiebungen** testen,
+- verstehen, **warum MLPs funktionieren — und wo sie an Grenzen stoßen**.
 
 ---
 
+## 🕰️ Historischer Kontext: Der Backpropagation‑Durchbruch (1986)
 
-## 🧠 What the MLP Adds Beyond the Perceptron
+Die Idee mehrschichtiger neuronaler Netze existierte bereits in den 1960er-Jahren. Doch jahrzehntelang blieben sie praktisch unbrauchbar. Der Grund war einfach:
 
-The MLP introduces **hidden layers** and **non‑linear activation functions**.  
-This allows the network to learn:
+> Niemand wusste, wie man die **verborgenen Schichten** trainieren sollte.
 
-- curved decision boundaries  
-- hierarchical features  
-- distributed representations  
-- complex patterns in data  
+Das änderte sich 1986, als **David E. Rumelhart**, **Geoffrey E. Hinton** und **Ronald J. Williams** ihren wegweisenden Artikel veröffentlichten:
 
-In our case:  
-It allows the model to recognize **A, L, R** from 9×9 pixel grids.
+**„Learning representations by back‑propagating errors" (Nature, 1986)**
 
----
+Diese Arbeit führte **Backpropagation** ein — den Algorithmus, der Deep Learning erst ermöglichte.
 
-## 🖼️ Dataset: 9×9 Bitmap Characters
+Backpropagation erlaubt:
 
-We represent each character as a 9×9 grid of 0/1 values:
+- Training von Netzen mit **mehreren Schichten**,
+- Lernen **interner Repräsentationen**,
+- Lösen **nicht-linearer** Klassifikations­probleme,
+- die Geburt der modernen neuronalen Netze.
 
-- 81 input features  
-- simple enough to visualize  
-- complex enough to require non‑linear learning  
-
-Example (A):
-
+Ohne Übertreibung: **Backpropagation ist das Fundament der gesamten modernen KI — CNNs, RNNs, Transformer und LLMs beruhen alle darauf.**
 
 ---
 
-## 🧩 Model Architecture
+## 🧠 Was das MLP gegenüber dem Perceptron neu einführt
 
-Our MLP consists of:
+Ein MLP erweitert das Perceptron um zwei entscheidende Konzepte:
 
-- **Input layer:** 81 neurons (one per pixel)  
-- **Hidden layer:** e.g., 18 neurons  
-- **Output layer:** 3 neurons (A, L, R)  
+- **Verborgene Schichten (Hidden Layers)**: eine oder mehrere Zwischen­schichten zwischen Eingabe und Ausgabe. Sie lernen, aus den Rohdaten sinnvolle **Zwischen­merkmale** zu extrahieren.
+- **Nicht-lineare Aktivierungen** (bei uns: Sigmoid). Ohne sie wäre ein Netz mit vielen Schichten immer noch nur ein linearer Klassifikator — die Nicht-Linearität macht das Netz **ausdrucksstärker**.
 
-Activation functions:
+Damit kann das MLP:
 
-- **Hidden layer:** Sigmoid  
-- **Output layer:** Sigmoid (for confidence scores)
+- **gebogene Entscheidungs­grenzen** ziehen,
+- **hierarchische Merkmale** aufbauen (kleine Bausteine → größere Muster),
+- **komplexe Zusammenhänge** in den Daten erfassen.
 
----
-
-## 🔧 Training: Backpropagation + Gradient Descent
-
-We train the network using:
-
-- **Mean Squared Error (MSE)**  
-- **Gradient Descent**  
-- **Backpropagation** to compute gradients  
-
-This is implemented manually — no frameworks.
+In unserem konkreten Fall: Das MLP kann die Buchstaben **A**, **L** und **R** aus 9×9-Pixel-Rastern erkennen — was ein einlagiges Perceptron nicht schaffen würde.
 
 ---
 
-## 🧪 Robustness Tests: Noise
+## 🖼️ Datensatz: 9×9‑Bitmap‑Buchstaben
 
-We flip random pixels in the input bitmap:
+Wir stellen jeden Buchstaben als 9×9-Raster aus 0/1-Werten dar:
 
-- small noise → model stays correct  
-- medium noise → confidence drops  
-- large noise → model may misclassify  
+- 81 Eingabe­merkmale (ein Pixel = ein Neuron in der Eingabe­schicht),
+- einfach genug zum Nachvollziehen,
+- komplex genug, um nicht-lineares Lernen zu erfordern.
 
-Example:
+Beispiel (Buchstabe A):
 
-
-This reveals:
-
-- some pixels are important (high weights)  
-- others are irrelevant (near‑zero weights)  
-- noise pushes the input across the decision boundary  
-
----
-
-## 🧪 Robustness Tests: Shifts
-
-If we shift the bitmap by 1 pixel:
-
-- the MLP fails completely  
-- all characters collapse to the same prediction  
-- confidence becomes low and unstable  
-
-This demonstrates a key limitation:
-
-> MLPs do not understand spatial structure.  
-> They treat the image as a flat vector.
-
-This motivates the next chapter: **Convolutional Neural Networks (CNNs)**.
+```
+.........
+...###...
+..#####..
+.##...##.
+.##...##.
+.#######.
+.#######.
+.##...##.
+.........
+```
 
 ---
 
-## 🧠 Key Takeaways (Merksatz)
+## 🧩 Modellarchitektur
+
+Unser MLP besteht aus drei Schichten:
+
+- **Eingabe­schicht:** 81 Neuronen (ein Neuron pro Pixel)
+- **Verborgene Schicht:** z. B. 20 Neuronen
+- **Ausgabe­schicht:** 3 Neuronen (A, L, R)
+
+Aktivierungs­funktionen:
+
+- **Verborgene Schicht:** Sigmoid
+- **Ausgabe­schicht:** Sigmoid (als Vertrauens­werte pro Klasse)
+
+Diagramm:
+
+```
+81 Pixel  ->  [ Dense: 81 -> 20, Sigmoid ]  ->  [ Dense: 20 -> 3, Sigmoid ]  ->  A / L / R
+```
 
 ---
 
-### **1. Non‑linearity**  
-Hidden layers allow the MLP to learn curved, complex decision boundaries.
+## 🔧 Training: Backpropagation + Gradienten­abstieg
 
-### **2. Distributed representations**  
-Knowledge is stored across many weights — not in single neurons.
+Das Training verwendet drei bekannte Zutaten:
 
-### **3. Feature importance**  
-Some inputs matter far more than others; noise reveals this.
+- **Mittlerer quadratischer Fehler (MSE)** als Verlust­funktion,
+- **Gradienten­abstieg** als Optimierer,
+- **Backpropagation**, um die Gradienten Schicht für Schicht rückwärts zu bestimmen.
 
-### **4. Robustness (limited)**  
-MLPs tolerate small noise but fail under structural changes.
-
-### **5. Global processing**  
-The MLP sees the entire image at once — it has no concept of locality.
-
-### **6. No translation invariance**  
-A one‑pixel shift destroys the pattern — a major weakness.
+Alles wird **händisch** implementiert — kein Framework, keine `torch.nn`-Bausteine. Jede einzelne Multiplikation ist im Code sichtbar.
 
 ---
 
-## 📦 Files in This Chapter
+## ▶️ So startest du das Programm
 
-- `mlp.py` — MLP implementation  
-- `datasets.py` — 9×9 character bitmaps  
-- `utils.py` — noise, shifting, helper functions  
-- `main.py` — training and evaluation  
+Der Python-Code liegt in `MLP/src/`.
+
+```bash
+cd MLP/src
+python mlp.py
+```
+
+Das Programm:
+1. lädt die 9×9-Bitmaps für A, L, R,
+2. trainiert das MLP über mehrere tausend Epochen,
+3. testet es mit **verrauschten** Bildern und gibt die Vorhersagen aus.
 
 ---
 
-## 🚀 Next Chapter: Convolutional Neural Networks (CNNs)
+## 🧪 Robustheits­test 1: Rauschen
 
-CNNs solve the MLP’s biggest weaknesses:
+Wir kippen zufällig einige Pixel im Eingabebild um:
 
-- they learn **local features**  
-- they share weights across the image  
-- they are **translation invariant**  
+- kleines Rauschen → das Modell bleibt richtig,
+- mittleres Rauschen → das Vertrauen sinkt,
+- starkes Rauschen → das Modell kann sich irren.
 
-This makes them the gold standard for image recognition — and the natural next step in our journey.
+Was das offenbart:
 
+- Manche Pixel sind **sehr wichtig** (hohe Gewichte),
+- andere sind fast **egal** (Gewichte nahe null),
+- Rauschen schiebt die Eingabe **über die Entscheidungsgrenze**.
 
-## 📚 Key References
+---
 
-**Primary historical source**  
-- Rumelhart, Hinton & Williams (1986): *Learning representations by back‑propagating errors.*
+## 🧪 Robustheits­test 2: Verschiebung
 
-**Additional foundational literature**  
-- Werbos (1974): Early formulation of backpropagation  
-- McClelland & Rumelhart (1986): *Parallel Distributed Processing*  
-- Bishop (1995): *Neural Networks for Pattern Recognition*  
-- Goodfellow, Bengio, Courville (2016): *Deep Learning* (Chapter 6)
+Wenn wir das Bitmap-Bild um **einen einzigen Pixel** verschieben:
 
+- versagt das MLP fast vollständig,
+- viele Bilder werden gleich klassifiziert (meist als „A"),
+- das Vertrauen wird niedrig und schwankt.
+
+Das offenbart eine grundlegende Schwäche:
+
+> **MLPs verstehen keine räumliche Struktur.**
+> Für sie ist ein Bild einfach ein flacher Vektor aus 81 Zahlen. Es gibt keinen Begriff von „das Pixel daneben" oder „dieselbe Form, nur woanders".
+
+Genau das motiviert das nächste Kapitel: **das Convolutional Neural Network (CNN)**, das Bildstruktur explizit ausnutzt — und dabei einen deutlich größeren Datensatz (MNIST) verwendet.
+
+---
+
+## 🧠 Zentrale Erkenntnisse (Merksätze)
+
+### **1. Nicht‑Linearität**
+Verborgene Schichten erlauben dem MLP, gebogene und komplexe Entscheidungs­grenzen zu lernen.
+
+### **2. Verteilte Repräsentationen**
+Wissen wird über viele Gewichte verteilt gespeichert — nicht in einzelnen Neuronen.
+
+### **3. Bedeutung der Merkmale**
+Manche Eingaben sind viel wichtiger als andere; Rauschen macht diese Unterschiede sichtbar.
+
+### **4. Begrenzte Robustheit**
+MLPs verkraften kleines Rauschen, scheitern aber an strukturellen Änderungen.
+
+### **5. Globale Verarbeitung**
+Das MLP betrachtet das gesamte Bild auf einmal — es hat keinen Begriff von Lokalität.
+
+### **6. Keine Translations­invarianz**
+Eine Verschiebung um nur einen Pixel zerstört das gelernte Muster — eine gravierende Schwäche.
+
+---
+
+## 📦 Dateien in diesem Kapitel
+
+- `mlp.py` — Implementierung des MLP,
+- `datasets.py` — 9×9-Bitmaps der Buchstaben,
+- `utils.py` — Rauschen, Aktivierungen, Hilfsfunktionen.
+
+---
+
+## 🚀 Nächstes Kapitel: Convolutional Neural Networks (CNNs)
+
+Im nächsten Meilenstein lösen wir genau die zwei Schwächen, die wir hier gefunden haben:
+
+- **Lokalität:** CNNs betrachten das Bild in **kleinen lokalen Fenstern** (z. B. 3×3-Filtern) statt als flachen Vektor.
+- **Translations­invarianz:** Der **gleiche Filter** wird an **jeder Position** des Bildes angewendet — dadurch findet das CNN Muster unabhängig davon, wo im Bild sie stehen.
+
+Diese Idee stammt von **Yann LeCun (1998)**, der damit das berühmte **LeNet‑5** baute und über Jahre hinweg handgeschriebene US-Postleitzahlen automatisch auslas.
+
+Wir wechseln im CNN-Kapitel auch den **Datensatz**: Statt drei handgezeichneter 9×9-Bitmaps trainieren wir auf **MNIST** — dem historischen Datensatz mit 70 000 handgeschriebenen Ziffern, den LeCun selbst zusammengestellt hat. Dadurch wird der Vorteil des CNN gegenüber dem MLP direkt messbar sichtbar.
+
+Außerdem führen wir dort **NumPy** ein, weil reines Python bei tausenden Bildern und Faltungen zu langsam würde — die Logik bleibt aber weiterhin von Hand geschrieben.
+
+---
+
+## 📚 Wichtige Referenzen
+
+**Primärquelle**
+- Rumelhart, D. E., Hinton, G. E., & Williams, R. J. (1986). *Learning representations by back‑propagating errors*. Nature, 323(6088), 533–536.
+
+**Weitere Grundlagenliteratur**
+- Werbos, P. J. (1974). Frühe Formulierung der Backpropagation-Idee (Dissertation).
+- McClelland, J. L., & Rumelhart, D. E. (1986). *Parallel Distributed Processing*. MIT Press.
+- Bishop, C. M. (1995). *Neural Networks for Pattern Recognition*. Oxford University Press.
+- Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning* (Kapitel 6). MIT Press.
