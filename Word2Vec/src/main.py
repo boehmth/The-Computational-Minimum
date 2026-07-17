@@ -191,6 +191,16 @@ def main():
     else:
         print("Zu wenige der Referenzwoerter im Vokabular fuer den PCA-Plot.")
 
+    # ---- Embeddings + Vokabular fuer nachfolgende Meilensteine speichern ----
+    import os
+    out_dir = os.path.dirname(os.path.abspath(__file__))
+    np.savez(
+        os.path.join(out_dir, "embeddings.npz"),
+        W_in=model.W_in,
+        id2word=np.array(id2word, dtype=object),
+    )
+    print(f"\n[Save] Embeddings + Vokabular -> {os.path.join(out_dir, 'embeddings.npz')}")
+
 
 if __name__ == "__main__":
     main()
