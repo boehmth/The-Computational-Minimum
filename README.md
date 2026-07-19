@@ -1,75 +1,70 @@
-# The Computational Minimum — Teil 2
+# The Computational Minimum
 
-**Von der einfachen Neuron-Formel bis zum eigenen GPT-artigen Sprachmodell — in acht nachvollziehbaren Meilensteinen.**
+**Milestones in Computing, Machine Intelligence, and Agentic Systems.**
 
----
-
-## 📜 Die Geschichte in einem Absatz
-
-Zwischen 1958 und heute liegt eine der spektakulärsten Erfolgs­geschichten der Informatik. Sie beginnt mit **Frank Rosenblatts Perceptron** — einem einzelnen künstlichen Neuron, das aus Beispielen eine einfache Regel lernen kann — und endet bei **GPT-4** — einem Modell mit **hunderten Milliarden solcher Neuronen**, das Sprache beherrscht, programmiert, argumentiert und Bilder erzeugt. Dazwischen liegen sechs Jahrzehnte Forschung, ein *KI-Winter*, ein *Backpropagation-Durchbruch*, die *ImageNet-Revolution* und schließlich der *Transformer*. Diese Reihe zeichnet diesen Weg **in acht kleinen, selbst programmierten Modellen** nach. Jeder Meilenstein beantwortet eine konkrete Frage — und jede Antwort öffnet die nächste Frage.
-
-> **Ein bemerkenswerter Zufall:** Vom Perceptron (1958) bis zu GPT-1 (2018) sind es genau **60 Jahre Grundlagenforschung** — genauso lang wie von der Entdeckung des Elektrons (1897) bis zum ersten Transistor (1947). Alles, was danach kam — GPT-2, GPT-3, ChatGPT, Claude, LLaMA, DeepSeek, autonome Agenten — sind **Anwendungen und Skalierungen** genau der Ideen, die in dieser Reihe stecken.
+Ein Lehrpfad in drei Teilen, der vom kleinsten selbst gebauten Prozessor bis zu autonomen KI-Systemen führt. Alles selbst programmiert, ohne Frameworks. Jede Multiplikation, jedes Bit, jede Instruktion ist im Code sichtbar.
 
 ---
 
-## 🎬 Die Dreiteilung der ganzen Reihe
+## 📜 Der Bogen der Reihe
 
-Diese Reihe ist Teil eines größeren Projekts in drei Teilen. Zusammen bilden sie einen Bogen von den zeitlosen Grundlagen der Informatik bis zur KI der Gegenwart:
+Zwischen dem ersten mechanischen Rechenwerk und einem modernen agentischen KI-System liegen zwei parallele Erzählstränge:
 
-| Teil | Zeitraum | Thema | Fokus |
+1. **Wie funktioniert ein Computer überhaupt?** — Hardware, Software, Betriebssystem, Compiler, Netzwerk. Das *zeitlose* Fundament der Informatik.
+2. **Wie kommt aus dem Computer eine lernende — und heute handelnde — Maschine?** — 60 Jahre neuronale Netze vom Perceptron (1958) über den Transformer (2017) bis zu GPT und darüber hinaus.
+
+Dieses Repository erzählt beide Geschichten und ihre Fortsetzung in drei aufeinander aufbauenden Teilen:
+
+| Teil | Zeitraum | Titel | Fokus |
 |------|----------|-------|-------|
-| **1** | *ewig gültig* | **Darstellen** | Informations­theorie, Kodierung, Algorithmen, Berechenbarkeit, Rechnerarchitektur, Compiler, Netzwerke |
-| **2** *(hier)* | **1958 → 2018** *(60 Jahre neuronale Netze)* | **Erkennen + Verstehen** | Perceptron → Transformer → Mini-GPT |
-| **3** | **2018 → heute** *(das letzte Jahrzehnt der Anwendungs­welle)* | **Anwenden + Skalieren** | LLMs im Detail, Domänen-Transformer für Zeitreihen und tabellarische Daten, Reasoning-Modelle (DeepSeek-R1), Agenten mit LLM als Gehirn |
+| **[01_Computing](01_Computing/)** | *zeitlos* | **Milestones in Computing** | 4-Bit-CPU, Betriebssystem, Compiler, Netzwerk |
+| **[02_MachineIntelligence](02_MachineIntelligence/)** | **1958 → 2018** *(60 Jahre)* | **Milestones in Machine Intelligence** | Perceptron → Transformer → Mini-GPT |
+| **[03_AgenticSystems](03_AgenticSystems/)** | **2018 → heute** *(10 Jahre)* | **Milestones in Agentic Systems** | LLMs, Reasoning, Werkzeug-Nutzung, autonome Agenten *(in Vorbereitung)* |
 
-Anders gesagt:
-- **Teil 1** klärt: *„Wie funktioniert ein Computer überhaupt?"* (zeitlos)
-- **Teil 2** klärt: *„Wie kommt aus dem Computer eine lernende Maschine?"* (60 Jahre — endet mit dem Grundprinzip von GPT)
-- **Teil 3** klärt: *„Was hat man daraus gebaut, und was kommt als Nächstes?"* (10 Jahre — endet in der Gegenwart)
+Der rote Faden durch alle drei Teile: **kleinstes selbst gebautes Modell zeigt das Prinzip, historische Erzählung erklärt, warum es so aussieht, und der Ausblick zeigt, wohin es führt.**
 
 ---
 
-## 🧭 Die acht Fragen, die zu GPT führen
+## 🧭 Übersicht
 
-Man kann die Reihe als eine Kette von acht Fragen lesen. Jede Frage wird durch das nächste Modell beantwortet, und jede Antwort führt zur nächsten Frage.
+### 🔧 [01_Computing](01_Computing/) — Milestones in Computing
 
-1. **Was heißt „lernen" für eine Maschine überhaupt?** → *Perceptron (1958):* Ein einzelnes Neuron passt Gewichte anhand von Fehlern an. Das kleinstmögliche lernende System.
-2. **Wie geht das für Aufgaben, die keine Gerade lösen kann?** → *MLP + Backpropagation (1986):* Mehrere Schichten, nicht-lineare Aktivierungen — und der Algorithmus, mit dem bis heute jedes tiefe Netz trainiert wird.
-3. **Wie kann ein Computer geschriebenen Text lesen — als Pixel auf Papier?** → *CNN (1998):* Faltung, Weight Sharing, Pooling. LeCuns LeNet las in den USA Postleitzahlen; wir lesen MNIST-Ziffern.
-4. **Der Computer kann jetzt Buchstaben erkennen — aber was **bedeutet** ein Wort?** → *Word2Vec (2013):* Wörter werden Punkte in einem Bedeutungs­raum. Mit ihnen kann man **rechnen**: `König − Mann + Frau ≈ Königin`.
-5. **Bedeutung ist gut — aber Sprache ist eine Reihenfolge. Wie fasst man das?** → *RNN (Elman 1990, Mikolov 2010):* Ein Netz mit Gedächtnis, das Wort für Wort liest und selbst welche erzeugt.
-6. **Wie übersetzt man ganze Sätze, nicht nur einzelne Wörter?** → *Seq2Seq + Attention (Sutskever 2014, Bahdanau 2015):* Encoder-Decoder-Struktur, „schau nochmal auf jedes Eingabewort". Der Kern der modernen Übersetzung (Google Translate 2016).
-7. **Rekurrenz ist langsam. Geht das auch parallel?** → *Transformer (Vaswani 2017):* „Attention Is All You Need". Rekurrenz weg, ganze Sequenzen auf einmal — die GPU wird endlich richtig ausgenutzt.
-8. **Was passiert, wenn man das riesig skaliert?** → *Mini-GPT (Radford 2018):* Ein Transformer sagt das nächste Wort vorher, milliardenfach. Aus dem 8. Meilenstein wird — mit genug Daten und Rechnern — ChatGPT.
+Die vier klassischen Grundlagenthemen der Informatik, jeweils als selbst gebautes Miniaturmodell:
 
-Der Bogen ist damit klar: **Lernen (1) → Nicht-Linearität (2) → Bilder & Schrift (3) → Bedeutung (4) → Reihenfolge (5) → Übersetzung (6) → Parallelität (7) → Skalierung (8).**
+| Nr. | Kapitel | Kern |
+|-----|---------|------|
+| **1** | [`01_CPU/`](01_Computing/01_CPU/) | 4-Bit-CPU mit Bus, ALU, Mikrocode-ROM, Kontroll­einheit |
+| **2** | [`02_OS/`](01_Computing/02_OS/) | Zwei OS-Modelle: kooperatives Multitasking (Python) + Batch-OS (in Assembler geschrieben) |
+| **3** | [`03_Compiler/`](01_Computing/03_Compiler/) | Vier Frontends (COBOL, FORTRAN, C, LISP) → gemeinsamer AST → derselbe Assembler |
+| **4** | [`04_PerceptronOnCPU/`](01_Computing/04_PerceptronOnCPU/) | Rosenblatt-Perceptron als 16-Instruktions-Assembler — klassifiziert AND/OR/NAND, scheitert an XOR *(Brücke zu Teil 2)* |
+| **5** | `05_Network/` | *(geplant)* Zwei simulierte CPUs, HTTP-GET zum LLM-Service |
 
----
+Was dieser Teil klärt: *„Wie kommt aus Transistoren eine Maschine, die Programme ausführt?"*
 
-## 🎯 Was du am Ende können und verstehen wirst
+### 🧠 [02_MachineIntelligence](02_MachineIntelligence/) — Milestones in Machine Intelligence
 
-Du wirst nicht nur wissen, *wie* GPT funktioniert — du wirst jeden Baustein davon **selbst programmiert** haben:
+Von einem einzelnen Neuron (1958) bis zum eigenen GPT-artigen Modell — acht Meilensteine, die den Weg der KI-Forschung nachzeichnen:
 
-- Neuronen und Gewichts­updates aus dem Nichts,
-- Backpropagation von Hand hergeleitet,
-- Faltungs­filter, die sich zu Kantendetektoren entwickeln,
-- Wortvektoren, die semantische Analogien lösen,
-- ein RNN, das dir Grimm-artige Sätze schreibt,
-- Attention-Heatmaps, die zeigen, worauf das Modell gerade *schaut*,
-- ein Transformer, der die letzten drei Kapitel in einem einzigen Sprung zusammenfasst,
-- ein winziges GPT, das aus deiner eigenen Textdatei Fortsetzungen erfindet.
+| Nr. | Kapitel | Kern |
+|-----|---------|------|
+| **1** | [`01_Perceptron/`](02_MachineIntelligence/01_Perceptron/) | Rosenblatt 1958 — Ein Neuron lernt eine Gerade |
+| **2** | [`02_MLP/`](02_MachineIntelligence/02_MLP/) | Rumelhart 1986 — Backprop und nicht-lineare Grenzen |
+| **3** | [`03_CNN/`](02_MachineIntelligence/03_CNN/) | LeCun 1998 — Faltung, Pooling, MNIST-Zeichen |
+| **4** | [`04_Word2Vec/`](02_MachineIntelligence/04_Word2Vec/) | Mikolov 2013 — Wörter als Vektoren |
+| **5** | [`05_RNN/`](02_MachineIntelligence/05_RNN/) | Elman 1990 / LSTM 1997 — Sequenzen und Gedächtnis |
+| **6** | [`06_Seq2Seq/`](02_MachineIntelligence/06_Seq2Seq/) | Bahdanau 2015 — Attention |
+| **7** | [`07_Transformer/`](02_MachineIntelligence/07_Transformer/) | Vaswani 2017 — Self-Attention, parallel |
+| **8** | *(geplant)* `08_MiniGPT/` | Radford 2018 — Autoregressives Sprachmodell |
 
-Und vor allem: du wirst wissen, **warum** jeder dieser Bausteine erfunden wurde, welche Grenze er überwindet, und **was von ihm heute noch übrig ist** (bei manchen: alles, bei anderen: nur die Idee).
+Was dieser Teil klärt: *„Wie kommt aus dem Computer eine lernende Maschine?"*
 
----
+Der Begriff **„Machine Intelligence"** stammt von Alan Turing (1950, *„Computing Machinery and Intelligence"*) und ist über die Jahrzehnte immer wieder verwendet worden, wenn man den Marketing-Ton von „AI" vermeiden wollte. Für uns passt er, weil dieser Teil genau das behandelt: die *Maschinen*, die intelligentes Verhalten zeigen — nicht Marketing, nicht Ideologie, sondern das technische Fundament.
 
-## 📍 Wo in der Reihe ist das hier?
+### 🤖 [03_AgenticSystems](03_AgenticSystems/) — Milestones in Agentic Systems *(in Vorbereitung)*
 
-Dieses Projekt ist **Teil 2 von drei**. Der aktuelle Bogen dieser Reihe:
+Was in den letzten zehn Jahren aus den Grundlagen von *Machine Intelligence* gebaut wurde: LLMs im Detail, Mixture-of-Experts, Reasoning-Modelle (DeepSeek-R1, o1), Retrieval-augmented Generation, Werkzeug-Nutzung, multimodale Systeme, autonome Agenten. Setzt *Machine Intelligence* voraus.
 
-*„Zeichen darstellen (Teil 1) → Zeichen erkennen (Kap. 1–3) → Zeichen verstehen (Kap. 4–8) → in Anwendungen skalieren (Teil 3)"*.
-
-Jeder Meilenstein baut auf dem vorherigen auf und behebt eine konkrete Schwäche des Vorgängers. Es werden **keine fertigen Deep-Learning-Frameworks** verwendet — alle Modelle sind von Hand geschrieben, jede Multiplikation ist im Code sichtbar.
+Der Titel **„Agentic Systems"** — statt „Agenten" oder „Anwendungen" — ist bewusst breiter gewählt: er umfasst alle Systeme, in denen ein Modell nicht nur eine Antwort produziert, sondern **plant, Werkzeuge benutzt, iteriert, und die Welt verändert**. Vom Function-Calling im LLM bis zum autonomen Multi-Agent-System.
 
 ---
 
@@ -77,103 +72,57 @@ Jeder Meilenstein baut auf dem vorherigen auf und behebt eine konkrete Schwäche
 
 ```bash
 git clone <dieses-Repo>
-cd The-Computational-Minimum
+cd The-Computational-Minimum-main
 
-# Meilenstein 1 – Perceptron (reines Python)
-cd Perceptron/src
-python perceptron.py
+# --- 01_Computing ---
+# CPU-Simulator (Live-Terminal-UI):
+python 01_Computing/01_CPU/src/main.py
 
-# Meilenstein 2 – MLP (reines Python)
-cd ../../MLP/src
-python mlp.py
+# Batch-OS mit Assembler-Kernel:
+python 01_Computing/02_OS/src/os_batch.py
 
-# Meilenstein 3 – CNN (NumPy, MNIST)
-cd ../../CNN/src
-pip install numpy scikit-learn
-python main.py
+# Compiler (vier Sprachen, dasselbe Ergebnis):
+python 01_Computing/03_Compiler/test_compiler.py
 
-# Meilenstein 4 – Word2Vec (Grimm-Märchen)
-cd ../../Word2Vec/src
-python main.py
+# --- 02_MachineIntelligence ---
+# Meilenstein 1: Perceptron (reines Python)
+python 02_MachineIntelligence/01_Perceptron/src/perceptron.py
 
-# Meilenstein 5 – Char-RNN (Grimm-Märchen, erzeugt eigenen Text)
-cd ../../RNN/src
-python main.py
+# Meilenstein 3: CNN auf MNIST (NumPy + scikit-learn)
+python 02_MachineIntelligence/03_CNN/src/main.py
 
-# Meilenstein 6 – Seq2Seq + Attention (Zahl → deutsches Zahlwort)
-cd ../../Seq2Seq/src
-python train.py
+# Meilenstein 5: Char-RNN auf Grimm-Märchen
+python 02_MachineIntelligence/05_RNN/src/main.py
 ```
 
-Die einzige Abhängigkeit ab Meilenstein 3 ist **NumPy** (plus `scikit-learn` für den MNIST-Loader). Kein PyTorch, kein TensorFlow, keine vorgefertigten Schichten.
-
----
-
-## 🗺️ Übersicht der Meilensteine
-
-### Phase A — Zeichen **erkennen**
-
-| Nr. | Ordner | Thema | Datensatz | Status |
-|-----|--------|-------|-----------|--------|
-| 1 | `Perceptron/` | Rosenblatt 1958 — Ein Neuron lernt eine Gerade | 2D-Zahlenpaare (`x1 < x2`) | ✅ |
-| 2 | `MLP/` | Rumelhart et al. 1986 — Backprop und nicht-lineare Grenzen | 9×9-Bitmaps (A, L, R) | ✅ |
-| 3 | `CNN/` | LeCun 1998 — Faltung, Pooling, Zeichenerkennung | MNIST 14×14 | ✅ |
-
-### Phase B — Zeichen **verstehen**
-
-| Nr. | Ordner | Thema | Datensatz | Status |
-|-----|--------|-------|-----------|--------|
-| 4 | `Word2Vec/` | Mikolov 2013 — Wörter als Vektoren, Semantik | Grimm-Märchen | ✅ |
-| 5 | `RNN/` | Elman 1990 / LSTM 1997 / Mikolov 2010 — Sequenzen und Gedächtnis | Grimm-Märchen | ✅ |
-| 6 | `Seq2Seq/` | Bahdanau 2015 — Encoder/Decoder + Attention | Zahlenwörter | ✅ |
-| 7 | `Transformer/` | Vaswani 2017 — Self-Attention, parallel | Zahlenwörter | ⏳ |
-| 8 | `MiniGPT/` | Radford 2018 — Autoregressives Sprachmodell | Grimm-Märchen | ⏳ |
-
-Ausführlicher Überblick in [`ROADMAP.md`](ROADMAP.md). Die Positionierung und Motivation der ganzen Reihe steht im [Vorwort (PREFACE.md)](PREFACE.md).
-
----
-
-## 🔭 Ausblick auf Teil 3 (in Vorbereitung)
-
-Wenn du am Ende dieser Reihe angekommen bist, hast du **das Fundament**, auf dem alle heutigen Sprachmodelle stehen. Aber die spannende Frage ist: **Was hat man daraus gebaut?** Genau darum geht es in Teil 3:
-
-- **LLMs im Detail** — Skalierungs­gesetze, Datenmengen, Instruction Tuning, RLHF/DPO. Wie wird aus einem Mini-GPT ein ChatGPT?
-- **Domänen-Transformer** — dieselbe Architektur, andere Daten: **Zeitreihen** (TimeGPT, Chronos), **tabellarische Daten** (TabPFN), **Proteine** (AlphaFold-Nachfolger).
-- **Reasoning-Modelle** — DeepSeek-R1, OpenAI o1: LLMs, die **erst nachdenken**, bevor sie antworten.
-- **Agenten** — LLMs als Gehirn, das Werkzeuge benutzt: Suche, Code, APIs, den Browser. Der Übergang von *Text produzieren* zu *Aufgaben erledigen*.
-
-Teil 3 setzt Teil 2 voraus. Wer die Meilensteine 1–8 durchgearbeitet hat, hat das Vokabular und die Intuition, um diesen zeitgenössischen Fragen zu folgen.
+Voraussetzungen:
+- **Python 3.7+**
+- Für **01_Computing** und die ersten beiden Kapitel von *Machine Intelligence*: **keine externen Abhängigkeiten**
+- Ab **02_MachineIntelligence, Kapitel 3**: `numpy`, `scikit-learn` (`pip install numpy scikit-learn`)
+- Kein PyTorch, kein TensorFlow, keine vorgefertigten Modell-Schichten
 
 ---
 
 ## 🎯 Für wen ist das gedacht?
 
-- **Schüler der Oberstufe** mit Interesse an KI, die verstehen wollen, wie ein Sprachmodell wirklich tickt.
-- **Lehrkräfte**, die einen roten Faden für einen Wahlpflichtkurs oder eine AG suchen.
-- **Alle Neugierigen**, die von Neuronen bis zu Transformer-Attention einen begreiflichen Aufbau wollen — ohne dass Frameworks das Wichtige verstecken.
+- **Schüler der Oberstufe** und **Studienanfänger**, die verstehen wollen, wie Computer und KI wirklich funktionieren
+- **Lehrkräfte**, die einen roten Faden für einen Kurs oder eine AG suchen
+- **Ingenieurinnen und Entwickler**, die die Grundlagen ihres Feldes einmal *from scratch* durchdenken wollen
+- **Alle Neugierigen**, die bei GPT nicht „irgendein Deep-Learning-Kram" hören wollen, sondern die Bausteine sehen
 
 ---
 
-## 🧭 Der rote Faden
+## 📖 Wie du dieses Repository durcharbeitest
 
-Statt zusammen­hanglos Modelle vorzustellen, wird jeder Meilenstein als **Antwort auf ein konkretes Problem** eingeführt:
+1. Lies das Vorwort ([`PREFACE.md`](PREFACE.md)) — es ordnet die drei Teile ein.
+2. Wähle einen Teil aus. Die Empfehlung ist: **01_Computing zuerst**, dann 02_MachineIntelligence, dann 03_AgenticSystems.
+3. Innerhalb eines Teils: die Kapitel sind nummeriert, in dieser Reihenfolge durcharbeiten.
+4. Für jedes Kapitel: die README lesen, das Programm ausführen, die Übungen am Ende bearbeiten.
 
-**Phase A — Erkennen:**
-> Perceptron kann nur Geraden ziehen → **MLP löst nicht-lineare Probleme**.  
-> MLP kennt keine Nachbarschaft → **CNN nutzt Bildstruktur und erkennt handgeschriebene Zeichen**.  
-> Wir können jetzt Zeichen **lesen** — aber wir **verstehen** noch nichts. Zeit, das zu ändern.
-
-**Phase B — Verstehen:**
-> Ein Wort für sich hat keine Bedeutung → **Word2Vec repräsentiert Wörter als Vektoren**.  
-> Wörter isoliert reichen nicht → **RNN modelliert Reihenfolgen**.  
-> RNNs sind seriell und vergessen → **Seq2Seq + Attention verbessern beides**.  
-> Rekurrenz ist langsam → **Transformer macht Attention parallel**.  
-> Aus Transformer wird → **Mini-GPT: das eigene kleine Sprachmodell**.
-
-So entsteht am Ende nicht nur ein Modell, sondern ein **Verständnis** dafür, warum die KI heute so aussieht, wie sie aussieht.
+Jedes Kapitel ist so aufgebaut, dass es **an einem Nachmittag verstehbar** ist — auch wenn man einige Nachmittage brauchen wird, um alle Details zu durchdringen.
 
 ---
 
 ## 📜 Lizenz und Nutzung
 
-Frei für den Bildungs­gebrauch. Beiträge, Übersetzungen und Ergänzungen sind willkommen.
+Frei für den Bildungsgebrauch. Beiträge, Übersetzungen und Ergänzungen sind willkommen.
