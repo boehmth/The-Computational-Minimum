@@ -72,7 +72,7 @@ Beide Programme benutzen intern dieselbe RAM-Adresse `RAM[0]`. Aber sie liegen i
 Der Trick: die CPU sieht bei jedem Speicherzugriff nur die logische 4-Bit-Adresse aus dem Programm, aber die Fetch-Logik der Control Unit rechnet automatisch:
 
 $$
-\text{phys\_addr} = (\text{SEG} \ll 4) \; | \; \text{logical\_addr}
+\text{phys}_{\text{addr}} = (\text{SEG} \ll 4) \;\; | \;\; \text{logical}_{\text{addr}}
 $$
 
 So denken beide Programme, sie hätten *ihre eigenen 16 Zellen* — und in gewissem Sinne haben sie das auch. Ein `STA 0` von `count_up` verändert `count_down`s Zähler nicht.
@@ -142,18 +142,18 @@ MiniOS
 
 ### Speicher-Layout im OS-Segment (SEG=0)
 
-| Adresse | Inhalt |
-|---:|---|
-| `0` | PC von Prozess 0 |
-| `1` | AX von Prozess 0 |
-| `2` | BX von Prozess 0 |
-| `3` | SEG von Prozess 0 (=1) |
-| `4` | PC von Prozess 1 |
-| `5` | AX von Prozess 1 |
-| `6` | BX von Prozess 1 |
-| `7` | SEG von Prozess 1 (=2) |
-| ... | (frei) |
-| `F` | aktuelle Prozess-ID (Anzeige) |
+| Adresse | Inhalt                        |
+| :-----: | :---------------------------- |
+| `0`     | PC von Prozess 0              |
+| `1`     | AX von Prozess 0              |
+| `2`     | BX von Prozess 0              |
+| `3`     | SEG von Prozess 0 (=1)        |
+| `4`     | PC von Prozess 1              |
+| `5`     | AX von Prozess 1              |
+| `6`     | BX von Prozess 1              |
+| `7`     | SEG von Prozess 1 (=2)        |
+| `...`   | (frei)                        |
+| `F`     | aktuelle Prozess-ID (Anzeige) |
 
 Beim Kontext-Wechsel passieren zwei Dinge:
 
@@ -389,7 +389,7 @@ Um ein OS *in* der CPU laufen zu lassen, braucht es zwei minimale Hardware-Erwei
 Der Programmspeicher wächst auf 256 Zellen = **16 Slots à 16 Instruktionen**. Ein neues Register `BP` selektiert den aktiven Slot:
 
 $$
-\text{instruction\_addr} = (\text{BP} \ll 4) \; | \; \text{PC}
+\text{instruction}_{\text{addr}} = (\text{BP} \ll 4) \;\; | \;\; \text{PC}
 $$
 
 - `BP = 0` → OS-Code
@@ -514,16 +514,16 @@ Wir haben nichts davon. Und wir sehen genau, wie sich das anfühlt.
 
 ## 🧭 Vergleich der beiden Wege
 
-| | **Weg 1: `MiniOS`** | **Weg 2: `os_batch`** |
-|---|---|---|
-| OS ist... | Python-Klasse | Assembler-Programm |
-| Läuft in... | Python-Interpreter | der CPU (BP=0) |
-| Context-Switch | Python setzt Register direkt | `SETBP`/`HLT`-Trap |
-| Speicherschutz | ja (Segment-Register) | nein |
-| Multitasking | ja, kooperativ | nein, batch |
-| OS-Zeilen | ~150 Zeilen Python | 10 Zeilen Assembler |
-| Historisches Vorbild | Mac OS Classic, Windows 3.x | GM-NAA I/O (1955) |
-| Zeigt am besten | Context-Switch, Isolation | Boot, Ring-0-Konvention, unsicherer State |
+| Aspekt                | **Weg 1: `MiniOS`**            | **Weg 2: `os_batch`**                       |
+| --------------------- | ------------------------------ | ------------------------------------------- |
+| OS ist...             | Python-Klasse                  | Assembler-Programm                          |
+| Läuft in...           | Python-Interpreter             | der CPU (BP=0)                              |
+| Context-Switch        | Python setzt Register direkt   | `SETBP`/`HLT`-Trap                          |
+| Speicherschutz        | ja (Segment-Register)          | nein                                        |
+| Multitasking          | ja, kooperativ                 | nein, batch                                 |
+| OS-Zeilen             | ~150 Zeilen Python             | 10 Zeilen Assembler                         |
+| Historisches Vorbild  | Mac OS Classic, Windows 3.x    | GM-NAA I/O (1955)                           |
+| Zeigt am besten       | Context-Switch, Isolation      | Boot, Ring-0-Konvention, unsicherer State   |
 
 Die beiden Wege sind komplementär: **Weg 2 zeigt, wie ein OS *funktionieren kann* mit minimalen Mitteln**, Weg 1 zeigt, **was daraus wird, wenn man Isolation und Multitasking ernst nimmt**. In der Praxis kombiniert man beides — moderne Kernels sind selbst Programme (Weg 2) und haben trotzdem Isolation + Multitasking (Weg 1). Der Weg von unserer Batch-CPU zu einem realen Linux-Kernel führt über genau die drei oben genannten Verteidigungslinien.
 

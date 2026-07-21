@@ -117,14 +117,14 @@ $$
 
 **Größenordnungen der drei mitgelieferten CPUs:**
 
-| | *Minimal* | *Akku (SAP-1)* | *Two-Reg (AX+BX)* |
-|---|---:|---:|---:|
-| Register | 1 (ACC) | 1 (ACC) | 2 (AX + BX) |
-| Zweiter ALU-Operand | – (unaer) | IR (Immediate) | BX (Register) |
-| ALU-Ops | 2 (INC, NOT) | 2 (ADD, SUB) | 2 (ADD, SUB) |
-| Opcodes | 10 | 11 | 14 |
-| Ausdrucks-Modell | Turing-Kern | Immediate-Ops | Register-Register |
-| `(a + b)`, a,b RAM | Schleife | via RAM | direkt (`LDA a; LDBM b; ADD`) |
+| Eigenschaft           | *Minimal*     | *Akku (SAP-1)*  | *Two-Reg (AX+BX)*                |
+| :-------------------- | :------------ | :-------------- | :------------------------------- |
+| Register              | 1 (ACC)       | 1 (ACC)         | 2 (AX + BX)                      |
+| Zweiter ALU-Operand   | – (unär)      | IR (Immediate)  | BX (Register)                    |
+| ALU-Ops               | 2 (INC, NOT)  | 2 (ADD, SUB)    | 2 (ADD, SUB)                     |
+| Opcodes               | 10            | 11              | 14                               |
+| Ausdrucks-Modell      | Turing-Kern   | Immediate-Ops   | Register-Register                |
+| `(a + b)`, a,b in RAM | Schleife      | via RAM         | direkt (`LDA a; LDBM b; ADD`)    |
 
 **Der springende Punkt:** *acc* und *two-reg* sehen auf den ersten Blick ähnlich aus (beide 1 Zielregister, beide 2 ALU-Ops), sind aber in dem Sinne, was man **elegant ausdrücken kann**, sehr unterschiedlich:
 
