@@ -2,7 +2,38 @@
 
 **Milestones in Computing, Machine Intelligence, and Agentic Systems.**
 
+> **Aus einem einzelnen Bit wird eine denkende Maschine — dieses Repository zeigt, Schritt für Schritt, wie.**
+
 Ein Lehrpfad in drei Teilen, der vom kleinsten selbst gebauten Prozessor bis zu autonomen KI-Systemen führt. Alles selbst programmiert, ohne Frameworks. Jede Multiplikation, jedes Bit, jede Instruktion ist im Code sichtbar.
+
+---
+
+## 🎯 Warum dieses Projekt?
+
+Weil zwischen *„KI benutzen können"* und *„KI verstehen"* eine Lücke klafft, die kein Tutorial und kein Framework schließt. Frameworks verstecken das Wesentliche; Lehrbücher erklären es, ohne es laufen zu lassen; populärwissenschaftliche Bücher lassen den Code weg. Dieses Repository geht den vierten Weg: **jeder Baustein wird von Hand gebaut, in wenigen hundert Zeilen Python, und läuft sofort auf deinem Rechner.**
+
+---
+
+## 🧠 Was du am Ende kannst
+
+- **Einen Prozessor bauen**, der Programme ausführt — Register, ALU, Bus, Mikrocode, alles sichtbar.
+- **Ein Betriebssystem schreiben**, das mehrere Programme fair auf dieser CPU laufen lässt.
+- **Einen Compiler bauen**, der vier Hochsprachen in denselben Assembler übersetzt.
+- **Ein neuronales Netz von Hand trainieren** — Perceptron, MLP, CNN, RNN, Transformer, Mini-GPT.
+- **Jede zukünftige KI-Neuheit einordnen**, weil du weißt, aus welchen Bausteinen sie besteht.
+
+Und vor allem: **keine Blackbox mehr.** Du weißt danach, was ChatGPT im Kern tut — und was nicht.
+
+---
+
+## 🗺️ Wie du vorgehst
+
+1. **Lies das Vorwort** ([`PREFACE.md`](PREFACE.md)) — es ordnet die drei Teile ein.
+2. **Wähle einen Teil.** Empfehlung: **01_Computing zuerst**, dann 02, dann 03.
+3. **Innerhalb eines Teils:** Kapitel der Reihe nach durcharbeiten — jedes baut auf dem vorherigen auf und behebt eine konkrete Schwäche des Vorgängers.
+4. **Pro Kapitel:** README lesen → Programm ausführen → Übungen bearbeiten.
+
+Jedes Kapitel ist so aufgebaut, dass es **an einem Nachmittag verstehbar** ist.
 
 ---
 
@@ -15,17 +46,31 @@ Zwischen dem ersten mechanischen Rechenwerk und einem modernen agentischen KI-Sy
 
 Dieses Repository erzählt beide Geschichten und ihre Fortsetzung in drei aufeinander aufbauenden Teilen:
 
-| Teil | Zeitraum | Titel | Fokus |
-|------|----------|-------|-------|
-| **[01_Computing](01_Computing/)** | *zeitlos* | **Milestones in Computing** | 4-Bit-CPU, Betriebssystem, Compiler, Netzwerk |
-| **[02_MachineIntelligence](02_MachineIntelligence/)** | **1958 → 2018** *(60 Jahre)* | **Milestones in Machine Intelligence** | Perceptron → Transformer → Mini-GPT |
-| **[03_AgenticSystems](03_AgenticSystems/)** | **2018 → heute** *(10 Jahre)* | **Milestones in Agentic Systems** | LLMs, Reasoning, Werkzeug-Nutzung, autonome Agenten *(in Vorbereitung)* |
+| Teil                                                | Zeitraum                       | Titel                                | Fokus                                                                              |
+| --------------------------------------------------- | ------------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------- |
+| **[01_Computing](01_Computing/)**                   | *zeitlos*                      | **Milestones in Computing**          | 4-Bit-CPU, Betriebssystem, Compiler, Netzwerk                                      |
+| **[02_MachineIntelligence](02_MachineIntelligence/)** | **1958 → 2018** *(60 Jahre)*  | **Milestones in Machine Intelligence** | Perceptron → Transformer → Mini-GPT                                              |
+| **[03_AgenticSystems](03_AgenticSystems/)**         | **2018 → heute** *(10 Jahre)* | **Milestones in Agentic Systems**    | LLMs, Reasoning, Werkzeug-Nutzung, autonome Agenten *(in Vorbereitung)*            |
 
 Der rote Faden durch alle drei Teile: **kleinstes selbst gebautes Modell zeigt das Prinzip, historische Erzählung erklärt, warum es so aussieht, und der Ausblick zeigt, wohin es führt.**
 
 ---
 
+## ❓ Warum genau drei Teile?
+
+Weil sich die Geschichte der modernen KI sauber in drei epistemische Schritte teilt — und jeder Schritt eine andere Denkweise erfordert:
+
+1. **01_Computing — Das Fundament (zeitlos).** Bevor eine Maschine lernen kann, muss sie überhaupt *rechnen* können. Rechnerarchitektur, Betriebssystem, Compiler und Netzwerk sind die 80 Jahre alten, aber unverändert gültigen Grundpfeiler. Sie sind das Skelett, auf dem alles Weitere steht.
+2. **02_MachineIntelligence — Die 60-Jahre-Grundlagenforschung.** Vom Perceptron (1958) über Backpropagation, CNNs, Word2Vec, RNN, Seq2Seq und Attention bis zum Transformer (2017): Jeder dieser acht Meilensteine löst genau ein Problem, an dem der Vorgänger scheitert. Am Ende dieses Bogens steht das **Prinzip** von GPT.
+3. **03_AgenticSystems — Die 10-Jahre-Anwendungswelle.** Was hat man aus diesem Prinzip gemacht? LLMs, Mixture-of-Experts, Reasoning-Modelle, Werkzeug-Nutzung, autonome Agenten. Hier verlassen wir die reine Grundlagenforschung und schauen uns die Systeme an, die heute die Welt verändern.
+
+**60 Jahre Grundlagen. 10 Jahre Anwendung. Und ein zeitloses Fundament darunter.** Dieselbe asymmetrische Verteilung wie beim Elektron (1897) → Transistor (1947) → Halbleiter­revolution: lange stille Grundlagenphase, dann explosive Anwendungswelle. Wer die drei Teile in dieser Reihenfolge durcharbeitet, sieht das Muster.
+
+---
+
 ## 🧭 Übersicht
+
+Jeder der drei Teile ist als eine **Reihe von Miniatur­modellen** aufgebaut — pro Kapitel ein kleines, in sich abgeschlossenes Programm, das du selbst laufen lässt, veränderst und in den Übungen erweiterst. **Nicht lesen, sondern bauen** ist der didaktische Grundgedanke dieser Reihe. Jedes Modell ist so klein, dass es an einem Nachmittag verständlich wird — und so vollständig, dass es das jeweilige Prinzip **ohne Blackbox** zeigt.
 
 ### 🔧 [01_Computing](01_Computing/) — Milestones in Computing
 
