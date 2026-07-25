@@ -83,4 +83,4 @@ Wenn dieses Buch dazu beiträgt, dass ein paar dieser jungen Menschen KI nicht m
 
 Viel Freude beim Durcharbeiten.
 
-*[Dein Name]*
+Dr. Thilo Böhm
