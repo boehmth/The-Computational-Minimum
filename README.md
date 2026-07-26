@@ -1,173 +1,128 @@
-# The Computational Minimum
+# 📖 00 Fundament — Zwei Antworten auf eine Krise
 
-**Milestones in Computing, Machine Intelligence, and Agentic Systems.**
+## 🎯 Warum dieses Kapitel vor der CPU steht
 
-> **Aus einem einzelnen Bit wird eine denkende Maschine — dieses Repository zeigt, Schritt für Schritt, wie.**
+Bevor wir in `01_CPU` einen Prozessor bauen, lohnt sich eine kurze,
+ehrliche Standortbestimmung: Es gibt zwei sehr unterschiedliche
+Traditionen, aus denen die moderne Informatik hervorgegangen ist — eine
+theoretische und eine ingenieurgetriebene. Dieses Buch folgt bewusst der
+zweiten. Dieses Kapitel erklärt, warum, und benennt damit einen Grundsatz,
+der sich durch die gesamte Reihe zieht.
 
-Ein Lehrpfad in drei Teilen, der vom kleinsten selbst gebauten Prozessor bis zu autonomen KI-Systemen führt. Alles selbst programmiert, ohne Frameworks. Jede Multiplikation, jedes Bit, jede Instruktion ist im Code sichtbar.
+## 📜 Historischer Kontext: Eine Krise, zwei unabhängige Antworten
 
----
+1931 zeigte **Kurt Gödel** mit seinen Unvollständigkeitssätzen, dass kein
+formales System zugleich vollständig und widerspruchsfrei sein kann — eine
+mathematische Erschütterung, die David Hilberts Programm, alle Mathematik
+auf ein sicheres, vollständiges Fundament zu stellen, im Kern traf. Daraus
+entstand Hilberts *Entscheidungsproblem*: Gibt es wenigstens einen
+Algorithmus, der für jede mathematische Aussage entscheidet, ob sie
+beweisbar ist?
 
-## 🎯 Warum dieses Projekt?
+**Alan Turing** beantwortete diese Frage 1936 mit "Nein" — und erfand dafür
+ein gedankliches Werkzeug: eine Maschine, die ein unendlich langes Band
+liest, beschreibt und sich nach einer Zustandstabelle bewegt. Die
+Turing-Maschine wurde nie gebaut, um zu rechnen. Sie wurde konstruiert, um
+etwas über die *Grenzen* des Berechenbaren zu beweisen — ein Beweiswerkzeug
+der Mathematik, kein Bauplan für einen Rechner. Fast zeitgleich kam
+**Alonzo Church** über einen völlig anderen formalen Weg (den
+Lambda-Kalkül) zum selben Ergebnis — die Church-Turing-These hält bis heute:
+beide Formalismen sind gleich mächtig, und nichts, was wir seither gebaut
+haben, ist mächtiger.
 
-Weil zwischen *„KI benutzen können"* und *„KI verstehen"* eine Lücke klafft, die kein Tutorial und kein Framework schließt. Frameworks verstecken das Wesentliche; Lehrbücher erklären es, ohne es laufen zu lassen; populärwissenschaftliche Bücher lassen den Code weg. Dieses Repository geht den vierten Weg: **jeder Baustein wird von Hand gebaut, in wenigen hundert Zeilen Python, und läuft sofort auf deinem Rechner.**
+Fast zeitgleich, aber **völlig unabhängig und ohne jede Kenntnis dieser
+Arbeiten**, saß in Berlin ein Bauingenieur namens **Konrad Zuse** vor
+lästigen, sich wiederholenden statischen Berechnungen. Zuse fragte nicht
+"was ist theoretisch berechenbar?" — er fragte "wie werde ich diese
+Rechnerei los?" Zwischen 1935 und 1941 baute er, zunächst in der
+Wohnung seiner Eltern, mit ausrangierten Blechstreifen und ohne
+akademisches Umfeld, den Z3 — den ersten funktionsfähigen, frei
+programmierbaren, binären Rechner der Welt. Kein Beweis, keine Theorie.
+Nur: probieren, bauen, verbessern, bis es funktioniert.
 
----
+## 🧭 Der rote Faden dieses Buches
 
-## 🧠 Was du am Ende kannst
+Das ist die eigentliche Pointe dieses Kapitels, und sie ist mehr als eine
+historische Randnotiz. Schon der nächste Schritt, `01_CPU`, zeigt das
+Muster im Kleinen: Eine 4-Bit-CPU mit minimalem Befehlssatz ist bereits
+Turing-vollständig — sie beweist das Prinzip vollständig. Jede größere,
+schnellere, mächtigere CPU danach fügt keine neue Fähigkeit hinzu, sondern
+**skaliert** dasselbe Prinzip. Derselbe Bauplan wiederholt sich durch die
+ganze Reihe: ein Compiler für vier Sprachen zeigt die wesentlichen
+Sprachkonstrukte vollständig — ein Compiler für vierzig Sprachen wäre
+dieselbe Idee, nur mehr davon. Ein einzelnes Neuron (Teil 2) zeigt das
+Lernprinzip — alles danach, bis zum Transformer, ist in einem sehr
+handfesten Sinn Skalierung derselben Grundidee.
 
-- **Einen Prozessor bauen**, der Programme ausführt — Register, ALU, Bus, Mikrocode, alles sichtbar.
-- **Ein Betriebssystem schreiben**, das mehrere Programme fair auf dieser CPU laufen lässt.
-- **Einen Compiler bauen**, der vier Hochsprachen in denselben Assembler übersetzt.
-- **Ein neuronales Netz von Hand trainieren** — Perceptron, MLP, CNN, RNN, Transformer, Mini-GPT.
-- **Jede zukünftige KI-Neuheit einordnen**, weil du weißt, aus welchen Bausteinen sie besteht.
+**Skalierung ist damit die eigentliche, durchgehende Herausforderung dieses
+Buches:** Wie vergrößert man Kapazität, Geschwindigkeit, Kontext,
+Fähigkeiten — ohne bei null neu anzufangen? Diese Frage taucht in jedem der
+drei Teile in neuem Gewand wieder auf, von der Bit-Breite einer CPU bis zur
+Parameterzahl eines Sprachmodells.
 
-Und vor allem: **keine Blackbox mehr.** Du weißt danach, was ChatGPT im Kern tut — und was nicht.
+Doch Skalierung allein erklärt nicht, *wie* die jeweils nächste Grenze
+überwunden wurde — und genau hier kommt Zuse ins Spiel, nicht als
+gleichrangiger zweiter Faden, sondern als **Antwort auf die
+Skalierungsfrage**: Jede Skalierungsgrenze in diesem Buch wurde nicht
+theoretisch vorhergesagt und dann bestätigt, sondern durch Ausprobieren
+gefunden. Selbst dort, wo eine neue Fähigkeit wie ein *struktureller* Sprung
+aussieht — die verborgene Schicht des MLP (Teil 2), die Attention des
+Transformers, die spärlichen Experten im MoE (Teil 3) — entstand dieser
+Sprung, weil die bisherige Architektur nicht mehr skalierte (vollvernetzte
+Netze skalieren nicht auf Bilder, rekurrente Netze skalieren nicht auf
+parallele Hardware, dichte Modelle skalieren nicht auf immer mehr Kapazität
+bei gleichbleibenden Kosten) — und die Lösung wurde experimentell gefunden,
+nicht am Reißbrett bewiesen.
 
----
+> Skalierung ist die durchgehende Herausforderung dieses Buches.
+> Experiment — der Zuse-Weg, nicht der Turing-Weg — ist die Methode, mit
+> der jede ihrer Grenzen überwunden wurde.
 
-## 🗺️ Wie du vorgehst
+Das bedeutet nicht, dass Theorie unwichtig ist — die Church-Turing-These
+bleibt eine der tiefsten Erkenntnisse der Informatik, und wir respektieren
+sie, indem wir sie hier ehrlich einordnen, statt sie zu ignorieren. Aber ab
+`01_CPU` wählt dieses Buch bewusst den Weg des Bauens vor dem Weg des
+Beweisens.
 
-1. **Lies das Vorwort** ([`PREFACE.md`](PREFACE.md)) — es ordnet die drei Teile ein.
-2. **Wähle einen Teil.** Empfehlung: **01_Computing zuerst**, dann 02, dann 03.
-3. **Innerhalb eines Teils:** Kapitel der Reihe nach durcharbeiten — jedes baut auf dem vorherigen auf und behebt eine konkrete Schwäche des Vorgängers.
-4. **Pro Kapitel:** README lesen → Programm ausführen → Übungen bearbeiten.
+## 😮 Der Wow-Effekt: Gleich mächtig, radikal unterschiedlich gebaut
 
-Jedes Kapitel ist so aufgebaut, dass es **an einem Nachmittag verstehbar** ist.
+*[Platzhalter — z. B. Bildgegenüberstellung: originales Z3-Relais vs.
+Turing-Maschinen-Skizze, oder ein kurzer Lauf des unten gebauten
+Turing-Maschinen-Simulators bei einer einfachen Aufgabe (z. B. unäre
+Addition)]*
 
----
+## 🧠 Was du baust
 
-## 📜 Der Bogen der Reihe
-
-Zwischen dem ersten mechanischen Rechenwerk und einem modernen agentischen KI-System liegen zwei parallele Erzählstränge:
-
-1. **Wie funktioniert ein Computer überhaupt?** — Hardware, Software, Betriebssystem, Compiler, Netzwerk. Das *zeitlose* Fundament der Informatik.
-2. **Wie kommt aus dem Computer eine lernende — und heute handelnde — Maschine?** — 60 Jahre neuronale Netze vom Perceptron (1958) über den Transformer (2017) bis zu GPT und darüber hinaus.
-
-Dieses Repository erzählt beide Geschichten und ihre Fortsetzung in drei aufeinander aufbauenden Teilen:
-
-| Teil                                                | Zeitraum                       | Titel                                | Fokus                                                                              |
-| --------------------------------------------------- | ------------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------- |
-| **[01_Computing](01_Computing/)**                   | *zeitlos*                      | **Milestones in Computing**          | 4-Bit-CPU, Betriebssystem, Compiler, Netzwerk                                      |
-| **[02_MachineIntelligence](02_MachineIntelligence/)** | **1958 → 2018** *(60 Jahre)*  | **Milestones in Machine Intelligence** | Perceptron → Transformer → Mini-GPT                                              |
-| **[03_AgenticSystems](03_AgenticSystems/)**         | **2018 → heute** *(10 Jahre)* | **Milestones in Agentic Systems**    | LLMs, Reasoning, Werkzeug-Nutzung, autonome Agenten *(in Vorbereitung)*            |
-
-Der rote Faden durch alle drei Teile: **kleinstes selbst gebautes Modell zeigt das Prinzip, historische Erzählung erklärt, warum es so aussieht, und der Ausblick zeigt, wohin es führt.**
-
----
-
-## ❓ Warum genau drei Teile?
-
-Weil sich die Geschichte der modernen KI sauber in drei epistemische Schritte teilt — und jeder Schritt eine andere Denkweise erfordert:
-
-1. **01_Computing — Das Fundament (zeitlos).** Bevor eine Maschine lernen kann, muss sie überhaupt *rechnen* können. Rechnerarchitektur, Betriebssystem, Compiler und Netzwerk sind die 80 Jahre alten, aber unverändert gültigen Grundpfeiler. Sie sind das Skelett, auf dem alles Weitere steht.
-2. **02_MachineIntelligence — Die 60-Jahre-Grundlagenforschung.** Vom Perceptron (1958) über Backpropagation, CNNs, Word2Vec, RNN, Seq2Seq und Attention bis zum Transformer (2017): Jeder dieser acht Meilensteine löst genau ein Problem, an dem der Vorgänger scheitert. Am Ende dieses Bogens steht das **Prinzip** von GPT.
-3. **03_AgenticSystems — Die 10-Jahre-Anwendungswelle.** Was hat man aus diesem Prinzip gemacht? LLMs, Mixture-of-Experts, Reasoning-Modelle, Werkzeug-Nutzung, autonome Agenten. Hier verlassen wir die reine Grundlagenforschung und schauen uns die Systeme an, die heute die Welt verändern.
-
-**60 Jahre Grundlagen. 10 Jahre Anwendung. Und ein zeitloses Fundament darunter.** Dieselbe asymmetrische Verteilung wie beim Elektron (1897) → Transistor (1947) → Halbleiter­revolution: lange stille Grundlagenphase, dann explosive Anwendungswelle. Wer die drei Teile in dieser Reihenfolge durcharbeitet, sieht das Muster.
-
----
-
-## 🧭 Übersicht
-
-Jeder der drei Teile ist als eine **Reihe von Miniatur­modellen** aufgebaut — pro Kapitel ein kleines, in sich abgeschlossenes Programm, das du selbst laufen lässt, veränderst und in den Übungen erweiterst. **Nicht lesen, sondern bauen** ist der didaktische Grundgedanke dieser Reihe. Jedes Modell ist so klein, dass es an einem Nachmittag verständlich wird — und so vollständig, dass es das jeweilige Prinzip **ohne Blackbox** zeigt.
-
-### 🔧 [01_Computing](01_Computing/) — Milestones in Computing
-
-Die vier klassischen Grundlagenthemen der Informatik, jeweils als selbst gebautes Miniaturmodell:
-
-| Nr. | Kapitel | Kern |
-|-----|---------|------|
-| **1** | [`01_CPU/`](01_Computing/01_CPU/) | 4-Bit-CPU mit Bus, ALU, Mikrocode-ROM, Kontroll­einheit |
-| **2** | [`02_OS/`](01_Computing/02_OS/) | Zwei OS-Modelle: kooperatives Multitasking (Python) + Batch-OS (in Assembler geschrieben) |
-| **3** | [`03_Compiler/`](01_Computing/03_Compiler/) | Vier Frontends (COBOL, FORTRAN, C, LISP) → gemeinsamer AST → derselbe Assembler |
-| **4** | [`04_PerceptronOnCPU/`](01_Computing/04_PerceptronOnCPU/) | Rosenblatt-Perceptron als 16-Instruktions-Assembler — klassifiziert AND/OR/NAND, scheitert an XOR *(Brücke zu Teil 2)* |
-| **5** | `05_Network/` | *(geplant)* Zwei simulierte CPUs, HTTP-GET zum LLM-Service |
-
-Was dieser Teil klärt: *„Wie kommt aus Transistoren eine Maschine, die Programme ausführt?"*
-
-### 🧠 [02_MachineIntelligence](02_MachineIntelligence/) — Milestones in Machine Intelligence
-
-Von einem einzelnen Neuron (1958) bis zum eigenen GPT-artigen Modell — acht Meilensteine, die den Weg der KI-Forschung nachzeichnen:
-
-| Nr. | Kapitel | Kern |
-|-----|---------|------|
-| **1** | [`01_Perceptron/`](02_MachineIntelligence/01_Perceptron/) | Rosenblatt 1958 — Ein Neuron lernt eine Gerade |
-| **2** | [`02_MLP/`](02_MachineIntelligence/02_MLP/) | Rumelhart 1986 — Backprop und nicht-lineare Grenzen |
-| **3** | [`03_CNN/`](02_MachineIntelligence/03_CNN/) | LeCun 1998 — Faltung, Pooling, MNIST-Zeichen |
-| **4** | [`04_Word2Vec/`](02_MachineIntelligence/04_Word2Vec/) | Mikolov 2013 — Wörter als Vektoren |
-| **5** | [`05_RNN/`](02_MachineIntelligence/05_RNN/) | Elman 1990 / LSTM 1997 — Sequenzen und Gedächtnis |
-| **6** | [`06_Seq2Seq/`](02_MachineIntelligence/06_Seq2Seq/) | Bahdanau 2015 — Attention |
-| **7** | [`07_Transformer/`](02_MachineIntelligence/07_Transformer/) | Vaswani 2017 — Self-Attention, parallel |
-| **8** | *(geplant)* `08_MiniGPT/` | Radford 2018 — Autoregressives Sprachmodell |
-
-Was dieser Teil klärt: *„Wie kommt aus dem Computer eine lernende Maschine?"*
-
-Der Begriff **„Machine Intelligence"** stammt von Alan Turing (1950, *„Computing Machinery and Intelligence"*) und ist über die Jahrzehnte immer wieder verwendet worden, wenn man den Marketing-Ton von „AI" vermeiden wollte. Für uns passt er, weil dieser Teil genau das behandelt: die *Maschinen*, die intelligentes Verhalten zeigen — nicht Marketing, nicht Ideologie, sondern das technische Fundament.
-
-### 🤖 [03_AgenticSystems](03_AgenticSystems/) — Milestones in Agentic Systems *(in Vorbereitung)*
-
-Was in den letzten zehn Jahren aus den Grundlagen von *Machine Intelligence* gebaut wurde: LLMs im Detail, Mixture-of-Experts, Reasoning-Modelle (DeepSeek-R1, o1), Retrieval-augmented Generation, Werkzeug-Nutzung, multimodale Systeme, autonome Agenten. Setzt *Machine Intelligence* voraus.
-
-Der Titel **„Agentic Systems"** — statt „Agenten" oder „Anwendungen" — ist bewusst breiter gewählt: er umfasst alle Systeme, in denen ein Modell nicht nur eine Antwort produziert, sondern **plant, Werkzeuge benutzt, iteriert, und die Welt verändert**. Vom Function-Calling im LLM bis zum autonomen Multi-Agent-System.
-
----
+Ein minimaler **Turing-Maschinen-Simulator**: ein Band aus ASCII-Zeichen,
+eine Zustandstabelle (Zustand + gelesenes Symbol → neues Symbol, Bewegung,
+Folgezustand), eine einfache Beispielaufgabe (z. B. eine unäre Zahl um 1
+erhöhen). Bewusst klein gehalten — es geht nicht darum, Berechenbarkeits-
+theorie zu vertiefen, sondern einmal *gesehen* zu haben, wie roh und
+mechanisch das Modell ist, das hinter jedem späteren "ist X berechenbar"
+steht.
 
 ## 🚀 Schnelleinstieg
 
 ```bash
-git clone <dieses-Repo>
-cd The-Computational-Minimum-main
-
-# --- 01_Computing ---
-# CPU-Simulator (Live-Terminal-UI):
-python 01_Computing/01_CPU/src/main.py
-
-# Batch-OS mit Assembler-Kernel:
-python 01_Computing/02_OS/src/os_batch.py
-
-# Compiler (vier Sprachen, dasselbe Ergebnis):
-python 01_Computing/03_Compiler/test_compiler.py
-
-# --- 02_MachineIntelligence ---
-# Meilenstein 1: Perceptron (reines Python)
-python 02_MachineIntelligence/01_Perceptron/src/perceptron.py
-
-# Meilenstein 3: CNN auf MNIST (NumPy + scikit-learn)
-python 02_MachineIntelligence/03_CNN/src/main.py
-
-# Meilenstein 5: Char-RNN auf Grimm-Märchen
-python 02_MachineIntelligence/05_RNN/src/main.py
+python 00_Fundament/src/turing_machine.py
 ```
 
-Voraussetzungen:
-- **Python 3.7+**
-- Für **01_Computing** und die ersten beiden Kapitel von *Machine Intelligence*: **keine externen Abhängigkeiten**
-- Ab **02_MachineIntelligence, Kapitel 3**: `numpy`, `scikit-learn` (`pip install numpy scikit-learn`)
-- Kein PyTorch, kein TensorFlow, keine vorgefertigten Modell-Schichten
+## 📚 Quellen
 
----
+- Gödel, K. (1931). *Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I.*
+- Turing, A. (1936). *On Computable Numbers, with an Application to the Entscheidungsproblem.*
+- Church, A. (1936). *An Unsolvable Problem of Elementary Number Theory.*
+- Zuse, K. (1993). *Der Computer — Mein Lebenswerk.* (Zuses eigene Darstellung von Z1–Z3, 1935–1941)
 
-## 🎯 Für wen ist das gedacht?
+## ✏️ Übungen
 
-- **Schüler der Oberstufe** und **Studienanfänger**, die verstehen wollen, wie Computer und KI wirklich funktionieren
-- **Lehrkräfte**, die einen roten Faden für einen Kurs oder eine AG suchen
-- **Ingenieurinnen und Entwickler**, die die Grundlagen ihres Feldes einmal *from scratch* durchdenken wollen
-- **Alle Neugierigen**, die bei GPT nicht „irgendein Deep-Learning-Kram" hören wollen, sondern die Bausteine sehen
+*[Platzhalter]*
 
----
+## ➡️ Grenzen dieses Kapitels
 
-## 📖 Wie du dieses Repository durcharbeitest
-
-1. Lies das Vorwort ([`PREFACE.md`](PREFACE.md)) — es ordnet die drei Teile ein.
-2. Wähle einen Teil aus. Die Empfehlung ist: **01_Computing zuerst**, dann 02_MachineIntelligence, dann 03_AgenticSystems.
-3. Innerhalb eines Teils: die Kapitel sind nummeriert, in dieser Reihenfolge durcharbeiten.
-4. Für jedes Kapitel: die README lesen, das Programm ausführen, die Übungen am Ende bearbeiten.
-
-Jedes Kapitel ist so aufgebaut, dass es **an einem Nachmittag verstehbar** ist — auch wenn man einige Nachmittage brauchen wird, um alle Details zu durchdringen.
-
----
-
-## 📜 Lizenz und Nutzung
-
-Frei für den Bildungsgebrauch. Beiträge, Übersetzungen und Ergänzungen sind willkommen.
+Die Turing-Maschine sagt uns, was *im Prinzip* berechenbar ist — aber
+nichts darüber, wie man tatsächlich eine Maschine baut, die das tut, und
+schon gar nichts darüber, wie eine Maschine *lernen* könnte. Kapitel
+`01_CPU` beginnt entsprechend nicht mit weiterer Theorie, sondern mit einem
+Bus, einer ALU und einem Mikrocode-ROM — dem ersten Schritt auf dem
+Zuse-Weg.

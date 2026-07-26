@@ -1,35 +1,42 @@
-# Vorwort zu Teil 2 — Milestones in Machine Intelligence
+# Vorwort zu Teil 3 — Milestones in Agentic Systems
 
-## Der rote Faden, zum ersten Mal bewiesen
+## Skalierung als durchgehende Herausforderung — jetzt als Regel eines ganzen Feldes
 
-`00_Fundament` hat eine Behauptung aufgestellt: dass der belastbarste
-Erkenntnisgewinn in diesem Feld durch Experiment entsteht, nicht durch
-reine Ableitung am Reißbrett — und Konrad Zuse als den Ahnherrn dieser
-Haltung benannt. Teil 1 hat diese Haltung dann *gebaut*: eine CPU, ein
-Betriebssystem, einen Compiler — Ingenieurskunst, kein Beweis.
+`00_Fundament` hat die Frage gestellt, `02_MachineIntelligence` hat sie am
+Lernprinzip durchdekliniert: ein Neuron, dann immer mehr davon, bis
+einfaches Skalieren an eine Grenze stößt und eine neue Struktur nötig wird
+— CNN, RNN, Transformer, jeweils als Antwort auf eine konkrete
+Skalierungsgrenze.
 
-Teil 2 ist der Ort, an dem sich diese Behauptung zum ersten Mal nicht nur
-wiederholt, sondern **beweist**. Die 60-jährige Geschichte neuronaler Netze,
-die in den folgenden acht Kapiteln erzählt wird, ist selbst eine
-ununterbrochene Kette von Beobachtungen, die der Theorie vorausliefen:
+In Teil 3 ist dieselbe Frage nicht mehr Merkmal einzelner Kapitel, sondern
+die **Betriebsweise des gesamten Feldes**. Die zehn Jahre von LLMs bis zu
+autonomen Agenten, die dieser Teil nachzeichnet, lassen sich fast
+vollständig als eine Suche nach neuen Skalierungsachsen lesen:
 
-- Rosenblatts Perceptron (1958) wurde gefeiert, bevor irgendjemand seine
-  Grenzen verstand — und genau diese Grenze (das XOR-Problem) wurde nicht
-  hergeleitet, sondern **entdeckt**, indem man das Ding einfach benutzte.
-- Backpropagation (1986) war schon Jahre vor Rumelhart, Hinton und
-  Williams in verschiedenen Formen bekannt — was fehlte, war nicht die
-  Formel, sondern die *empirische Erfahrung*, dass sie bei mehrschichtigen
-  Netzen tatsächlich praktikabel trainiert.
-- Selbst der Transformer (2017), der Endpunkt dieses Teils, wurde nicht aus
-  einer Theorie der Sprache abgeleitet, sondern aus der Beobachtung, dass
-  parallele Attention schneller trainiert und besser skaliert als
-  rekurrente Architekturen — ein Ingenieursbefund, keine mathematische
-  Notwendigkeit.
+- **Scaling Laws** (Kaplan et al., 2020) zeigen zuerst die naheliegendste
+  Achse: mehr Parameter, mehr Daten, mehr Rechenleistung — mit
+  vorhersagbarem Ertrag. Diese Kurve wurde empirisch vermessen, nicht aus
+  einer Theorie des Lernens abgeleitet.
+- **Mixture of Experts** (Kapitel 3.3) findet eine zweite Achse: Kapazität
+  wächst, ohne dass die Rechenkosten pro Token proportional mitwachsen —
+  eine Antwort auf die Grenze, dass dichte Modelle irgendwann schlicht zu
+  teuer werden, um sie weiter zu vergrößern.
+- **Trainiertes Reasoning** (Kapitel 3.4, TinyReason) findet eine dritte,
+  neuartige Achse: Statt beim Training mehr Parameter zu investieren,
+  investiert man beim **Antworten** mehr Rechenzeit — "Test-Time Scaling"
+  statt "Train-Time Scaling". Ein Modell, das länger nachdenkt, wird
+  zuverlässiger, ganz ohne größer zu werden.
 
-Jeder der acht Meilensteine in diesem Teil folgt demselben Muster: nicht
-"was müsste theoretisch funktionieren", sondern "was funktioniert, wenn man
-es tatsächlich baut und laufen lässt — und was lernen wir aus der Lücke
-zwischen Erwartung und Ergebnis?" Das ist kein Zufall, sondern die
-Fortsetzung des in `00_Fundament` benannten Prinzips mit anderen Mitteln.
+Jede dieser drei Achsen wurde gefunden, nicht hergeleitet. Den bisher
+radikalsten Beleg dieser Kultur liefert dieser Teil in TinyReason: Bei
+DeepSeek-R1-Zero wurde die dritte Skalierungsachse nicht konstruiert,
+sondern **entdeckt** — als Nebenprodukt eines simplen, ergebnisbasierten
+Trainingsanreizes, den niemand mit dieser Konsequenz vorhergesagt hatte.
+Von Zuses Blechstreifen 1941, über die Bit-Breite einer CPU, bis zur
+Rechenzeit, die ein Modell sich beim Antworten selbst zugesteht, trägt
+dieselbe Struktur: eine Skalierungsgrenze, überwunden durch Ausprobieren.
 
-Teil 3 wird zeigen, dass sich daran bis heute nichts geändert hat.
+Dieser Teil ist damit nicht nur die Fortsetzung der Zeitachse aus Teil 2,
+sondern der Beweis, dass das in `00_Fundament` benannte Muster — Skalierung
+als Frage, Experiment als Methode — kein Merkmal der Vergangenheit ist,
+sondern die Arbeitsweise der Gegenwart.
