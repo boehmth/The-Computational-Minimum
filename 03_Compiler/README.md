@@ -1,9 +1,19 @@
-# Meilenstein 3: Ein Multi-Sprach-Compiler
+<p align="center">
+  <img src="assets/title.svg" alt="03 · Compiler — Trans-Sprach-Express" width="100%"/>
+</p>
 
-> **🎯 Warum ist das cool?**
-> Wir schreiben **vier winzige Compiler** — für COBOL, FORTRAN, C und LISP —, die alle dieselbe kleine Aufgabe `(3 + 4) - 1 = 6` bearbeiten und in *identischen* Assembler-Code für unsere 4-Bit-CPU übersetzen. Der Aha-Moment: **der Technik ist egal, wie die Hochsprache aussieht.** Der Rechner sieht am Ende immer nur `LDI, STA, LDA, ADD, SUB, OUT, HLT`.
+<p align="center">
+  <img src="assets/cover.png" alt="Trans-Europa-Express-inspirierte Illustration: vier Bahnlinien laufen aus vier Richtungen zu einem zentralen Hauptbahnhof zusammen, jede Linie eine andere Programmiersprache." width="90%"/>
+</p>
 
----
+*Bahnlinien = Programmiersprachen ◆ Hauptbahnhof = CPU ◆ Züge = Programme ◆ dieselbe Ankunft = derselbe Assembler.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
+
+> Wir schreiben **vier winzige Compiler** — für COBOL, FORTRAN, C und
+> LISP —, die alle dieselbe kleine Aufgabe `(3 + 4) - 1 = 6` bearbeiten
+> und in *identischen* Assembler-Code für unsere 4-Bit-CPU übersetzen.
+> Der Aha-Moment: **der Technik ist egal, wie die Hochsprache aussieht.**
 
 ## 🌉 Warum Compiler die eigentliche Revolution waren
 

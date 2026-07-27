@@ -1,12 +1,15 @@
-# Meilenstein der Computertechnik 6: Das Netzwerk — ALOHA
+<p align="center">
+  <img src="assets/title.svg" alt="06 · Netzwerk — Le Tour de Bit" width="100%"/>
+</p>
 
-![Tour-de-France-inspirierte Illustration: das französische Straßennetz als geteilter Kanal, Radfahrer als Pakete, ein Zusammenprall an einer Kreuzung als ALOHA-Kollision.](assets/cover.png)
+<p align="center">
+  <img src="assets/cover_v2.png" alt="Tour-de-France-inspirierte Illustration: das französische Straßennetz als geteilter Kanal, Radfahrer als Pakete, ein Zusammenprall an einer Kreuzung als ALOHA-Kollision." width="90%"/>
+</p>
 
-*Straßennetz = Kanal. Fahrer = Sendungen. Kreuzung mit Zusammenprall = Kollision. Peloton = koordinierter Verkehr. Einzelfahrer auf Nebenstraße = erfolgreicher Retry nach Backoff.*
+*Straßennetz = Kanal ◆ Fahrer = Sendungen ◆ Kreuzung mit Zusammenprall = Kollision ◆ Peloton = koordinierter Verkehr ◆ Einzelfahrer auf Nebenstraße = erfolgreicher Retry nach Backoff.*
 
----
+──────────◆──────────◆──────────◆──────────◆──────────
 
-> **🎯 Warum ist das cool?**
 > Ein einziges Blechkisten-Netz auf sieben Hawaii-Inseln, 1970. Sieben
 > Rechner, ein UHF-Funkkanal, keine Absprache. Und eine Regel, die so
 > simpel klingt, dass man sie beim ersten Hören für einen Scherz hält:
