@@ -1,6 +1,15 @@
-# Perceptron auf der CPU — die Brücke zu KI
+<p align="center">
+  <img src="assets/title.svg" alt="04 · Perceptron — Vier-Bit-Mensch-Maschine" width="100%"/>
+</p>
 
-> **🎯 Warum ist das cool?**
+<p align="center">
+  <img src="assets/cover.png" alt="Mensch-Maschine-inspirierte Illustration: ein stilisiertes Neuron mit zwei Eingängen und Schwellwert, daneben ein 2x2-Punkte-Diagramm — drei Punkte linear trennbar, der vierte (XOR-Fall) nicht." width="90%"/>
+</p>
+
+*Neuron = w·x + b + Schwelle ◆ drei Punkte trennbar = AND/OR/NAND ◆ vierter Punkt ausserhalb = XOR ◆ eine Gerade reicht nicht.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
+
 > Wir bauen das **erste künstliche Neuron** (Rosenblatt 1958) als Assembler-Programm auf **unserer eigenen 4-Bit-CPU**. In 16 Instruktionen. Und wir sehen empirisch, was Minsky & Papert 1969 mathematisch bewiesen: `AND`, `OR`, `NAND` — kein Problem. `XOR` — geht nicht. Genau dieses Ergebnis stürzte die KI-Forschung in ihren ersten Winter.
 
 ---

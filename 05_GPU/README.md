@@ -1,6 +1,15 @@
-# Meilenstein der Computertechnik 5: Die GPU
+<p align="center">
+  <img src="assets/title.svg" alt="05 · GPU — Parallel-Welt" width="100%"/>
+</p>
 
-> **🎯 Warum ist das cool?**
+<p align="center">
+  <img src="assets/cover.png" alt="Computerwelt-inspirierte Illustration: ein Grid identischer Thread-Zellen mit gleichem Instruktions-Symbol, aber unterschiedlichen Datenfüllungen — daneben eine dicke Warp-Instruktion, die alle gleichzeitig auslöst." width="90%"/>
+</p>
+
+*Grid-Zellen = Threads ◆ gleiches Symbol im Inneren = gleiche Instruktion ◆ unterschiedliche Farbtöne = unterschiedliche Daten ◆ dicke Pfeil = eine Warp-Instruktion für alle.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
+
 > Eine einzelne CPU hat im vorigen Kapitel `04_PerceptronOnCPU` gezeigt, dass
 > ein neuronales Netz *im Prinzip* nur ein sehr kurzes Assembler-Programm
 > ist. Aber schon bei einem MLP mit ein paar tausend Neuronen wird klar:

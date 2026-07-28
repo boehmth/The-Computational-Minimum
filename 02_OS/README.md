@@ -1,6 +1,15 @@
-# Meilenstein der Computertechnik 2: Ein Mini-Betriebssystem
+<p align="center">
+  <img src="assets/title.svg" alt="02 · Betriebssystem — Radio-Aktive Prozesse" width="100%"/>
+</p>
 
-> **🎯 Warum ist das cool?**
+<p align="center">
+  <img src="assets/cover.png" alt="Radio-Aktivität-inspirierte Illustration: zwei Programm-Zonen (Prozess A in Gelb, Prozess B in Schwarz) auf einem gemeinsamen Takt-Band, in der Mitte ein Scheduler-Symbol." width="90%"/>
+</p>
+
+*Programm A + B = zwei Prozesse ◆ Scheduler in der Mitte = Umschalter ◆ Takt-Band unten = gemeinsame Zeitachse ◆ A/B-Marker = wer läuft gerade.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
+
 > Wir bauen auf der 4-Bit-CPU des ersten Meilensteins ein **winziges kooperatives Multitasking-Betriebssystem** — mit **Segment-Register**, **Prozess-Tabelle im RAM** und **Context-Switch** bei jedem `YIELD`. Zwei Programme laufen quasi-gleichzeitig, jedes in seinem eigenen Speicher-Segment, und man kann live zuschauen, wie das OS zwischen ihnen umschaltet. Alles, was ein modernes OS macht — Speicherverwaltung, Scheduling, Prozess-Isolation — ist auf 200 Zeilen Python heruntergebrochen.
 
 ---

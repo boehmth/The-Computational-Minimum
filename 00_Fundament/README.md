@@ -1,4 +1,14 @@
-# 📖 00 Fundament — Zwei Antworten auf eine Krise
+<p align="center">
+  <img src="assets/title.svg" alt="00 · Fundament — Werke gegen Beweise" width="100%"/>
+</p>
+
+<p align="center">
+  <img src="assets/cover.png" alt="Gegenüberstellung zweier symbolischer Diagramme: links ein Turing-Papierband mit abstrakten Symbolen (mathematischer Beweisweg), rechts eine Relais-Matrix mit einigen aktivierten Zellen (ingenieurgetriebener Bauweg)." width="90%"/>
+</p>
+
+*Papierband + Symbole = Turings Beweiswerkzeug ◆ Relais-Matrix + Verdrahtung = Zuses Rechenwerk ◆ beide gleich mächtig ◆ dieses Buch folgt der rechten Seite.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
 
 ## 🎯 Warum dieses Kapitel vor der CPU steht
 
@@ -69,28 +79,74 @@ sie, indem wir sie hier ehrlich einordnen, statt sie zu ignorieren. Aber ab
 `01_CPU` wählt dieses Buch bewusst den Weg des Bauens vor dem Weg des
 Beweisens.
 
-## 😮 Der Wow-Effekt: Gleich mächtig, radikal unterschiedlich gebaut
-
-*[Platzhalter — z. B. Bildgegenüberstellung: originales Z3-Relais vs.
-Turing-Maschinen-Skizze, oder ein kurzer Lauf des unten gebauten
-Turing-Maschinen-Simulators bei einer einfachen Aufgabe (z. B. unäre
-Addition)]*
-
 ## 🧠 Was du baust
 
-Ein minimaler **Turing-Maschinen-Simulator**: ein Band aus ASCII-Zeichen,
-eine Zustandstabelle (Zustand + gelesenes Symbol → neues Symbol, Bewegung,
-Folgezustand), eine einfache Beispielaufgabe (z. B. eine unäre Zahl um 1
-erhöhen). Bewusst klein gehalten — es geht nicht darum, Berechenbarkeits-
-theorie zu vertiefen, sondern einmal *gesehen* zu haben, wie roh und
-mechanisch das Modell ist, das hinter jedem späteren "ist X berechenbar"
-steht.
+Ein minimaler **Turing-Maschinen-Simulator**, der bewusst *nicht* mit
+einem unendlichen Band arbeitet, sondern mit **16 Zellen** — genau der
+Speicher-Grössenordnung der 4-Bit-CPU aus Kapitel 01. Und er rechnet
+**genau die Aufgabe**, die auch in Kapitel 01 als CPU-Programm auftaucht:
+
+$$
+(3 + 4) - 1 = 6
+$$
+
+nur in **unärer Kodierung**: `|||` = 3, `||||` = 4, `|` = 1. Das
+Startband sieht so aus:
+
+```
+Position:   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+Initial:    |  |  |  +  |  |  |  |  -  |  _  _  _  _  _  _
+```
+
+Die Zustandstabelle hat sieben Zustände (`ADD_PLUS`, `SUB_MINUS`,
+`SUB_DEL_LEFT`, `SUB_ERASE_MINUS`, `SUB_DEL_RIGHT`, `SHIFT_HOME`,
+`SHIFT_HOME_MAYBE`) und rund ein Dutzend Übergangsregeln. Der Kopf
+wandert über das Band, schreibt Symbole, wechselt Zustände — und nach
+**22 Schritten** steht auf dem Band:
+
+```
+End:        |  |  |  _  |  |  |  _  _  _  _  _  _  _  _  _
+                        (6 Striche = 6)
+```
+
+Sechs Striche, wie versprochen. Aber der Weg dorthin ist grotesk
+umständlich: für dieselbe Rechnung braucht die CPU aus Kapitel 01
+gerade einmal **8 Instruktionen**, weil sie Zahlen als *binäre
+Bit-Muster in Registern* darstellt, nicht als Striche auf einem Band.
+
+Das ist die eigentliche Pointe dieses Kapitels: **Turings Modell
+funktioniert — es rechnet, was es rechnen soll — aber niemand würde so
+einen Rechner bauen.** Und genau deshalb geht es in Kapitel 01 nicht mit
+mehr Theorie weiter, sondern mit einer Maschine, die man tatsächlich
+bauen könnte.
 
 ## 🚀 Schnelleinstieg
 
 ```bash
-python 00_Fundament/src/turing_machine.py
+# Auto-Modus (0.35 s Pause pro Schritt, ca. 8 s Gesamt-Laufzeit)
+python 01_Computing/00_Fundament/src/program_add_sub.py
+
+# Schrittweise durchklicken (nach jedem Schritt Enter druecken)
+python 01_Computing/00_Fundament/src/program_add_sub.py --step
+
+# Schneller Durchlauf ohne Pause
+python 01_Computing/00_Fundament/src/program_add_sub.py --fast
 ```
+
+Die Ausgabe zeigt für jeden Schritt:
+
+- den aktuellen **Zustand**
+- die **16 Bandzellen** in einer geschlossenen Box, die aktive Zelle
+  farbig hervorgehoben
+- die zuletzt angewendete **Übergangsregel** in der Form
+  `(Zustand, gelesen) → schreibe X, Kopf →, Zustand Y`
+
+Am Ende steht die Auswertung: `Bandinhalt`, Anzahl der Striche, Anzahl
+der Schritte — und das kleine `✓ (3 + 4) - 1 = 6`, das den Beweis
+liefert, dass ein Papierband + Zustandstabelle tatsächlich rechnen kann.
+
+*Voraussetzung: Python 3.8+ und ein UTF-8-fähiges Terminal (Windows
+Terminal, macOS Terminal, Linux Konsole). Keine externen Abhängigkeiten.*
 
 ## 📚 Quellen
 
