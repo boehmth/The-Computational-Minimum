@@ -1,161 +1,243 @@
-# Milestones in Computing
+# The Computational Minimum
 
-**Vom Transistor zum Programm — sechs Meilensteine, die zeigen, wie ein Computer wirklich funktioniert.**
-
-Alles selbst programmiert, ohne Frameworks. Jede Instruktion, jedes Bit, jedes Bus-Signal ist im Code sichtbar. Und weil moderne KI ohne massive Parallelität nicht existieren würde, gehört dazu auch ein Blick unter die Motorhaube der GPU.
+**Ein dreiteiliges Buch, das aus dem Nichts erklärt, wie moderne KI wirklich funktioniert — vom Transistor bis zum agentischen Sprachmodell, alles selbst gebaut, ohne Framework-Magie.**
 
 ---
 
-## 📜 Warum dieser Teil?
+## 📜 Worum es geht
 
-Das mag zunächst erstaunen: In einer Reihe über KI und Sprachmodelle mit *Rechnerarchitektur* beginnen? Aber es ist kein Umweg. Es ist die Grundlage.
+Vor jedem Sprachmodell, das heute in den Nachrichten auftaucht, liegen 80
+Jahre Informatik: eine 4-Bit-CPU, ein Batch-OS, ein Compiler, ein einzelnes
+Neuron, eine Grafikkarte, die eigentlich für Videospiele gebaut wurde, und
+ein Netzwerk, das dafür sorgt, dass 10 000 dieser Karten miteinander reden
+können. Dieses Buch geht diese 80 Jahre in drei Teilen von Anfang bis Ende
+durch — mit einem einzigen Anspruch:
 
-Jedes neuronale Netz läuft auf einem Prozessor. Jeder Prozessor läuft in einem Betriebssystem. Jedes Programm ist durch einen Compiler übersetzt worden. Für ernstzunehmende KI-Modelle reicht eine CPU nicht — es braucht eine **GPU**, deren Weg vom Grafikbeschleuniger zum KI-Rechenwerk selbst zum Grundlagenstoff gehört. Und wenn Modelle über Netzwerke kommunizieren — beim Training auf tausenden GPUs, beim Ausrollen als Cloud-Dienst — ist auch das ein Grundlagen­thema.
+> **Nichts ist Magie. Alles ist gebaut. Und man kann jeden Baustein selbst
+> nachbauen, klein genug, um ihn auf einem Laptop laufen zu lassen.**
 
-Wer nicht versteht, wie diese Schichten (CPU, OS, Compiler, GPU, Netzwerk) funktionieren, wird bei Fragen wie *„Warum ist mein Training so langsam?"* oder *„Warum verhält sich mein Modell auf einer anderen Maschine anders?"* im Dunkeln tappen. Wer sie versteht, hat die Werkzeuge, um solche Fragen zu beantworten.
-
-Und noch wichtiger: dieser erste Teil gehört, anders als die Kapitel in *Machine Intelligence*, zu den **zeitlos gültigen** Grundlagen der Informatik. Die Ideen, die Turing, von Neumann, Backus, Ritchie und Kahn/Cerf hatten, funktionieren heute noch genau wie damals.
-
----
-
-## 🕰️ Historischer Bogen
-
-| Jahr | Ereignis | Kapitel |
-|------|----------|---------|
-| **1945** | Von Neumann — Architektur mit Speicher, ALU, Kontrolleinheit | **1. CPU** |
-| **1947** | Erste Transistoren bei Bell Labs (Bardeen, Brattain, Shockley) | |
-| **1948** | Kilburn / Manchester — erstes speicherprogrammiertes System | |
-| **1955** | GM-NAA I/O — erstes echtes Batch-Betriebssystem | **2. OS** |
-| **1957** | Backus (IBM) — FORTRAN, erster erfolgreicher Compiler | **3. Compiler** |
-| **1958** | McCarthy (MIT) — LISP | |
-| **1959** | Hopper et al. — COBOL, natürlichsprachliche Programmierung | |
-| **1961** | Atlas Supervisor — erstes OS mit virtuellem Speicher | |
-| **1969** | Ritchie & Thompson — Unix | |
-| **1969** | ARPANET | **6. Network** |
-| **1972** | Ritchie — C, „portables Assembler" | |
-| **1974** | Kahn & Cerf — TCP/IP | |
-| **1983** | ARPANET wird zum Internet | |
-| **2001** | GeForce 3 — erste programmierbare Shader | **5. GPU** |
-| **2004** | Buck et al. — BrookGPU (Stanford), Beginn von GPGPU | |
-| **2006** | NVIDIA — CUDA 1.0 | |
-| **2012** | AlexNet auf zwei GTX 580 — die GPU wird zum KI-Rechenwerk | |
-| **2017** | NVIDIA Volta — Tensor Cores, GPU passt sich der KI an | |
-
-**Zwei Beobachtungen aus dieser Tabelle**, die durch die ganze Reihe tragen:
-
-- Vier der fünf klassischen Bausteine — **CPU, OS, Compiler, Netzwerk** — wurden zwischen 1945 und 1974 erfunden, in weniger als 30 Jahren. Die 50 Jahre danach waren im Kern *Skalierung* dieser Ideen, nicht ihre Ablösung. Genau das ist die These, die dieses Buch immer wieder aufgreift.
-- Die einzige *neue* Klasse von Rechen­hardware, die für unser Thema in diesen 50 Jahren dazukam, ist die **GPU** — und auch sie ist im Kern kein Bruch mit dem Von-Neumann-Prinzip, sondern ein bewusster Kompromiss (sehr viele einfache Kerne statt weniger komplexer). Sie entstand aus einem Nebenmarkt (Videospiele) und wurde von Deep Learning erst *nachträglich* gefunden — nicht bestellt.
+Für **Abiturienten, Studienanfänger, Lehrkräfte** und alle, die verstehen
+wollen, was hinter ChatGPT, DeepSeek und Co. wirklich passiert — nicht auf
+der Buzzword-Ebene, sondern auf der Ebene, auf der man selbst programmieren
+kann.
 
 ---
 
-## 🧭 Die sechs Meilensteine
+## 🎯 Die These: Skalierung, gefunden durch Experiment
 
-### [`01_CPU/`](01_CPU/) — Eine 4-Bit-CPU von Hand
+Dem Buch liegt eine These zugrunde, die sich durch alle drei Teile zieht:
 
-**Kern:** Ein simulierter Prozessor mit den fünf Bausteinen jeder Von-Neumann-Maschine — **Programmzähler**, **Register**, **ALU**, **Bus**, **Kontrolleinheit mit Mikrocode-ROM**. Programme sind in einer eigenen Assembler-Sprache mit 16 Opcodes geschrieben. Die Simulation läuft in einem Terminal-UI: man kann live zusehen, wie ein Programm Instruktion für Instruktion ausgeführt wird — welche Bus-Signale gerade aktiv sind, welche Werte in den Registern stehen, welcher Mikrocode-Eintrag gerade den Bus ansteuert.
+> **Skalierung ist die durchgehende Herausforderung der Informatik.
+> Experiment — nicht Theorie — ist die Methode, mit der jede ihrer Grenzen
+> überwunden wurde.**
 
-**Wow-Moment:** Man sieht, wie aus einer einzigen Instruktion `ADD` in Wirklichkeit *drei* parallele Bus-Aktivitäten werden (`ALU_OUT`, `AX_IN`, `ALU_ADD`). Der Trick heißt Mikrocode, und er ist bis heute die Grundlage jeder CPU-Firmware.
+- Eine 4-Bit-CPU ist bereits Turing-vollständig. Jede größere CPU danach ist
+  *Skalierung* derselben Idee.
+- Ein einzelnes Neuron zeigt das Lernprinzip vollständig. Jede tiefere
+  Architektur bis zum Transformer ist im Kern *Skalierung* dieser einen
+  Idee — mit neuen Strukturen genau *dort*, wo die vorherige Skalierung an
+  eine Wand lief.
+- Ein LLM lernt "denken" nicht, weil jemand die Theorie dazu geschrieben
+  hätte, sondern weil DeepSeek 2025 empirisch beobachtete, dass ein
+  bestimmter Trainings­anreiz dieses Verhalten hervorbringt.
 
-### [`02_OS/`](02_OS/) — Ein Mini-Betriebssystem
-
-**Kern:** Zwei verschiedene OS-Modelle auf derselben CPU-Basis:
-
-- **Weg 1** — ein *kooperatives Multitasking-OS* mit **Segment-Register** und **YIELD**-Opcode. Zwei Prozesse laufen quasi-gleichzeitig, jeder in seinem eigenen RAM-Segment, das OS macht Context-Switches bei jedem YIELD. Nachbau von Mac OS Classic / Windows 3.x.
-
-- **Weg 2** — ein *Batch-OS, das selbst ein Assembler-Programm ist* (im 4-Bit-Instruktionssatz der CPU). Es liegt bei `BP=0` im Programmspeicher, wird beim Boot ausgeführt, ruft User-Jobs nacheinander auf und bekommt via `HLT`-Trap die Kontrolle zurück. **10 Instruktionen** OS-Code, mehr braucht es nicht. Nachbau von GM-NAA I/O (1955).
-
-**Wow-Moment:** Bei Weg 2 sieht man, wie ein „böser" User-Job durch einfaches Überschreiben einer RAM-Zelle den Scheduler manipulieren kann — genau die Unsicherheit, die zur Erfindung von MMUs und Speicherschutz führte.
-
-### [`03_Compiler/`](03_Compiler/) — Vier Sprachen, ein Assembler
-
-**Kern:** Vier Frontends (COBOL, FORTRAN, C, LISP), jedes mit eigener Grammatik und Boilerplate — von 5 Zeilen LISP bis 18 Zeilen COBOL. Alle produzieren denselben internen **AST** (Abstract Syntax Tree), aus dem ein gemeinsamer Codegenerator identischen Assembler-Code für die CPU aus Kapitel 1 erzeugt. Der Assembler läuft dann auf dem Simulator, und das Ergebnis-Register OUT enthält am Ende die berechnete Zahl.
-
-**Wow-Moment:** Die Rechnung `(3 + 4) - 1 = 6` — in vier Sprachen geschrieben, kompiliert zu bit-identischen 13 Assembler-Instruktionen (nur COBOL braucht 2 mehr, weil `ADD ... GIVING` das Zwischenergebnis nach RAM zwingt). Die Botschaft: **Sprache ist reine Ergonomie. Die Maschine sieht immer nur die 16 Opcodes.**
-
-### [`04_PerceptronOnCPU/`](04_PerceptronOnCPU/) — Das erste Perceptron als Assembler-Programm
-
-**Kern:** Rosenblatts Perceptron (1958) — ein einzelnes künstliches Neuron mit zwei Eingängen — in **16 Instruktionen** auf unserer 4-Bit-CPU. Wir erweitern die CPU um zwei neue Opcodes (`MUL` für die Gewichtungen, `JN` für „Jump if Negative" beim Schwellwert-Vergleich). Das Programm klassifiziert AND, OR, NAND perfekt. Beim vierten Test — XOR — findet auch eine erschöpfende Brute-Force-Suche über 512 Gewichts-Kombinationen keinen Satz, der alle 4 Fälle richtig klassifiziert.
-
-**Wow-Moment:** Der Vergleich der drei Tabellen (AND/OR/NAND jeweils 4/4, XOR maximal 3/4) — und damit das empirische Wiedersehen von Minsky/Papert 1969. Der erste KI-Winter beginnt genau hier, an dieser einen 16-Instruktions-Grenze.
-
-Dieses Kapitel ist die **Brücke zu Teil 2**: es zeigt, dass ein neuronales Netz aus Sicht der CPU nur ein sehr kurzes Programm ist. GPT ist Milliarden mal komplexer, aber die Grundoperation `w·x + b` läuft genau so. Aber es zeigt auch die Grenze: schon ein MLP auf MNIST würde diese CPU Tage rechnen lassen. Was fehlt, ist massive Parallelität — und die kam historisch aus einer ganz anderen Richtung: der Grafikkarte.
-
-### [`05_GPU/`](05_GPU/) — Vom Grafikbeschleuniger zum KI-Rechenwerk
-
-**Kern:** Die Geschichte, wie eine für Videospiele gebaute Hardware zum wichtigsten Bauteil moderner KI wurde. Wir gehen den Weg **Fixed-Function-Grafik (1996) → programmierbare Shader (2001) → GPGPU-Forschung / BrookGPU (2004) → CUDA (2006) → AlexNet auf zwei GTX 580 (2012)** durch und zeigen an einem eigenen kleinen **SIMT-Simulator** in Python, warum eine GPU für Matrix-Multiplikation um Größenordnungen schneller ist als eine CPU — obwohl beide Turing-vollständig sind und im Kern dasselbe rechnen.
-
-**Wow-Moment:** Der Sprung *„Pixel-Shader → Matrix-Kernel → MLP-Layer"* ist begrifflich winzig — dieselbe Struktur „viele Threads, dasselbe Programm, verschiedene Daten". Deep Learning hat die GPU **nicht bestellt, sondern gefunden**: die Hardware war schon da, aus Gründen des Spielemarktes. Der zweite KI-Winter endete zu einem Gutteil deshalb, weil zufällig eine passende Rechen-Hardware für ~1000 $ verfügbar geworden war.
-
-Dieses Kapitel ist die **zweite Brücke zu Teil 2 und 3**: es erklärt, warum Backpropagation (1986) für die eigentliche Deep-Learning-Welle **26 Jahre** warten musste, und warum jedes GPT auf tausenden GPUs trainiert wird.
-
-### [`06_Networks/`](06_Networks/) — Das Netzwerk: ALOHA
-
-**Kern:** Wir bauen den ALOHA-Simulator (Norman Abramson, Hawaii 1970) — das erste funktionierende Paket-Random-Access-Protokoll und Ur-Ahn von Ethernet und WLAN. Ein Kanal, viele Sender, keine Absprache: „sende, wenn du willst; bei Kollision zufällig warten und erneut senden". In `src/aloha.py` steckt die vollständige Simulation für Pure ALOHA und Slotted ALOHA, mitsamt geschlossenen Theoriekurven $S = G e^{-2G}$ bzw. $S = G e^{-G}$.
-
-**Wow-Moment:** Der **Kollaps-Effekt**. Für kleines $G$ steigt der Durchsatz. Bei $G=0{,}5$ (Pure) bzw. $G=1{,}0$ (Slotted) erreicht er sein Maximum — **18,4 %** bzw. **36,8 %**. Danach *sinkt* er wieder. Ein Kanal, der zu 100 % gefüllt wird, liefert weniger als einer, der zu 37 % gefüllt wird. Das ist genau die Kollisions-Rückkopplung, die auch bei TCP-Congestion oder Web-Servern unter Last auftritt — beobachtbar in einem 200-Zeilen-Python-Skript.
-
-**Bogen zu Teil 2:** Hier endet die klassische *Wie-funktioniert-ein-Computer*-Frage. Wir können Rechner bauen, Programme kompilieren, Aufgaben parallelisieren und Bytes übertragen — aber kein einziges der übertragenen Bytes „weiß", ob es eine Frage, eine Antwort oder ein Wörterbucheintrag ist. Um Text zu *verstehen* statt nur zu *übertragen*, brauchen wir eine ganz andere Klasse von Programmen: Programme, die *trainiert* werden statt *ausgeführt*. Damit beginnt Teil 2.
+Jede dieser Skalierungsgrenzen wurde nicht am Reißbrett bewiesen, sondern
+durch Ausprobieren gefunden. Kapitel `01_Computing/00_Fundament` benennt
+dieses Prinzip zu Beginn ausdrücklich, indem es die *ingenieur­getriebene*
+Tradition (Zuse, Z3 1941) und die *theoretisch-mathematische* Tradition
+(Turing, Church 1936) nebeneinanderstellt — und offenlegt, dass dieses
+Buch bewusst der ersten folgt.
 
 ---
 
-## 🧭 Der rote Faden
+## 📚 Die drei Teile
 
-Jedes Kapitel behebt eine Grenze des vorherigen:
+### [`01_Computing/`](01_Computing/) — Wie ein Computer wirklich funktioniert
 
-> **CPU allein**: Ein Programm läuft, aber wie kommen mehrere Programme auf denselben Rechner? → **OS**  
-> **OS + CPU**: Programme laufen, aber wie schreibt man sie in einer Sprache, die einen Menschen nicht verrückt macht? → **Compiler**  
-> **Compiler + OS + CPU**: Ein einzelnes Perceptron passt in 16 Instruktionen — aber ein MLP nicht mehr in vertretbare Zeit → **GPU**  
-> **CPU + GPU**: Eine Maschine reicht, um ein kleines Netz zu trainieren, aber nicht ein GPT-3 mit 175 Milliarden Parametern → **Netzwerk**
+Sechs Meilensteine, die klassische *„Was steckt drin?"*-Frage, alle in
+reinem Python selbst gebaut:
 
-Am Ende dieses Teils hast du **die sechs zeitlosen Bausteine moderner Rechen­technik** einmal selbst gebaut — von der 4-Bit-CPU bis zum SIMT-Modell heutiger KI-Beschleuniger. Damit kannst du dann fundiert nach `02_MachineIntelligence/` wechseln, in dem wir aus diesem Fundament heraus lernende Maschinen bauen.
+| Nr. | Kapitel | Was gebaut wird |
+|-----|---------|-----------------|
+| 0 | `00_Fundament` | Standortbestimmung: Turing vs. Zuse, warum dieses Buch dem Zuse-Weg folgt — mit einem winzigen Turing-Maschinen-Simulator |
+| 1 | `01_CPU` | Eine simulierte 4-Bit-CPU mit Bus, ALU, Mikrocode-ROM — Live-Ansicht im Terminal |
+| 2 | `02_OS` | Zwei Mini-Betriebssysteme: kooperatives Multitasking (YIELD) und ein Batch-OS, das selbst nur 10 Assembler-Instruktionen ist |
+| 3 | `03_Compiler` | Vier Sprachen (COBOL, FORTRAN, C, LISP) → *ein* AST → *ein* Assembler → derselbe 4-Bit-CPU-Code |
+| 4 | `04_PerceptronOnCPU` | Rosenblatts Perceptron als 16-Instruktionen-Programm auf der 4-Bit-CPU — löst AND/OR/NAND, scheitert an XOR (KI-Winter live) |
+| 5 | `05_GPU` | Vom Grafikbeschleuniger zum KI-Rechenwerk: Shader → BrookGPU → CUDA → AlexNet, mit einem SIMT-Simulator in Python |
+| 6 | `06_Network` *(geplant)* | Zwei Rechner reden miteinander: Frames, Header, Checksum, Retransmission — „ein API-Call an ChatGPT ist 1970er-Technik" |
+
+**Roter Faden:** Jedes Kapitel behebt eine Grenze des vorherigen —
+Assembler ist schmerzhaft → Compiler; ein Rechner ist eine Insel →
+Netzwerk; ein Perceptron auf CPU skaliert nicht auf ein MLP → GPU; eine
+GPU reicht nicht für GPT-3 → Netzwerk. Fünf der sechs Bausteine wurden
+zwischen 1945 und 1974 erfunden — der einzige *wirklich* neue in 80 Jahren
+ist die GPU als KI-Hardware, und selbst sie ist im Kern kein Bruch mit
+Von Neumann, sondern eine besondere Skalierungsrichtung.
+
+### [`02_MachineIntelligence/`](02_MachineIntelligence/) — 60 Jahre neuronale Netze
+
+Acht Meilensteine vom ersten Neuron zum eigenen kleinen GPT — jeder in
+reinem NumPy (oder Python), jeder als Antwort auf ein konkretes Scheitern
+des Vorgängers:
+
+| Nr. | Kapitel | Was gebaut wird |
+|-----|---------|-----------------|
+| 1 | `01_Perceptron` | Rosenblatt 1958 — ein Neuron lernt eine Gerade |
+| 2 | `02_MLP` | Rumelhart 1986 — Hidden Layer, Backpropagation von Hand |
+| 3 | `03_CNN` | LeCun 1998 — Faltung, Weight Sharing, MNIST lesen |
+| 4 | `04_Word2Vec` | Mikolov 2013 — `könig − mann + frau ≈ königin` |
+| 5 | `05_RNN` | Elman 1990 / Mikolov 2010 — Sequenzen und Gedächtnis |
+| 6 | `06_Seq2Seq` | Bahdanau 2015 — Encoder/Decoder mit Attention |
+| 7 | `07_Transformer` | Vaswani 2017 — Self-Attention, parallel |
+| 8 | `08_MiniGPT` | Radford 2018 — ein autoregressives Sprachmodell, das ein eigenes kleines Grimm-Märchen schreibt |
+
+**Ab Meilenstein 4** begleiten uns die **Grimmschen Märchen** als roter
+Faden — Wow-Moment bei Word2Vec, dann Textgenerierung bei RNN und GPT.
+
+**Bemerkenswerte Symmetrie:** Vom Perceptron (1958) bis zu GPT-1 (2018)
+liegen genau 60 Jahre — dieselbe Zeitspanne wie vom Elektron (1897) zum
+Transistor (1947). In beiden Fällen folgte auf die lange Grundlagenphase
+eine kurze, explosive Anwendungsphase. Diese ist Gegenstand von Teil 3.
+
+### [`03_AgenticSystems/`](03_AgenticSystems/) — Anwenden und Skalieren
+
+Der zehn-Jahres-Sprint 2018 → heute. Hier folgen die Kapitel nicht mehr
+einer Chronologie einzelner Modell-Erfindungen, sondern einer *Kette
+neuer Skalierungsachsen und Trainings-Sprünge*, die in den 2020er Jahren
+entdeckt wurden:
+
+| Nr. | Kapitel | Kernidee |
+|-----|---------|----------|
+| 1 | `01_TinyGPT` | Reines Sprachmodell (GPT-1/GPT-3-Linie) — Scaling Laws (Kaplan 2020, Chinchilla 2022): mehr Parameter, mehr Daten, mehr Compute |
+| 2 | `02_TinyInstruct` | Instruktions-Feinjustierung durch maskierten Loss (FLAN, T0, Alpaca, LIMA) — der Moment, in dem aus dem Text-Vervollständiger ein Instruction-Follower wird |
+| 3 | `03_TinyChat` | Präferenz-Ausrichtung (RLHF → DPO) — aus dem Instruction-Follower wird ein konsistenter Chat-Assistent |
+| 4 | `04_TinyMoE` | Mixture of Experts — zweite Skalierungsachse: Kapazität wächst, Kosten pro Token bleiben |
+| 5 | `05_TinyReason` | Trainiertes Reasoning à la DeepSeek-R1 — dritte Achse: mehr Compute *zur Antwortzeit* statt beim Training |
+
+**Vorwort und Klammer:** `03_AgenticSystems/PREFACE.md` zeichnet nach, wie
+sich Skalierung in diesem Teil von einem Merkmal einzelner Kapitel zur
+*Betriebsweise des gesamten Feldes* wandelt — mit DeepSeek-R1-Zero als
+radikalstem Beleg dafür, dass sogar Reasoning experimentell *entdeckt*,
+nicht theoretisch *konstruiert* wurde.
+
+---
+
+## 🕰️ Der historische Bogen in einer Zeile
+
+```
+1936 ─── 1945 ─── 1958 ─── 1971 ─── 1986 ─── 2001 ─── 2012 ─── 2017 ─── 2020 ─── 2025
+Turing   EDVAC    Perc.    4004     Backpr.  Shader   AlexNet  Transf.  GPT-3    R1
+ └─────────────── Teil 1 ─────────────────┘ └────── Teil 2 ──────┘ └── Teil 3 ──┘
+```
+
+Fast alle in Teil 1 gezeigten Bausteine (CPU, OS, Compiler, Netzwerk)
+entstanden in den drei Jahrzehnten von 1945 bis 1974. Die einzige *neue*
+Rechen-Klasse in den 80 Jahren danach ist die GPU als KI-Hardware. Und
+selbst diese Ausnahme bestätigt die These: sie war nicht *für* KI gebaut,
+sondern wurde von der KI *gefunden*.
 
 ---
 
 ## 🚀 Schnelleinstieg
 
 ```bash
-cd 01_Computing
+git clone <dieses-Repo>
+cd The-Computational-Minimum
 
-# Kapitel 1: CPU-Simulator (Live-UI)
-python 01_CPU/src/main.py
+# Teil 1: 4-Bit-CPU-Simulator (Live-UI im Terminal)
+python 01_Computing/01_CPU/src/main.py
 
-# Kapitel 2, Weg 1: Kooperatives Multitasking mit YIELD
-python 02_OS/src/os_sim.py
+# Teil 2: Ein Neuron lernt aus 2D-Punkten
+cd 02_MachineIntelligence/01_Perceptron/src
+python perceptron.py
 
-# Kapitel 2, Weg 2: Batch-OS, das selbst ein Assembler-Programm ist
-python 02_OS/src/os_batch.py
-
-# Kapitel 3: Compiler-Test — vier Sprachen, ein Assembler
-python 03_Compiler/test_compiler.py
-
-# Einzelnes Beispiel kompilieren:
-cd 03_Compiler
-python -m src.compile examples/arith.c --run
+# Teil 2: Der Höhepunkt — ein Mini-GPT schreibt sein eigenes Grimm-Märchen
+cd ../../08_MiniGPT/src
+python train.py  # (sobald Kap. 8 fertig ist)
 ```
 
-Alle Programme laufen mit **Python 3.7+** ohne externe Abhängigkeiten. Für die Terminal-UI benötigt man ein ANSI-fähiges Terminal (Windows Terminal, iTerm, Linux-Konsole).
+Alle Programme laufen mit **Python 3.7+**. Ab Teil 2, Meilenstein 3 wird
+**NumPy** gebraucht (plus `scikit-learn` für den MNIST-Loader). Für Teil 3
+werden kleine Open-Source-Modelle wie Llama, Mistral oder Phi lokal
+geladen — was nötig ist, wird im jeweiligen Kapitel dokumentiert.
 
 ---
 
-## 🧠 Was dieser Teil bewusst nicht zeigt
+## 🛠️ Grundregeln der Reihe
 
-- **Digitale Logik unterhalb der CPU** — wir setzen bei der Ebene „Bus, Register, ALU" ein, nicht bei Transistoren, Gattern, Flipflops. Das wäre ein eigener Meilenstein wert (z.B. ein NAND-Gate-Simulator, aus dem sich alles andere aufbauen lässt), aber er würde den Rahmen sprengen.
-- **Moderne CPU-Techniken** — Pipelining, Out-of-Order-Execution, Cache-Hierarchien, Branch Prediction, Vector-Instruktionen, Multicore. Alles wichtig, alles gehört auf eine reale CPU, aber didaktisch würde es die Ideen unter Details begraben.
-- **Vollständige Sprachen** — der Compiler in Kapitel 3 unterstützt nur einen winzigen Ausschnitt jeder Sprache. Er zeigt das *Prinzip*, nicht die Realität eines GCC oder LLVM.
-- **Echtes CUDA / echte GPU-Ausführung** — Kapitel 5 simuliert das SIMT-Modell in Python. Die Threads laufen softwareseitig nacheinander, wir zählen aber die *Schritte*, als liefen sie parallel. Auf einer echten NVIDIA-GPU wären es Millisekunden statt Sekunden — die *Ideen* (Kernel, Threads, Warp Divergence, Speicherbandbreite) sind aber identisch.
+Diese drei Regeln gelten für Teil 1 und 2 strikt, für Teil 3 mit einer
+klaren Ausnahme:
 
-Wenn du diese Beschränkungen für zu eng hältst, ist das genau der Punkt, an dem du bereit bist, dich mit den originalen Standards zu befassen — was dann viel einfacher fällt, wenn die Grundstruktur schon steht.
+1. **Alles selbst gebaut.** Kein PyTorch, kein TensorFlow, keine
+   fertigen Layer. Jede Multiplikation, jeder Bus-Zyklus, jeder Gradient
+   ist im Code sichtbar. Ab Meilenstein 3 in Teil 2 ist **NumPy** erlaubt,
+   weil reines Python bei größeren Datensätzen zu langsam wird — die
+   Logik bleibt trotzdem von Hand geschrieben.
+2. **Klein genug für einen Laptop.** Keine Cloud-GPU nötig. Wo das nicht
+   mehr geht (Teil 3), machen wir die Ideen an *kleinen* Open-Source-
+   Modellen sichtbar, statt eigene Millionen-Euro-Trainings zu simulieren.
+3. **Jeder Schritt hat eine ehrliche Grenze.** Am Ende jedes Kapitels
+   steht, was das gebaute Modell *nicht* kann — und genau das ist die
+   Motivation für das nächste Kapitel.
 
 ---
 
-## 📚 Referenzen
+## 🎯 Zielgruppe
 
-- Petzold, C. (2000). *Code: The Hidden Language of Computer Hardware and Software*. Microsoft Press. Der Klassiker: vom Morsezeichen zum Computer, ganz ohne Vorwissen.
-- Nisan, S., & Schocken, S. (2008). *The Elements of Computing Systems* — auch bekannt als „nand2tetris". Vom NAND-Gatter über CPU und Compiler bis zum Betriebssystem, alles selbst gebaut. Direkte Inspiration für diesen Teil.
-- Patterson, D., & Hennessy, J. (2020). *Computer Organization and Design* (6th ed.). Der Standard-Lehrtext zur Rechnerarchitektur.
-- Silberschatz, A., Galvin, P., & Gagne, G. (2018). *Operating System Concepts* (10th ed.). Standard-Referenz für OS.
-- Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D. (2007). *Compilers: Principles, Techniques, and Tools* (2nd ed.). Der „Dragon Book".
-- Kurose, J., & Ross, K. (2020). *Computer Networking: A Top-Down Approach* (8th ed.). Standard-Text für Netzwerke.
-- Tanenbaum, A. S. (2015). *Modern Operating Systems* (4th ed.). Pearson.
-- Buck, I., et al. (2004). *Brook for GPUs: Stream Computing on Graphics Hardware*. ACM SIGGRAPH. Das Paper, das die GPGPU-Ära einläutet.
-- Nickolls, J., Buck, I., Garland, M., & Skadron, K. (2008). *Scalable Parallel Programming with CUDA*. ACM Queue, 6(2). Die kanonische Einführung in CUDA.
+- **Schüler der Oberstufe** mit Mathematik auf Oberstufen­niveau und
+  grundlegenden Python-Kenntnissen.
+- **Studienanfänger** in Informatik, Elektrotechnik, Data Science.
+- **Lehrkräfte**, die einen roten Faden für einen Wahlpflichtkurs, eine
+  AG oder ein Seminar suchen.
+- **Alle Neugierigen**, die verstehen möchten, wie ein Sprachmodell
+  wirklich tickt — statt sich mit Buzzwords zufrieden zu geben.
+
+Vorwissen, das *nicht* nötig ist: fortgeschrittene Mathematik,
+Elektrotechnik, Frameworks, Cloud-Konten. Alles Wichtige wird an dem
+Punkt erklärt, an dem es das erste Mal auftaucht.
+
+---
+
+## 🧭 Wie man das Buch liest
+
+Zwei sinnvolle Wege:
+
+**Weg A — von vorne nach hinten.** Der volle Bogen: erst verstehen, wie
+ein Computer funktioniert, dann wie neuronale Netze funktionieren, dann
+wie moderne KI-Systeme gebaut werden. Am belastbarsten, wenn man das
+Fundament wirklich verinnerlichen will.
+
+**Weg B — vom Interesse her.** Wer schon programmieren kann und in erster
+Linie KI verstehen will, kann direkt mit Teil 2 anfangen und Teil 1 als
+Nachschlagewerk verwenden. Der `00_Fundament`-Text und die Perceptron-auf-
+CPU-Passage (Kap. 4 in Teil 1) lohnen sich aber auch dann — sie erklären,
+*warum* die Reihe aussieht, wie sie aussieht.
+
+Innerhalb jedes Teils sollte man streng der Reihenfolge folgen: jedes
+Kapitel setzt das vorherige voraus, und die Übungen am Kapitelende sind
+der wichtigste Lernteil.
+
+---
+
+## 📚 Status
+
+- ✅ **Teil 1**: Kapitel 0–4 fertig; Kap. 5 (GPU) mit README fertig, Code
+  in Arbeit; Kap. 6 (Netzwerk) geplant.
+- ✅ **Teil 2**: Kapitel 1–6 fertig; Kap. 7 (Transformer) Phase 1 fertig
+  (Forward + Multi-Head-Heatmaps), Phase 2 (Backward + Training) in
+  Arbeit; Kap. 8 (Mini-GPT) geplant.
+- 🚧 **Teil 3**: Vorwort und Kapitelgrundstruktur stehen; Implementierung
+  in Vorbereitung.
+
+Die jeweiligen `ROADMAP.md`-Dateien in den drei Teilen halten den
+detaillierten Stand fest.
+
+---
+
+## 📜 Lizenz und Beiträge
+
+Frei für den Bildungs­gebrauch. Beiträge, Übersetzungen und Ergänzungen
+sind willkommen — bitte den Stil und die Grundregeln der Reihe
+beibehalten (kein Framework-Zauber, jede Komponente selbst nachbaubar,
+ehrliche Grenzen).
