@@ -1,6 +1,15 @@
-# Meilenstein der Computertechnik 1: Die 4-Bit-CPU
+<p align="center">
+  <img src="assets/title.svg" alt="01 · CPU — Autobahn der Bits" width="100%"/>
+</p>
 
-> **🎯 Warum ist das cool?**
+<p align="center">
+  <img src="assets/cover.png" alt="Autobahn-inspirierte Illustration: der CPU-Bus als breite Straße, Register/ALU/PC als Blöcke daran angeschlossen, Instruktionen als Chevron-Pfeile in einer Kolonne." width="90%"/>
+</p>
+
+*Bus = Autobahn ◆ Register/ALU/PC = Anschlussblöcke ◆ Instruktionen = Fahrzeuge in Kolonne ◆ Takt = Kilometersteine.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
+
 > Eine funktionierende **Rechenmaschine mit 4-Bit-Registern, ALU, RAM, Program Counter, Instruction Register und mikrocode­gesteuerter Control Unit** — alles in einer einzigen, kommentiert-lesbaren Python-Datei. Und darunter eine **radikal minimale Variante**: nur *ein* Register (ACC), eine ALU mit *zwei* Operationen (INC + NOT), und trotzdem **Turing-vollständig**. Alles, was du an einem echten Prozessor je gesehen hast — Pipeline, Cache, Multicore, GPU — ist nur *Skalierung* dieser einen Idee.
 
 ---
