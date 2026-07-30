@@ -207,6 +207,16 @@
   background: #2A3A6E !important;
 }
 
+/* Helleres Blau für Header & Tabs */
+.md-header {
+  background: #3A4A7A !important;
+  color: #000 !important;
+}
+
+.md-tabs {
+  background: #3A4A7A !important;
+}
+
 .md-tabs__item--active .md-tabs__link,
 .md-tabs__link--active {
   color: var(--tcm-yellow);
