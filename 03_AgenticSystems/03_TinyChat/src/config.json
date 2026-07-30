@@ -1,0 +1,28 @@
+{
+  "test": {
+    "SFT_MODEL_CKPT": null,
+    "N_PREFERENCE_SAMPLES": 200,
+    "BLOCK_SIZE": 256,
+    "BATCH_SIZE": 2,
+    "EPOCHS": 1,
+    "LEARNING_RATE": 5e-5,
+    "DPO_BETA": 0.1,
+    "EMBED_DIM": 128,
+    "HEADS": 4,
+    "LAYERS": 4,
+    "COMMENT": "Rauchtest. DPO_BETA regelt die 'Stärke' der Bevorzugung: hoch = starkes Bevorzugen der chosen-Antwort, niedrig = eher weiches Nudging."
+  },
+  "laptop": {
+    "SFT_MODEL_CKPT": null,
+    "N_PREFERENCE_SAMPLES": 2000,
+    "BLOCK_SIZE": 384,
+    "BATCH_SIZE": 4,
+    "EPOCHS": 3,
+    "LEARNING_RATE": 5e-5,
+    "DPO_BETA": 0.1,
+    "EMBED_DIM": 192,
+    "HEADS": 6,
+    "LAYERS": 6,
+    "COMMENT": "Standard-Laptop-Setup. Modell-Geometrie kompatibel mit TinyInstruct 'laptop'-Profil, damit der SFT-Checkpoint als Startpunkt und Anker dient."
+  }
+}

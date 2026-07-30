@@ -40,9 +40,11 @@ Repräsentationen sind seit jeher Kernthemen des Information Retrieval —
 eine Linie, die sich bis in heutige RAG-Systeme fortsetzt, wo IR als
 Retrieval-Komponente wörtlich wieder auftaucht.
 
-Erst der nächste Meilenstein dieses Kapitels (3.2, Instruktions- und
-Dialogfähigkeit durch Masking) verwandelt dieses Prinzip in das, was wir
-heute unter einem "Chatbot" verstehen.
+Erst der nächste Meilenstein (3.2, TinyInstruct — Instruktions-
+Feinjustierung durch maskierten Loss) verwandelt dieses Prinzip in einen
+Instruction-Follower; die dann in 3.3 (TinyChat) folgende Präferenz-
+Ausrichtung ist die zweite Schicht, die aus einem Instruction-Follower
+einen konsistenten Assistenten macht.
 
 ## 😮 Der Wow-Effekt: Was ein reines Sprachmodell kann — und was nicht
 

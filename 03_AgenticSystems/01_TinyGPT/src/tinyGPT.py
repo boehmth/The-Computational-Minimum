@@ -142,6 +142,12 @@ def main():
         default=DEFAULT_CONFIG_PATH,
         help="Pfad zur config.json (Default: config.json neben diesem Skript)"
     )
+    parser.add_argument(
+        "--output-dir",
+        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "checkpoints"),
+        help="Zielordner fuer den Base-Modell-Checkpoint. Kapitel 3.2 (TinyInstruct) "
+             "und 3.3 (TinyChat) erwarten den dortigen State-Dict als BASE_MODEL_CKPT."
+    )
     args = parser.parse_args()
 
     cfg = load_config(args.profile, args.config)
@@ -238,6 +244,23 @@ def main():
             scaler.update()
 
             loop.set_postfix(loss=loss.item())
+
+    # ---- Checkpoint speichern ------------------------------------------
+    # Wir speichern den State-Dict in einem Format, das Kapitel 3.2
+    # (`02_TinyInstruct/src/model.py`, Funktion `build_model`) direkt laden
+    # kann: entweder als reines state_dict oder mit dem Schluessel
+    # "model_state_dict" - beides wird akzeptiert. Wir waehlen die dict-
+    # Variante, damit spaeter auch Trainings-Metadaten mit hinein passen.
+    os.makedirs(args.output_dir, exist_ok=True)
+    ckpt_path = os.path.join(args.output_dir, "tinygpt_base.pt")
+    torch.save({
+        "model_state_dict": model.state_dict(),
+        "config": cfg,
+    }, ckpt_path)
+    print(f"\nBase-Modell gespeichert unter {ckpt_path}")
+    print("  -> In Kapitel 3.2 (TinyInstruct) und 3.5 (TinyReason) diesen "
+          "Pfad als BASE_MODEL_CKPT bzw. SFT_MODEL_CKPT in der config.json "
+          "eintragen.")
 
     print("\nSample generation:")
     print(generate_text(model, tokenizer, "and so she went on", device))

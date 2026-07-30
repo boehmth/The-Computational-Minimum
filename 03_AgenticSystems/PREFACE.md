@@ -18,13 +18,27 @@ Forschungskultur, die konsequent experimentiert, bevor sie erklärt:
   plötzlich, Aufgaben zu lösen, für die sie nie explizit trainiert wurden.
   Bis heute gibt es keine geschlossene Theorie, die vorhersagt, *wann* das
   passiert — man beobachtet es, Modell für Modell.
-- **Mixture of Experts** (Kapitel 3.3) — dass sich spärlich aktivierte
+- **Instruction-Tuning durch maskierten Loss** (Kapitel 3.2) — dass ein
+  Sprachmodell zum *Instruction-Follower* wird, wenn man nur die Antwort
+  in den Loss aufnimmt und die Frage maskiert, ist eine Beobachtung, die
+  bei FLAN und T0 zunächst mit erheblicher Skepsis aufgenommen wurde. Erst
+  die Wirkung — Zero-Shot-Generalisierung auf ungesehene Aufgabenfamilien
+  — brachte den Durchbruch, nicht eine Theorie darüber, *warum* Maskierung
+  reicht.
+- **Direct Preference Optimization** (Kapitel 3.3) — dass die
+  komplizierte RLHF-Pipeline (Reward-Modell + PPO + KL-Constraint) sich
+  als *einfacher Klassifikations-Loss auf Präferenzpaaren* schreiben
+  lässt, wurde erst 2023 in aller Deutlichkeit gezeigt, obwohl die
+  mathematischen Zutaten seit Jahren dalagen. Ein Beispiel dafür, dass
+  Vereinfachungen oft *nach* der komplizierten Version kommen, nicht
+  vorher.
+- **Mixture of Experts** (Kapitel 3.4) — dass sich spärlich aktivierte
   Experten von selbst sinnvoll spezialisieren, wenn man nur die
   Trainingsanreize richtig setzt, ist ein Befund aus der Praxis, keine
   vorab bewiesene Eigenschaft.
 
 Den bisher radikalsten Beleg dieser Kultur liefert dieser Teil in Kapitel
-3.4, **TinyReason**: Bei DeepSeek-R1-Zero wurde Reasoning-Verhalten nicht
+3.5, **TinyReason**: Bei DeepSeek-R1-Zero wurde Reasoning-Verhalten nicht
 konstruiert, sondern **entdeckt** — als Nebenprodukt eines simplen,
 ergebnisbasierten Trainingsanreizes, den niemand mit dieser Konsequenz
 vorhergesagt hatte. Von Zuses Blechstreifen 1941 bis zu selbstentdecktem
