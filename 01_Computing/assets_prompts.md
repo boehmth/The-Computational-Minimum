@@ -36,6 +36,99 @@ jedem Prompt unten explizit genannt.
 
 ---
 
+## 📖 Teil 1 (Haupt-Cover) — Computing: „Von 4 Bits zu 4 Milliarden"
+
+**Rolle im Buch:** Meta-Cover für `01_Computing/README.md`. Es soll
+*keins* der Kapitel-Motive wiederholen, sondern die **Kern-Erzählung
+des ganzen Teils** ins Bild bringen: der ganze Bogen von der 4-Bit-CPU
+zu den GPU-Clustern von heute ist eine einzige *Skalierungs-Geschichte*.
+
+**Bild-Kern:** eine horizontale Skala — links steht ein winziger Block
+(4 Zellen, die 4-Bit-CPU als Ausgangspunkt), rechts ein grosses
+dichtes Grid (repraesentativ für die ~10⁴ Threads einer heutigen GPU).
+Dazwischen 4 bis 5 zunehmend grössere Zwischenstufen: OS-Bloecke,
+Compiler-Bahn, Perceptron-Kreis, GPU-Warp-Block, Netzwerk-Punkt. Sie
+markieren die Kapitel, sind aber deutlich abstrakter als die
+Unterkapitel-Motive: es sind Grössen-Marker, keine ausführlichen
+Illustrationen.
+
+**Palette (`main_computing`) — Synthese aus allen sechs Kapiteln:**
+- Hintergrund: `#F0EBE1` Papier (Mittelwert der Kapitel-Hintergründe)
+- Struktur:    `#1E2438` tiefes Blau-Grau-Anthrazit (universelles Neutral)
+- Signal:      `#C62828` durchgängiges Rot (dieselbe Farbe wie in 03, 06)
+- Kontrast:    `#F0BE28` Warngelb (Akzent aus 02, sehr sparsam)
+
+**Prompt:**
+
+```
+A minimalist, geometric poster illustration for the main opening of
+Part 1 of a computer science book — a chapter that surveys computing
+from a 4-bit CPU to modern GPU clusters. Aesthetic: 1970s European
+electronic-music album, extreme reduction, flat colours, technical
+diagram feel.
+
+Composition: a wide horizontal band across the middle of the image
+containing seven abstract building blocks, arranged left to right in
+increasing size and complexity. Between each block, a thin connecting
+line indicating "progression".
+
+From left to right (each element is a simple flat geometric shape,
+no illustrated content inside):
+1. A tiny 4-cell grid (2x2 squares) — the smallest, plainest.
+2. A 2x2 grid with a small dividing line — slightly larger, hints at
+   "two programs, one machine".
+3. Four small horizontal rectangles converging into a single point —
+   hints at "four languages, one destination".
+4. A single small circle with two thin input lines and a threshold
+   marker — a neuron silhouette.
+5. A medium-sized grid of 4x8 identical small squares — many threads.
+6. A larger dense grid of 8x16 tiny squares — even more threads.
+7. A network of small dots connected by thin lines, forming a small
+   web on the right edge — the network of machines.
+
+The rightmost element (the network web) is drawn in the *signal* red,
+all other elements in *structure* blue-grey. A single small yellow
+accent dot appears on element 2 or 3 (the warning yellow of the OS
+chapter, hinting at "one thing can go wrong").
+
+Above the whole horizontal band, a very thin horizontal ruler line
+with 6 tick marks below labelling the six chapters — but WITHOUT
+any text: the tick marks are just short vertical lines.
+
+Below the horizontal band, another thin horizontal line runs across
+the full width. It has a subtle "scale" quality: a few notches on the
+left are close together, notches on the right are wider apart, hinting
+at exponential growth.
+
+Style: 1970s European electronic-music album cover aesthetic. Flat
+colour, no gradients, no shading, no photorealism. Extremely reduced,
+like a printed technical schematic.
+
+Palette (STRICT — use only these four flat colors):
+- background:  #F0EBE1 (warm off-white paper)
+- structure:   #1E2438 (deep blue-grey anthracite) — most elements
+- signal:      #C62828 (deep red) — the rightmost network web only
+- contrast:    #F0BE28 (warm warning yellow) — one single small dot,
+                                                 used sparingly
+
+Absolutely no text, no logos, no other colors.
+Format: 16:9 landscape.
+```
+
+**Nach der Generierung:**
+Cover in `01_Computing/assets/cover.png` ablegen. Optional durch
+`recolor_cover.py --chapter main_computing` schicken, wenn Copilot
+Designer Nebenfarben eingeführt hat. SVG-Titel:
+
+```bash
+python tools/render_title_svg.py --chapter main_computing \
+    --number "I" --title "Computing" \
+    --subtitle "Von 4 Bits zu 4 Milliarden" \
+    --output 01_Computing/assets/title.svg
+```
+
+---
+
 ## 📖 Kapitel 00 — Fundament (Turing vs. Zuse)
 
 **Thematischer Anker:** *Ralf & Florian* (1973). Warme Erdtöne, wie ein

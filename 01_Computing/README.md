@@ -1,6 +1,16 @@
-# Milestones in Computing
+<p align="center">
+  <img src="assets/title.svg" alt="I · Computing — Von 4 Bits zu 4 Milliarden" width="100%"/>
+</p>
 
-**Vom Transistor zum Programm — sechs Meilensteine, die zeigen, wie ein Computer wirklich funktioniert.**
+<p align="center">
+  <img src="assets/cover.png" alt="Skalierungs-Skala: von einem winzigen 4-Zellen-Block links über OS-Bloecke, Compiler-Bahn, Perceptron-Kreis und GPU-Grid bis zu einem Netzwerk-Knotenbild rechts." width="90%"/>
+</p>
+
+*4-Zellen-Block = 4-Bit-CPU ◆ OS-Bloecke = Prozesse ◆ Bahnknoten = Compiler ◆ Neuron = Perceptron ◆ Grids = GPU-Threads ◆ Netz-Web = verbundene Rechner ◆ dieselbe Idee, sechs Skalierungsstufen.*
+
+──────────◆──────────◆──────────◆──────────◆──────────
+
+**Von Bleistift und Papier zu vernetzten Hochleistungsrechnern — sechs Meilensteine, die zeigen, wie aus einer Bürotätigkeit eine weltweite Infrastruktur wurde.**
 
 Alles selbst programmiert, ohne Frameworks. Jede Instruktion, jedes Bit, jedes Bus-Signal ist im Code sichtbar. Und weil moderne KI ohne massive Parallelität nicht existieren würde, gehört dazu auch ein Blick unter die Motorhaube der GPU.
 
@@ -8,15 +18,38 @@ Alles selbst programmiert, ohne Frameworks. Jede Instruktion, jedes Bit, jedes B
 
 ## 📜 Warum dieser Teil?
 
-Das mag zunächst erstaunen: In einer Reihe über KI und Sprachmodelle mit *Rechnerarchitektur* beginnen? Aber es ist kein Umweg. Es ist die Grundlage.
+Ein oft vergessener Punkt vorweg: bis in die 1940er Jahre hinein war *„Computer"* im Englischen keine Maschine, sondern ein **Beruf**. Ein Computer war ein Mensch — meistens eine Frau — die den ganzen Tag Zahlen rechnete. Rechen-Ämter mit dutzenden bis hunderten menschlicher Rechner gab es seit dem 18. Jahrhundert: für nautische Ephemeriden, für Napoleons Vermessungsbüro, für die amerikanischen Volkszählungen, für Ballistiktabellen der Artillerie. Die Maschine, die wir heute *Computer* nennen, hat den Beruf nicht neu erfunden — sie hat ihn übernommen.
 
-Jedes neuronale Netz läuft auf einem Prozessor. Jeder Prozessor läuft in einem Betriebssystem. Jedes Programm ist durch einen Compiler übersetzt worden. Für ernstzunehmende KI-Modelle reicht eine CPU nicht — es braucht eine **GPU**, deren Weg vom Grafikbeschleuniger zum KI-Rechenwerk selbst zum Grundlagenstoff gehört. Und wenn Modelle über Netzwerke kommunizieren — beim Training auf tausenden GPUs, beim Ausrollen als Cloud-Dienst — ist auch das ein Grundlagen­thema.
+Was diesen Beruf über zwei Jahrhunderte hinweg vorangetrieben und schließlich in Maschinen überführt hat, waren nicht abstrakte Ideen, sondern **konkrete Notwendigkeiten**: eine Aufgabe wurde für die vorhandene Rechen­kapazität zu groß, jemand suchte den Ausweg, das nächste Werkzeug entstand. Astronomische Ephemeriden für die Schifffahrt. Der US-Zensus, der länger dauerte als der Zensus-Zyklus. Ballistik im Zweiten Weltkrieg. Die Trajektorien für Apollo. Handel und Buchhaltung. Das Internet. Deep Learning. Immer dasselbe Muster: **wer die Not hatte, baute die Maschine.**
 
-Wer nicht versteht, wie diese Schichten (CPU, OS, Compiler, GPU, Netzwerk) funktionieren, wird bei Fragen wie *„Warum ist mein Training so langsam?"* oder *„Warum verhält sich mein Modell auf einer anderen Maschine anders?"* im Dunkeln tappen. Wer sie versteht, hat die Werkzeuge, um solche Fragen zu beantworten.
+Erst wenn man diese Kette sieht, wird klar, warum die Reihenfolge der Kapitel in diesem Buch keine Zufalls-Ordnung ist, sondern eine *Antwortkette*: eine CPU macht einen einzelnen menschlichen Rechner überflüssig. Ein OS erlaubt es, denselben teuren Rechner für mehrere Aufgaben zu nutzen. Ein Compiler erlaubt es, ihn ohne jahrelanges Assembler-Studium zu programmieren. Eine GPU erlaubt es, dieselbe Aufgabe (Matrix-Multiplikation) tausendfach parallel zu rechnen. Ein Netzwerk erlaubt es, die Rechenleistung vieler Maschinen zusammenzuschalten. Und dass in dieser Reihe genau die Bausteine sitzen, die ein modernes KI-Training braucht, ist kein Zufall — es ist die letzte Etappe derselben Not-treibt-Werkzeug-Kette.
 
-Und noch wichtiger: dieser erste Teil gehört, anders als die Kapitel in *Machine Intelligence*, zu den **zeitlos gültigen** Grundlagen der Informatik. Die Ideen, die Turing, von Neumann, Backus, Ritchie und Kahn/Cerf hatten, funktionieren heute noch genau wie damals.
+Deshalb steht dieser Teil am Anfang eines Buches über KI: **weil KI die aktuelle Antwort auf eine 300 Jahre alte Frage ist.** Und weil man Antworten besser versteht, wenn man die Fragen kennt, die sie beantworten.
+
+Ein pragmatischer Zusatzeffekt: wer versteht, wie CPU, OS, Compiler, GPU und Netzwerk funktionieren, wird bei Fragen wie *„Warum ist mein Training so langsam?"* oder *„Warum verhält sich mein Modell auf einer anderen Maschine anders?"* nicht mehr im Dunkeln tappen. Diese Grundlagen sind, anders als die Modelle aus Teil 2, **zeitlos gültig**: die Ideen, die Hollerith, Zuse, von Neumann, Backus, Ritchie und Kahn/Cerf hatten, funktionieren heute noch genau wie damals.
 
 ---
+
+## 🔥 Wer die Not hatte, baute die Maschine
+
+Ein knapper Überblick über die Bedarfstreiber, die aus einer Bürotätigkeit über 300 Jahre eine weltweite Infrastruktur gemacht haben:
+
+| Zeitraum | Bedarfstreiber | Antwort |
+|----------|----------------|---------|
+| **1767–1830** | Nautische Ephemeriden, Napoleons Vermessungsbüro (de Prony) | „Computers" als **Beruf**: bis zu 90 menschliche Rechner im Fließband-Verfahren |
+| **1880–1890** | US-Zensus: Auswertung von 1880 dauert 7 Jahre, 1890 droht zu überlaufen | Herman **Holleriths Tabulating Machine** — mechanische Datenverarbeitung, Grundstein von IBM |
+| **1935–1941** | Statik-Berechnungen, sich wiederholende ingenieurwissenschaftliche Aufgaben | **Konrad Zuse Z1–Z3** — der erste frei programmierbare Rechner, in einer Berliner Wohnung |
+| **1943–1946** | Bletchley Park (Codebrechen), Los Alamos (Manhattan-Projekt), US-Ballistik | **Colossus, ENIAC** — die ersten elektronischen Groß-Rechner, gebaut aus reiner Kriegs-Not |
+| **1957–1972** | Kalter Krieg, Wettlauf zum Mond, Apollo-Trajektorien | **IBM 7090, Systemsoftware**, die berühmten NASA-„human computers" (Katherine Johnson u.a.) werden schrittweise durch Mainframes ersetzt |
+| **1960–1980** | Massenverwaltung: Banken, Versicherungen, Behörden | **COBOL, Mainframes**, Datenbanken — der Computer wird zum Büro-Werkzeug |
+| **1990–2010** | Internet, E-Commerce, globale Kommunikation | **Server-Farmen, TCP/IP-basierte Cloud-Architekturen** |
+| **2012 ff.** | Deep Learning, Sprachmodelle — Aufgaben, die selbst 2010er-Server nicht schultern | **GPU-Cluster** (10⁴ Karten für GPT-3), spezielle KI-Beschleuniger (TPU, Trainium) |
+
+Zwei Beobachtungen aus dieser Tabelle:
+
+- **Die Maschine folgt der Not, nicht umgekehrt.** Niemand hat einen Computer gebaut, weil es „interessant" wäre — die Aufgaben waren jeweils schon da und wurden untragbar. Der Computer ist eine Antwort, nicht ein Vorschlag.
+- **Jede Ära hat ihren eigenen Bedarfstreiber**, und der bestimmt, welche Art Maschine entsteht: kriegerische Not führt zu ENIAC (schnell, teuer, spezialisiert), Verwaltungs-Not zu COBOL-Mainframes (langlebig, robust, business-lesbar), KI-Not zu GPU-Clustern (massiv parallel, spezialisiert, teuer). Die Grund­struktur (von Neumann: Speicher, ALU, Kontrolle) bleibt in jeder Ära dieselbe. Das *Warum* ändert sich; das *Wie* skaliert.
+
 
 ## 🕰️ Historischer Bogen
 
@@ -149,6 +182,15 @@ Wenn du diese Beschränkungen für zu eng hältst, ist das genau der Punkt, an d
 ---
 
 ## 📚 Referenzen
+
+**Zur Vorgeschichte — als „Computer" noch ein Beruf war:**
+
+- Grier, D. A. (2005). *When Computers Were Human*. Princeton University Press. Die maßgebliche Studie zur Menschen-Computer-Ära von den 1750ern bis zu den 1940ern. Zeigt, wie de Prony, Maskelyne, das Nautical Almanac Office und das WPA Mathematical Tables Project funktionierten.
+- Sobel, D. (1995). *Longitude*. Walker Books. John Harrison, der Längengrad, und die Not, die Ephemeriden und schließlich Rechen-Ämter für die Schifffahrt notwendig machte.
+- Shetterly, M. L. (2016). *Hidden Figures: The American Dream and the Untold Story of the Black Women Mathematicians Who Helped Win the Space Race*. William Morrow. Die menschlichen „computers" der NACA/NASA, u.a. Katherine Johnson, die die Apollo-Trajektorien rechnete.
+- Aspray, W. (1990). *Computing Before Computers*. Iowa State University Press. Sammelband zur mechanischen Rechen­geschichte vor Zuse: Pascaline, Leibniz, Babbage, Hollerith.
+
+**Zum modernen Computer:**
 
 - Petzold, C. (2000). *Code: The Hidden Language of Computer Hardware and Software*. Microsoft Press. Der Klassiker: vom Morsezeichen zum Computer, ganz ohne Vorwissen.
 - Nisan, S., & Schocken, S. (2008). *The Elements of Computing Systems* — auch bekannt als „nand2tetris". Vom NAND-Gatter über CPU und Compiler bis zum Betriebssystem, alles selbst gebaut. Direkte Inspiration für diesen Teil.

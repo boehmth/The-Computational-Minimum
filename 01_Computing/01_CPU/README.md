@@ -24,7 +24,17 @@ In diesem Meilenstein programmieren wir genau dieses Modell — als **framework�
 
 So schlicht das Design auch ist — es enthält bereits alle Bausteine, die einen Computer zu einem Computer machen: **Speicher, Rechnen, Kontrollfluss, ein einzelner Bus** und eine **fest verdrahtete Regel, wie aus einem Bit-Muster ein Verhalten wird**.
 
----
+> **📚 Wer verstehen will, wie die einzelnen Bausteine unterhalb dieser
+> Simulation elektronisch zusammenkommen — UND/ODER/NICHT, Halb- und
+> Volladdierer, Flip-Flops, Tri-State-Gatter und der Bus als
+> Konfliktressource — findet die ausführliche Herleitung im Deep Dive
+> [→ Schaltnetze und Schaltwerke](../grundlagen/schaltnetze.md).**
+>
+> **Und für die formale Definition der Von-Neumann-Architektur (was ein
+> Computer als Automat *ist*, wie Fetch und Execute mathematisch
+> zusammengehören, wie Mikrocode am 4-Bit-Beispiel Schritt für Schritt
+> aussieht):** [→ Die Von-Neumann-Architektur](../grundlagen/von_neumann.md).
+
 
 ## 🕰️ Historischer Kontext
 
@@ -299,7 +309,12 @@ Anders gesagt: diese Simulation zeigt **die Idee**, nicht die technische Perfekt
 
 Die Grenze, die wir bei der Minimal-CPU gesehen haben — sehr wenige Ops, viel Schleifen — hat historisch die *RISC-Bewegung* geprägt (Patterson, Hennessy in den 1980ern): lieber weniger, einfachere Befehle in großer Zahl schnell ausführen, als wenige, komplexe. Das ist genau die Idee, die unsere Minimal-CPU ins Extrem treibt.
 
----
+> **📚 Der Skalierungspfad im Detail — Pipelining (mit Speed-up-Formel),
+> Flynn-Klassifikation (SISD/SIMD/MIMD, plus warum GPUs SIMT sind),
+> Cache-Hierarchien, Mooresches Gesetz mit Transistorzahlen von 1971
+> bis 2024 — steht im Deep Dive:**
+> [→ Moderne Prozessoren: vom SAP-1 zum GPU-Cluster](../grundlagen/moderne_prozessoren.md).
+
 
 ## 🧠 Abschließende Bemerkungen
 
