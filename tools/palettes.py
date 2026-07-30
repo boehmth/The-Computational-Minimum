@@ -90,6 +90,20 @@ CHAPTER_PALETTES: Dict[str, Dict[str, RGB]] = {
         "signal":     (198, 40, 40),
         "contrast":   (28, 28, 32),
     },
+
+    # Teil-1-Meta-Cover ("Computing"): Synthese-Palette
+    # ------------------------------------------------
+    # Diese Palette repraesentiert *alle* sechs Kapitel und wird nur fuer
+    # das Haupt-Cover von Teil 1 (01_Computing/README.md) benutzt. Sie ist
+    # bewusst neutraler als die Kapitel-Paletten, damit sie kein einzelnes
+    # Album zitiert - sondern eher als "gemeinsame Grundfarbwelt" der
+    # ganzen Reihe wirkt.
+    "main_computing": {
+        "background": (240, 235, 225),   # papier, mittelwert aller Kap.-Hintergruende
+        "structure":  (30, 36, 56),      # tiefes Blau-Grau-Anthrazit
+        "signal":     (198, 40, 40),     # das durchgaengige Rot der Serie
+        "contrast":   (240, 190, 40),    # warngelb aus Kap. 02 als seltener Akzent
+    },
 }
 
 
