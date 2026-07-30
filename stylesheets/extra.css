@@ -198,6 +198,15 @@
   background: var(--tcm-blue);
 }
 
+/* Header & Tabs lesbarer machen */
+.md-header {
+  background: #2A3A6E !important;   /* helleres Blau */
+}
+
+.md-tabs {
+  background: #2A3A6E !important;
+}
+
 .md-tabs__item--active .md-tabs__link,
 .md-tabs__link--active {
   color: var(--tcm-yellow);
