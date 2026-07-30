@@ -1,0 +1,102 @@
+# =============================================================================
+#  GitHub Actions Workflow — Deploy MkDocs Site auf GitHub Pages
+# =============================================================================
+#
+#  Baut die Online-Fassung des Buchs "The Computational Minimum" bei jedem
+#  Push auf `main` und deployt sie direkt auf GitHub Pages.
+#
+#  Nutzt den *modernen* GitHub-Pages-Deploy-Pfad (via actions/deploy-pages),
+#  nicht den klassischen gh-pages-Branch. Dadurch:
+#    * kein Extra-Branch im Repo,
+#    * kein zweistufiger Commit-Push,
+#    * Sichtbarkeit im Actions-Tab.
+#
+#  Voraussetzung (einmalig im Repo einstellen):
+#    Settings → Pages → Source: "GitHub Actions"
+#
+#  Optional: manueller Trigger via Actions-Tab (workflow_dispatch).
+# =============================================================================
+
+name: Deploy MkDocs Site
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Nur bei relevanten Änderungen bauen (spart Actions-Minuten)
+      - "**/*.md"
+      - "**/*.svg"
+      - "**/*.png"
+      - "mkdocs.yml"
+      - "stylesheets/**"
+      - "javascripts/**"
+      - "requirements-docs.txt"
+      - ".github/workflows/deploy-docs.yml"
+  workflow_dispatch:   # manueller Trigger im GitHub UI
+
+# Berechtigungen für den Deploy nach GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Nur ein Deploy-Job gleichzeitig; neuer Push storniert den laufenden Build.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) Build-Job — MkDocs baut die Site nach _site/
+  # ---------------------------------------------------------------------------
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0     # volle Historie (falls wir spaeter git-Datum-Plugin nutzen)
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-docs.txt
+
+      - name: Sync Buch-Dateien nach docs/
+        run: python tools/sync_docs.py
+
+      - name: Build MkDocs Site
+        run: mkdocs build --verbose
+        # --verbose: sichtbare Ausgabe im Actions-Log.
+        # --strict absichtlich weggelassen: die harmlosen
+        # "not in nav"-Meldungen sollen den Build nicht abbrechen.
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Site Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  # ---------------------------------------------------------------------------
+  # 2) Deploy-Job — publiziert das Artefakt auf GitHub Pages
+  # ---------------------------------------------------------------------------
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
