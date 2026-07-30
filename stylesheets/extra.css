@@ -1,0 +1,230 @@
+/* =============================================================================
+ * extra.css — Serien-Signatur fuer "The Computational Minimum"
+ * =============================================================================
+ *
+ * Die Farbwelt und Typografie dieses Buchs sind in STYLE.md definiert.
+ * Diese Datei setzt sie fuer die Online-Fassung (MkDocs Material) um.
+ *
+ * Grundregeln:
+ *   1. Vier Farben, sonst nichts (STYLE.md, Abschnitt 1).
+ *   2. Fonts: Space Grotesk fuer Titel, Inter fuer Fliesstext,
+ *      JetBrains Mono fuer Code (siehe theme.font in mkdocs.yml).
+ *   3. Serien-Trenner ◆ und die kursive Metaphern-Auflösung bleiben
+ *      dem Markdown ueberlassen; hier wird nur die Farbe geschaerft.
+ * =============================================================================
+ */
+
+/* --- Grund-Palette als CSS-Variablen (Root-Level) ----------------------- */
+:root {
+  /* Serien-Palette (STYLE.md, Teil 1) */
+  --tcm-paper:      #F5F0E8;    /* warmes Papier-Weiss */
+  --tcm-blue:       #1A2A5C;    /* TdF-Blau, Struktur   */
+  --tcm-red:        #C62828;    /* Trikot-Rot, Signal   */
+  --tcm-anthracite: #1C1C20;    /* fast-Schwarz         */
+  --tcm-yellow:     #F0BE28;    /* Warngelb-Akzent (aus Kap 02) */
+  --tcm-grey:       #6E6E76;    /* neutrales Mittelgrau */
+
+  /* Material-Theme-Variablen ueberschreiben (helles Layout) */
+  --md-primary-fg-color:            var(--tcm-blue);
+  --md-primary-fg-color--light:     #2A3A6E;
+  --md-primary-fg-color--dark:      #12204A;
+  --md-primary-bg-color:            var(--tcm-paper);
+  --md-primary-bg-color--light:     var(--tcm-paper);
+
+  --md-accent-fg-color:             var(--tcm-red);
+  --md-accent-fg-color--transparent: rgba(198, 40, 40, 0.1);
+
+  --md-typeset-a-color:             var(--tcm-blue);
+}
+
+/* --- Dark-Mode-Ueberschreibungen ---------------------------------------- */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:            var(--tcm-paper);
+  --md-primary-bg-color:            var(--tcm-anthracite);
+  --md-primary-bg-color--light:     #26262C;
+  --md-accent-fg-color:             var(--tcm-red);
+  --md-typeset-a-color:             #A9BEEC;
+  --md-default-bg-color:            var(--tcm-anthracite);
+  --md-default-fg-color:            #E4DFD5;
+  --md-default-fg-color--light:     #C4BFB5;
+}
+
+/* --- Typografie: Uberschriften in Space Grotesk ------------------------- */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+  font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--tcm-blue);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1,
+[data-md-color-scheme="slate"] .md-typeset h2,
+[data-md-color-scheme="slate"] .md-typeset h3,
+[data-md-color-scheme="slate"] .md-typeset h4 {
+  color: var(--tcm-paper);
+}
+
+.md-typeset h1 {
+  font-size: 2.0rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.md-typeset h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid rgba(26, 42, 92, 0.2);
+  padding-bottom: 0.3rem;
+  margin-top: 2.5rem;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  border-bottom-color: rgba(245, 240, 232, 0.2);
+}
+
+.md-typeset h3 {
+  font-size: 1.2rem;
+  margin-top: 1.8rem;
+}
+
+/* --- Fliesstext ------------------------------------------------------- */
+.md-typeset {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+.md-typeset p {
+  margin: 0.9em 0;
+}
+
+/* Kursive Absaetze (die Metaphern-Auflösung unter Cover-Bildern) etwas kraeftiger */
+.md-typeset p em {
+  color: var(--tcm-red);
+  font-style: normal;
+  font-weight: 500;
+}
+
+[data-md-color-scheme="slate"] .md-typeset p em {
+  color: #FF9F9F;
+}
+
+/* --- Code (inline und Bloecke) ---------------------------------------- */
+.md-typeset code {
+  font-family: "JetBrains Mono", "Menlo", monospace;
+  font-size: 0.85em;
+  background: rgba(26, 42, 92, 0.06);
+  color: var(--tcm-anthracite);
+  border-radius: 3px;
+  padding: 0.15em 0.35em;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  background: rgba(245, 240, 232, 0.08);
+  color: #E4DFD5;
+}
+
+.md-typeset pre > code,
+.md-typeset .highlight pre {
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* --- Blockzitate (fuer die Motto-Blocks und Deep-Dive-Absprungboxen) --- */
+.md-typeset blockquote {
+  border-left: 3px solid var(--tcm-red);
+  padding-left: 1rem;
+  color: var(--tcm-anthracite);
+  background: rgba(198, 40, 40, 0.04);
+  margin: 1.3em 0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote {
+  color: #E4DFD5;
+  background: rgba(198, 40, 40, 0.08);
+}
+
+/* --- Trennlinien (horizontal rules) ----------------------------------- */
+.md-typeset hr {
+  border: none;
+  border-top: 1px solid var(--tcm-blue);
+  opacity: 0.25;
+  margin: 2rem 0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset hr {
+  border-top-color: var(--tcm-paper);
+}
+
+/* --- Tabellen ---------------------------------------------------------- */
+.md-typeset table:not([class]) {
+  font-size: 0.8rem;
+  border: 1px solid rgba(26, 42, 92, 0.15);
+}
+
+.md-typeset table:not([class]) th {
+  background: rgba(26, 42, 92, 0.06);
+  color: var(--tcm-blue);
+  font-weight: 600;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background: rgba(245, 240, 232, 0.08);
+  color: var(--tcm-paper);
+}
+
+/* --- Bilder (Cover, Titel-SVGs) --------------------------------------- */
+.md-typeset img {
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.md-typeset p[align="center"] img,
+.md-typeset img[alt] {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Navigation ------------------------------------------------------- */
+.md-header {
+  background: var(--tcm-blue);
+}
+
+.md-tabs {
+  background: var(--tcm-blue);
+}
+
+.md-tabs__item--active .md-tabs__link,
+.md-tabs__link--active {
+  color: var(--tcm-yellow);
+  font-weight: 500;
+}
+
+/* --- Search Bar ------------------------------------------------------- */
+.md-search__input {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--tcm-paper);
+}
+
+.md-search__input::placeholder {
+  color: rgba(245, 240, 232, 0.7);
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.md-footer {
+  background: var(--tcm-anthracite);
+}
+
+/* --- Kleine Details: Copy-Button, Admonitions ------------------------- */
+.md-clipboard {
+  color: var(--tcm-grey);
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  font-size: 0.8rem;
+}

@@ -164,6 +164,44 @@ geladen — was nötig ist, wird im jeweiligen Kapitel dokumentiert.
 
 ---
 
+## 📖 Das Buch als Online-Fassung
+
+Alle Kapitel-READMEs und Deep Dives sind zusätzlich als **navigierbare
+Website** verfügbar, gebaut mit **MkDocs Material**. Die Site wird bei
+jedem Push auf `main` automatisch über GitHub Actions gebaut und auf
+GitHub Pages deployt (siehe [`.github/workflows/deploy-docs.yml`](.github/workflows/deploy-docs.yml)).
+
+**Aktuelle URL:** *sobald der erste Deploy durchgelaufen ist, unter
+`https://<GitHub-User>.github.io/The-Computational-Minimum/`.*
+
+### Lokal ansehen und weiterentwickeln
+
+```bash
+pip install -r requirements-docs.txt
+python tools/sync_docs.py          # spiegelt READMEs -> docs/
+python -m mkdocs serve             # http://127.0.0.1:8000
+```
+
+Der Sync-Schritt erzeugt einen `docs/`-Ordner mit einer Kopie aller
+Buch-Dateien (die Original-Dateien in `01_Computing/` etc. bleiben
+unangetastet). Danach kann MkDocs die Site live rendern und
+aktualisieren, während du editierst.
+
+`docs/` und `_site/` sind Build-Artefakte und in `.gitignore`
+ausgeschlossen — du committest weiter die *Original*-Markdown-Dateien
+im Repo.
+
+### Nur Teil 1 zunächst online
+
+Um den Prototypen sauber zu halten, sind zunächst nur Teil 1 (Computing)
+und die Grundlagen-Deep-Dives in der Online-Fassung enthalten. Teile 2
+und 3 sind im Repo weiterhin lesbar (GitHub-Ordner-View), werden aber
+erst in die Site aufgenommen, wenn ihre narrative Fassung reif ist.
+Die Aktivierung erfolgt später schlicht durch Kommentaren in
+`tools/sync_docs.py` und Nachziehen der Navigation in `mkdocs.yml`.
+
+---
+
 ## 🛠️ Grundregeln der Reihe
 
 Diese drei Regeln gelten für Teil 1 und 2 strikt, für Teil 3 mit einer

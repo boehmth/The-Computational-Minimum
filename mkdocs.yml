@@ -1,0 +1,182 @@
+# =============================================================================
+#  MkDocs-Konfiguration fuer "The Computational Minimum" (Online-Buch)
+# =============================================================================
+#
+#  Erststart-Version: nur Teil 1 (01_Computing).
+#  Teil 2 (Machine Intelligence) und Teil 3 (Agentic Systems) werden
+#  nachtraeglich aktiviert, sobald sie die Buch-Fassung erreicht haben.
+#
+#  Zwei-Schritte-Build (wegen MkDocs-Anforderung docs_dir != root):
+#      python tools/sync_docs.py    # spiegelt Buch-Dateien nach docs/
+#      python -m mkdocs build       # baut die Site nach _site/
+#
+#  Lokaler Betrieb im Watch-Modus:
+#      python tools/sync_docs.py
+#      python -m mkdocs serve
+#      # dann http://127.0.0.1:8000 aufmachen
+#
+#  Deployment: automatisch via .github/workflows/deploy-docs.yml
+#
+# =============================================================================
+
+site_name: "The Computational Minimum"
+site_description: >
+  Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+  Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen
+  Sprachmodell, alles selbst geschrieben ohne Frameworks.
+site_author: "Sebastian Ritter"
+site_url: "https://sritter.github.io/The-Computational-Minimum/"
+copyright: >
+  Copyright &copy; 2024–2026 Sebastian Ritter.
+  Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+repo_name: "The-Computational-Minimum"
+repo_url: "https://github.com/sritter/The-Computational-Minimum"
+edit_uri: "edit/main/"
+
+# ---------------------------------------------------------------------------
+#  Ordner-Struktur
+# ---------------------------------------------------------------------------
+#  docs/ wird vom Skript tools/sync_docs.py aus dem Repo befuellt und ist
+#  ein Build-Artefakt (in .gitignore ausgeschlossen).
+# ---------------------------------------------------------------------------
+docs_dir: docs
+site_dir: _site
+
+# Warnungen ueber READMEs, die nicht in der Nav auftauchen, unterdruecken.
+not_in_nav: |
+  README.md
+
+# ---------------------------------------------------------------------------
+#  Navigation — die Kapitel-Reihenfolge im linken Menue
+# ---------------------------------------------------------------------------
+nav:
+  - "Startseite":              index.md
+  - "Vorwort":                 PREFACE.md
+  - "Style-Guide":             STYLE.md
+
+  - "Teil I · Computing":
+      - "Übersicht":                    01_Computing/README.md
+      - "00 · Fundament":               01_Computing/00_Fundament/README.md
+      - "01 · CPU":                     01_Computing/01_CPU/README.md
+      - "02 · Betriebssystem":          01_Computing/02_OS/README.md
+      - "03 · Compiler":                01_Computing/03_Compiler/README.md
+      - "04 · Perceptron auf CPU":      01_Computing/04_PerceptronOnCPU/README.md
+      - "05 · GPU":                     01_Computing/05_GPU/README.md
+      - "06 · Netzwerk":                01_Computing/06_Networks/README.md
+
+  - "Grundlagen (Deep Dives)":
+      - "Übersicht":                    01_Computing/grundlagen/README.md
+      - "Schaltnetze und Schaltwerke":  01_Computing/grundlagen/schaltnetze.md
+      - "Von-Neumann-Architektur":      01_Computing/grundlagen/von_neumann.md
+      - "Moderne Prozessoren":          01_Computing/grundlagen/moderne_prozessoren.md
+
+# ---------------------------------------------------------------------------
+#  Theme — Material for MkDocs, mit unserer Serien-Palette
+# ---------------------------------------------------------------------------
+theme:
+  name: material
+  language: de
+
+  # Fonts kommen aus Google Fonts; die konkreten Farben liegen in extra.css.
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+  palette:
+    # Heller Modus — Papier + TdF-Blau
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Zu dunklem Modus wechseln
+    # Dunkler Modus — Anthrazit + Papier-Akzente
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Zu hellem Modus wechseln
+
+  features:
+    - navigation.instant          # Instant Loading (SPA-artige Uebergaenge)
+    - navigation.tracking         # URL updaten beim Scrollen
+    - navigation.tabs             # Top-Level als Tabs oben
+    - navigation.tabs.sticky
+    - navigation.sections         # Unter-Sections aufgeklappt
+    - navigation.indexes          # Section-Root-Seiten
+    - navigation.top              # "Zum Anfang"-Button
+    - toc.follow                  # Toc scrollt mit
+    - search.suggest              # Vorschlaege beim Tippen
+    - search.highlight            # Trefferwoerter hervorheben
+    - content.code.copy           # "Kopieren"-Button in Codebloecken
+
+# ---------------------------------------------------------------------------
+#  Zusatz-CSS (unsere Serien-Palette und Font-Feinschliff)
+# ---------------------------------------------------------------------------
+extra_css:
+  - stylesheets/extra.css
+
+# ---------------------------------------------------------------------------
+#  Markdown-Erweiterungen
+# ---------------------------------------------------------------------------
+markdown_extensions:
+  # Standard-Erweiterungen fuer die typischen Sinnbilder
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: "¶"
+      toc_depth: 4
+
+  # PyMdown-Erweiterungen (kommen mit mkdocs-material)
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index:     !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+  # LaTeX-Mathematik ($…$ und $$…$$) via MathJax
+  - pymdownx.arithmatex:
+      generic: true
+
+# ---------------------------------------------------------------------------
+#  Extras: MathJax fuer Formel-Rendering
+# ---------------------------------------------------------------------------
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# ---------------------------------------------------------------------------
+#  Plugins
+# ---------------------------------------------------------------------------
+plugins:
+  - search:
+      lang: de
+
+# ---------------------------------------------------------------------------
+#  Weitere Einstellungen
+# ---------------------------------------------------------------------------
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/sritter/The-Computational-Minimum
+  generator: false     # "Made with MkDocs Material"-Footer ausblenden
