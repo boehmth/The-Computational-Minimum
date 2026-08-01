@@ -88,29 +88,79 @@ Unsere Simulation zeigt genau diese Zerlegung — live, mit farbigen Boxen, eine
 
 ## 🧩 Architektur des Frameworks
 
-Das Framework besteht aus **wiederverwendbaren Bausteinen** und **CPU-Konfigurationen**, die diese Bausteine unterschiedlich zusammensetzen:
+Bevor wir auf die Python-Klassen schauen, lohnt sich ein Blick auf das
+Grundprinzip: Eine CPU ist im Kern ein **Zustandsautomat**.
+
+- Der **Zustand** besteht aus den aktuellen Inhalten von PC, IR, ACC, RAM,
+  OUT und den übrigen Registern.
+- In jedem Takt erzeugt die **Control Unit** ein **Steuerwort**.
+- Dieses Steuerwort sagt, welche Ausgänge und Eingänge geöffnet sind: Wer darf
+  auf den Bus schreiben? Wer darf vom Bus lesen? Welche ALU-Operation ist
+  aktiv? Soll der Program Counter erhöht werden? Ist der Befehl fertig?
+- Dadurch entsteht für genau diesen Takt ein kontrollierter **Datenfluss**:
+  ein Wert wandert aus Speicher, Register oder ALU auf den Bus und von dort in
+  ein Zielregister oder zurück in den Speicher.
+
+Ein **Maschinenbefehl** wie `ADD 4` ist also nicht „magisch". Er ist eine kurze
+Folge solcher Steuerworte. Diese inneren Mini-Befehle heißen **Mikrocode**.
+Der **Decoder** liest den Opcode des aktuellen Maschinenbefehls und schlägt im
+Mikrocode-ROM nach, welche Steuerworte nacheinander ausgeführt werden müssen.
+
+Das Framework besteht aus **wiederverwendbaren Bausteinen** und
+**CPU-Konfigurationen**, die diese Bausteine unterschiedlich zusammensetzen:
 
 ```
-
-     ┌──────────────────── einheitliche Bus-Bausteine ────────────────────┐
-     │                                                                    │
-     │   PC   Register(ACC/TMP/…)   ALU(configurable)   IR   RAM   OUT    │
-     │                                                                    │
-     └───────────────────────────────┬────────────────────────────────────┘
-                                     │  ein 4-Bit Bus, drei Schleifen:
-                                     │    1) set_gates   2) write_bus  3) read_bus
-                                     ▼
-     ┌──────────────────────── ControlUnit ─────────────────────────┐
-     │  Step-Counter 0..3, holt pro Takt ein Steuerwort aus dem     │
-     │  Mikrocode-ROM (ausser Step 0: FETCH ist fest verdrahtet).   │
-     └────────────────────────────┬─────────────────────────────────┘
-                                  ▼
-     ┌───────────────── Konfiguration ─────────────────┐
-     │  welche Elemente, welche ALU-Ops,               │
-     │  welcher Mikrocode (Opcode → Steuerwörter)      │
-     └─────────────────────────────────────────────────┘
-
+┌────────────────────────────────────────────────────────────────────────────┐
+│                              Steuerwerk                                    │
+│                                                                            │
+│   Opcode im IR ─→ Decoder ─→ Mikrocode-ROM ─→ Steuerwort pro Takt          │
+│                                                                            │
+│   Beispiel: { IR_OUT, ACC_IN, END }                                        │
+│   heißt: IR darf senden, ACC darf lesen, der Maschinenbefehl ist fertig.   │
+└──────────────────────────────────┬─────────────────────────────────────────┘
+                                   │ Steuersignale öffnen/schließen Gates
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│                             CPU-Zustand                                    │
+│                                                                            │
+│   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐          │
+│   │   PC   │   │   IR   │   │  ACC   │   │  RAM   │   │  OUT   │   ...    │
+│   └───┬────┘   └───┬────┘   └───┬────┘   └───┬────┘   └───┬────┘          │
+│       │            │            │            │            │               │
+│       └────────────┴────────────┼────────────┴────────────┘               │
+│                                  │                                          │
+│                         4-Bit-Datenbus                                     │
+│                                  │                                          │
+│                            ┌─────┴─────┐                                    │
+│                            │    ALU    │                                    │
+│                            └───────────┘                                    │
+│                                                                            │
+│   Ein Takt später: neuer Zustand in PC, IR, ACC, RAM, OUT, ...             │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
+
+Der wichtige Zusammenhang ist: **Das Steuerwort verändert nicht direkt die
+Daten. Es verändert die Verbindungen.** Es öffnet und schließt Gates. Erst
+dadurch kann ein Wert auf dem Bus fließen und am Ende des Takts in einem neuen
+Registerzustand landen.
+
+Ein einfacher Befehl wie `LDI 3` wird zum Beispiel so ausgeführt:
+
+| Ebene | Was steht dort? | Bedeutung |
+| :---- | :-------------- | :-------- |
+| Maschinenbefehl | `LDI 3` | Lade die Konstante 3 in den Akkumulator |
+| Opcode im IR | `LDI` | Der Decoder erkennt: Dafür brauche ich den Mikrocode von `LDI` |
+| Steuerwort | `{ IR_OUT, ACC_IN, END }` | IR legt den Operanden `3` auf den Bus, ACC übernimmt ihn |
+| Neuer Zustand | `ACC = 3` | Der nächste Maschinenbefehl kann beginnen |
+
+Bei komplexeren Befehlen besteht der Maschinenbefehl aus mehreren
+Steuerworten. Deshalb kann man sagen: **Maschinencode wird intern in Mikrocode
+zerlegt**. In dieser Simulation ist diese Zerlegung sichtbar, statt in einem
+Chip verborgen zu sein.
+
+Die **Konfiguration** entscheidet dabei, welche konkreten Bausteine existieren:
+Welche Register gibt es? Welche ALU-Operationen sind erlaubt? Und welcher
+Opcode wird auf welche Steuerwort-Folge abgebildet?
 
 Mathematisch lässt sich ein Takt so beschreiben:
 
