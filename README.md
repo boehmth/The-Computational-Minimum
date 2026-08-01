@@ -121,6 +121,29 @@ sich Skalierung in diesem Teil von einem Merkmal einzelner Kapitel zur
 radikalstem Beleg dafür, dass sogar Reasoning experimentell *entdeckt*,
 nicht theoretisch *konstruiert* wurde.
 
+### [`04_AgenticSystemsEvo/`](04_AgenticSystemsEvo/) — Agentische Systeme als Laufzeit-Systeme
+
+Ein neuer, praxisnäherer Anschluss an Teil 3: nicht mehr primär die Frage,
+wie LLMs **trainiert und skaliert** werden, sondern wie sie **zur Laufzeit**
+mit Tools, Loops, Protokollen und dynamisch erzeugtem Code zu handlungsfähigen
+Systemen werden.
+
+| Fokus | Beispiele |
+|------|-----------|
+| Vom Prompt zur Aktion | Text-in/Text-out, Tool-Calling, Planning |
+| Vom Einzelaufruf zum Agenten | externer Loop, Retry-Strategien, Reasoning-Modelle |
+| Vom Einzelsystem zum Ökosystem | MCP, A2A, Dynamic Tool Agent |
+
+**Einordnung:** `03_AgenticSystems/` erklärt den aktuellen LLM-Sprung eher aus
+der Perspektive von **Training, Alignment und Skalierungsachsen**.
+`04_AgenticSystemsEvo/` verschiebt den Blick auf die **Systemebene**:
+Was muss außerhalb des Modells gebaut werden, damit aus einem LLM ein Agent
+oder ein agentisches Softwaresystem wird?
+
+Beide Teile sind daher keine Duplikate, sondern zwei komplementäre Blicke auf
+dieselbe Gegenwart: **Teil 3 = das Modell selbst. Teil 4 = das System um das
+Modell herum.**
+
 ---
 
 ## 🕰️ Der historische Bogen in einer Zeile

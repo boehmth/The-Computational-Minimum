@@ -10,11 +10,18 @@ Alles selbst programmiert, ohne Agent-Frameworks. Jeder Prompt, jeder Tool-Call,
 
 ## 📜 Warum dieser Teil?
 
-Am Ende von *Milestones in Machine Intelligence* hast du ein winziges GPT-artiges Modell selbst gebaut. Damit hast du **das Fundament** verstanden. Die spannende Frage: **Was hat man daraus in den letzten Jahren gemacht?**
+Am Ende von *Milestones in Machine Intelligence* hast du ein winziges GPT-artiges Modell selbst gebaut. Damit hast du **das Fundament** verstanden. Die spannende Frage lautet jetzt: **Was baut man darauf zur Laufzeit?**
 
 Zwischen 2018 (GPT-1) und heute liegen weniger als zehn Jahre — aber der Schritt von *"Modell antwortet auf einen Prompt"* zu *"Modell plant, benutzt Werkzeuge, iteriert, korrigiert sich selbst"* ist qualitativ so groß wie der Schritt vom Perceptron zum Transformer.
 
 Dieser Teil folgt genau dieser Bewegung. In sieben Kapiteln.
+
+Er ist bewusst **kein Ersatz** für [`../03_AgenticSystems/README.md`](../03_AgenticSystems/README.md), sondern dessen systemische Fortsetzung:
+
+- [`03_AgenticSystems/`](../03_AgenticSystems/) fragt: **Wie wurden moderne LLMs trainiert, ausgerichtet und skaliert?**
+- [`04_AgenticSystemsEvo/`](./) fragt: **Wie werden diese Modelle als Agenten, Tool-Nutzer und Laufzeit-Systeme eingesetzt?**
+
+Wenn Teil 3 die **Innenseite des Modells** beschreibt, beschreibt Teil 4 die **Außenseite des Modells**: Orchestrierung, Werkzeuge, Protokolle, Schleifen, Grenzen.
 
 ---
 
@@ -145,45 +152,45 @@ Der Bogen dahinter: *wenn der Calculator ein Werkzeug sein kann, kann alles ein 
 
 ## 🚀 Schnelleinstieg
 
-Voraussetzung: du bist im übergeordneten `RPT Agent`-Root, hast die `.env` ausgefüllt und `sap_service_key.json` neben ihr liegen (siehe [`../README.md`](../README.md)).
+Voraussetzung: du bist im Root von `The-Computational-Minimum`, hast die `.env` ausgefüllt und den passenden Service-Key bzw. API-Zugang konfiguriert. Die projektweiten Hinweise stehen im Haupt-Repo; teil-spezifische Abhängigkeiten liegen in [`requirements.txt`](requirements.txt).
 
 ```powershell
-cd "C:\Users\D041506\Source\RPT Agent"
+cd "C:\Users\thilo\Source\repos\The-Computational-Minimum\04_AgenticSystemsEvo"
 
 # Kapitel 1
-python "Agentic Systems/01_TextInTextOut/src/01_hello_llm.py"
-python "Agentic Systems/01_TextInTextOut/src/02_math_breaks.py"
+python "01_TextInTextOut/src/01_hello_llm.py"
+python "01_TextInTextOut/src/02_math_breaks.py"
 
 # Kapitel 2
-python "Agentic Systems/02_ToolsAndPlanning/src/01_give_it_a_tool.py"
-python "Agentic Systems/02_ToolsAndPlanning/src/02_model_plans.py"
+python "02_ToolsAndPlanning/src/01_give_it_a_tool.py"
+python "02_ToolsAndPlanning/src/02_model_plans.py"
 
 # Kapitel 3
-python "Agentic Systems/03_TheLoop/src/01_basic_loop.py"
-python "Agentic Systems/03_TheLoop/src/02_token_growth.py"
-python "Agentic Systems/03_TheLoop/src/03_retry_strategies.py"
+python "03_TheLoop/src/01_basic_loop.py"
+python "03_TheLoop/src/02_token_growth.py"
+python "03_TheLoop/src/03_retry_strategies.py"
 
 # Kapitel 4
-python "Agentic Systems/04_ReasoningInside/src/01_thinking_visible.py"
+python "04_ReasoningInside/src/01_thinking_visible.py"
 
 # Kapitel 5
-python "Agentic Systems/05_ProtocolsAndScale/src/01_mcp_client.py"
-python "Agentic Systems/05_ProtocolsAndScale/src/02_a2a_client.py"
+python "05_ProtocolsAndScale/src/01_mcp_client.py"
+python "05_ProtocolsAndScale/src/02_a2a_client.py"
 
 # Kapitel 6
-python "Agentic Systems/06_WhenNotToBuild/src/01_agent_vs_sum.py"
-python "Agentic Systems/06_WhenNotToBuild/src/02_determinism_check.py"
+python "06_WhenNotToBuild/src/01_agent_vs_sum.py"
+python "06_WhenNotToBuild/src/02_determinism_check.py"
 
 # Kapitel 7
-python "Agentic Systems/07_DynamicToolAgent/src/01_dynamic_tool_agent.py"
-python "Agentic Systems/07_DynamicToolAgent/src/02_dynamic_tool_agent_persisted.py"
+python "07_DynamicToolAgent/src/01_dynamic_tool_agent.py"
+python "07_DynamicToolAgent/src/02_dynamic_tool_agent_persisted.py"
 ```
 
 ---
 
 ## 📖 Wie du diesen Teil durcharbeitest
 
-1. Lies das Vorwort ([`PREFACE.md`](PREFACE.md)) — es ordnet die sechs Meilensteine ein.
+1. Lies das Vorwort ([`PREFACE.md`](PREFACE.md)) — es ordnet die sieben Meilensteine ein.
 2. Beginne mit Kapitel 1. Die README dort erklärt den historischen Kontext, dann führe die Skripte in `src/` aus.
 3. Am Ende jedes Kapitels stehen **Übungen** in `EXERCISES.md` — sie sind das eigentliche Lehr-Werkzeug, weil sie zwingen, das Beispiel *zu variieren*.
 4. Kapitel 5 (MCP + A2A) ist der einzige Punkt, an dem du zusätzliche Prozesse startest. Die anderen Kapitel sind reine Ein-Skript-Miniaturen.

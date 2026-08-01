@@ -1,6 +1,6 @@
 # Vorwort · Warum Miniaturen?
 
-Warum sechs Miniaturen und nicht ein "richtiges" Agenten-Framework?
+Warum sieben Miniaturen und nicht ein "richtiges" Agenten-Framework?
 
 Weil ein Framework die Antwort verkauft, bevor die Frage klar ist.
 
@@ -39,7 +39,9 @@ Es gibt einen Foliensatz *"Why Agents, and Why Now"*, der dieselbe Geschichte f�
 
 Dieser Code-Teil ist die operative Seite dieser drei Sätze. Kein einziges Kapitel führt eine neue Idee ein — jedes Kapitel *demonstriert* eine der drei Prinzipien in Code, den du selbst laufen lassen kannst.
 
-Wenn du den Foliensatz kennst: die Kapitel-Reihenfolge folgt genau dem Bogen des Talks. Kapitel 1 ist Folie 4-7 (P1 in Aktion). Kapitel 2 ist Folie 8-10 (das erste JSON, der erste Plan). Kapitel 3 ist Folie 21 (der Loop). Kapitel 4 ist Folie 22 (Reasoning innen drin). Kapitel 5 ist Folie 33 (MCP/A2A). Kapitel 6 ist Folie 37 (das Urteil).
+Innerhalb von *The Computational Minimum* ist dieser Teil außerdem die **System-Fortsetzung** zu [`../03_AgenticSystems/README.md`](../03_AgenticSystems/README.md): Dort geht es stärker um die Frage, wie moderne LLMs durch Training, Alignment und Skalierung entstanden sind; hier geht es um die Frage, was Entwickler dann **mit ihnen bauen**.
+
+Wenn du den Foliensatz kennst: die Kapitel-Reihenfolge folgt genau dem Bogen des Talks. Kapitel 1 ist Folie 4-7 (P1 in Aktion). Kapitel 2 ist Folie 8-10 (das erste JSON, der erste Plan). Kapitel 3 ist Folie 21 (der Loop). Kapitel 4 ist Folie 22 (Reasoning innen drin). Kapitel 5 ist Folie 33 (MCP/A2A). Kapitel 6 ist Folie 37 (das Urteil). Kapitel 7 ist die zugespitzte 2026-Fortsetzung: Tool-Making und Runtime-Code-Generierung.
 
 Wenn du den Foliensatz nicht kennst: du brauchst ihn nicht. Der Code steht für sich.
 
