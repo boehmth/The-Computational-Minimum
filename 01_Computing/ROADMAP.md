@@ -78,7 +78,7 @@ Nach diesen sechs Meilensteinen ist die klassische *„wie funktioniert ein Comp
 
 - **[`02_MachineIntelligence/`](../02_MachineIntelligence/)** — Die 60 Jahre KI-Forschung von 1958 bis 2018 — vom Perceptron bis zum ersten GPT. Die neuronalen Netze, die wir dort bauen, laufen konzeptionell auf denselben Grundprinzipien: sie werden vom Compiler in Instruktionen übersetzt, laufen auf CPUs (bzw. deren skalierter Verwandtschaft, den GPUs), werden vom OS orchestriert und kommunizieren über Netzwerke.
 
-- **[`03_AgenticSystems/`](../03_AgenticSystems/)** — Anwendungen und Skalierung: wie aus einem Mini-GPT die heutigen LLMs, Agenten und Domänen-Modelle wurden.
+- **[`03_LanguageModelling/`](../03_LanguageModelling/)** — Anwendungen und Skalierung: wie aus einem Mini-GPT die heutigen LLMs, Agenten und Domänen-Modelle wurden.
 
 Wer alle drei Teile durchgearbeitet hat, versteht: **die letzten 80 Jahre Informatik sind eine einzige zusammenhängende Erzählung.** Nichts ist Magie, alles ist gebaut.
 

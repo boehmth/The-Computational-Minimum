@@ -1,0 +1,2682 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen Sprachmodell, alles selbst geschrieben ohne Frameworks.
+">
+      
+      
+        <meta name="author" content="Dr. Thilo Böhm">
+      
+      
+        <link rel="canonical" href="https://boehmt.github.io/The-Computational-Minimum/01_Computing/01_CPU/">
+      
+      
+        <link rel="prev" href="../00_Fundament/">
+      
+      
+        <link rel="next" href="../02_OS/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>01 · CPU - The Computational Minimum</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#der-anfang-wie-kommt-aus-einem-kabelbaum-eine-rechenmaschine" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="The Computational Minimum" class="md-header__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Computational Minimum
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              01 · CPU
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu dunklem Modus wechseln"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Zu dunklem Modus wechseln" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu hellem Modus wechseln"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Zu hellem Modus wechseln" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Startseite
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../PREFACE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Vorwort
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../STYLE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Style-Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil I · Computing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../grundlagen/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Grundlagen (Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../02_MachineIntelligence/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil II · Maschinelle Intelligenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../03_LanguageModelling/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil III · Entwicklung der Sprachmodelle
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../04_AgenticSystems/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil IV · Agentic Systems
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="The Computational Minimum" class="md-nav__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    The Computational Minimum
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startseite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PREFACE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorwort
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STYLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Style-Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil I · Computing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil I · Computing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_Fundament/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Fundament
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#der-anfang-wie-kommt-aus-einem-kabelbaum-eine-rechenmaschine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌉 Der Anfang: Wie kommt aus einem Kabelbaum eine Rechenmaschine?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-aufgabe-rechne-3-4-1-und-zeige-das-ergebnis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Die Aufgabe: „Rechne (3 + 4) − 1 und zeige das Ergebnis"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architektur-des-frameworks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧩 Architektur des Frameworks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-ablauf-pro-takt-drei-bus-schleifen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚙️ Der Ablauf pro Takt (drei Bus-Schleifen)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-startest-du-das-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ▶️ So startest du das Programm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispielausgabe-akku-cpu-acc_addasm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📈 Beispielausgabe (Akku-CPU, acc_add.asm)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-minimal-cpu-nur-inc-und-not-und-trotzdem-alles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🪶 Die Minimal-CPU: nur INC und NOT — und trotzdem alles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ehrliche-diskussion-was-zeigt-dieses-modell-und-was-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❗ Ehrliche Diskussion: Was zeigt dieses Modell — und was nicht?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-steht-die-4-bit-cpu-heute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo steht die 4-Bit-CPU heute?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abschlieende-bemerkungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Abschließende Bemerkungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nachste-kapitel-compiler-und-betriebssystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Nächste Kapitel: Compiler und Betriebssystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_OS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · Betriebssystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_Compiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · Compiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_PerceptronOnCPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · Perceptron auf CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_GPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · GPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_Networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Netzwerk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../grundlagen/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grundlagen (Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grundlagen (Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grundlagen/schaltnetze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schaltnetze und Schaltwerke
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grundlagen/von_neumann/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Von-Neumann-Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grundlagen/moderne_prozessoren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderne Prozessoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../02_MachineIntelligence/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/01_Perceptron/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 · Perceptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/02_MLP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 · Multi-Layer-Perzeptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/03_CNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.3 · CNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/04_Word2Vec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/05_RNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.5 · RNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/06_Seq2Seq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.6 · Seq2Seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/07_Transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../03_LanguageModelling/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/01_TinyGPT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 · TinyGPT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/02_TinyInstruct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.2 · TinyInstruct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/03_TinyChat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/04_TinyMoE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.4 · TinyMoE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/05_TinyReason/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.5 · TinyReason
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../04_AgenticSystems/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil IV · Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil IV · Agentic Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/01_TextInTextOut/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 · Text-in / Text-out
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/02_ToolsAndPlanning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.2 · Tools & Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/03_TheLoop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.3 · Der Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/04_ReasoningInside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.4 · Reasoning innen drin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/05_ProtocolsAndScale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.5 · Protokolle & Skalierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/06_WhenNotToBuild/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.6 · Wann NICHT bauen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/07_DynamicToolAgent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#der-anfang-wie-kommt-aus-einem-kabelbaum-eine-rechenmaschine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌉 Der Anfang: Wie kommt aus einem Kabelbaum eine Rechenmaschine?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-aufgabe-rechne-3-4-1-und-zeige-das-ergebnis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Die Aufgabe: „Rechne (3 + 4) − 1 und zeige das Ergebnis"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architektur-des-frameworks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧩 Architektur des Frameworks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-ablauf-pro-takt-drei-bus-schleifen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚙️ Der Ablauf pro Takt (drei Bus-Schleifen)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-startest-du-das-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ▶️ So startest du das Programm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispielausgabe-akku-cpu-acc_addasm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📈 Beispielausgabe (Akku-CPU, acc_add.asm)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-minimal-cpu-nur-inc-und-not-und-trotzdem-alles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🪶 Die Minimal-CPU: nur INC und NOT — und trotzdem alles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ehrliche-diskussion-was-zeigt-dieses-modell-und-was-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❗ Ehrliche Diskussion: Was zeigt dieses Modell — und was nicht?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-steht-die-4-bit-cpu-heute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo steht die 4-Bit-CPU heute?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abschlieende-bemerkungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Abschließende Bemerkungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nachste-kapitel-compiler-und-betriebssystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Nächste Kapitel: Compiler und Betriebssystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>01 · CPU</h1>
+
+<p align="center">
+  <img src="assets/title.svg" alt="01 · CPU — Autobahn der Bits" width="100%"/>
+</p>
+
+<p align="center">
+  <img src="assets/cover.png" alt="Autobahn-inspirierte Illustration: der CPU-Bus als breite Straße, Register/ALU/PC als Blöcke daran angeschlossen, Instruktionen als Chevron-Pfeile in einer Kolonne." width="90%"/>
+</p>
+
+<p><em>Bus = Autobahn ◆ Register/ALU/PC = Anschlussblöcke ◆ Instruktionen = Fahrzeuge in Kolonne ◆ Takt = Kilometersteine.</em></p>
+<p>──────────◆──────────◆──────────◆──────────◆──────────</p>
+<blockquote>
+<p>Eine funktionierende <strong>Rechenmaschine mit 4-Bit-Registern, ALU, RAM, Program Counter, Instruction Register und mikrocode­gesteuerter Control Unit</strong> — alles in einer einzigen, kommentiert-lesbaren Python-Datei. Und darunter eine <strong>radikal minimale Variante</strong>: nur <em>ein</em> Register (ACC), eine ALU mit <em>zwei</em> Operationen (INC + NOT), und trotzdem <strong>Turing-vollständig</strong>. Alles, was du an einem echten Prozessor je gesehen hast — Pipeline, Cache, Multicore, GPU — ist nur <em>Skalierung</em> dieser einen Idee.</p>
+</blockquote>
+<hr />
+<h2 id="der-anfang-wie-kommt-aus-einem-kabelbaum-eine-rechenmaschine">🌉 Der Anfang: Wie kommt aus einem Kabelbaum eine Rechenmaschine?<a class="headerlink" href="#der-anfang-wie-kommt-aus-einem-kabelbaum-eine-rechenmaschine" title="Permanent link">¶</a></h2>
+<p>1945 schreibt <strong>John von Neumann</strong> in seinem <em>First Draft of a Report on the EDVAC</em> die Blaupause auf, die bis heute jedem Computer zugrunde liegt: <strong>Programm und Daten in demselben Speicher</strong>, eine <strong>arithmetisch-logische Einheit (ALU)</strong>, ein <strong>Programmzähler (PC)</strong>, ein <strong>Instruktionsregister (IR)</strong> — und ein zentrales Steuerwerk, das aus dem Bit-Muster des aktuellen Befehls eine Folge von <em>Mikroschritten</em> macht: hole den Befehl, dekodiere ihn, führe ihn aus.</p>
+<p>Zehn Jahre später, 1955, verlegt <strong>Maurice Wilkes</strong> in Cambridge diesen Steuerteil als <em>Mikrocode</em> in einen <strong>eigenen kleinen ROM</strong>: die Control Unit ist damit selbst wieder ein winziger Rechner, dessen Programm die <em>Bedeutung der Befehle</em> ist. Und noch einmal ein Jahrzehnt später, 1971, packt <strong>Intel</strong> das alles in einen einzigen Chip (den 4004) — mit erstaunlich ähnlicher Architektur wie diese Simulation: <strong>4-Bit-Datenbus, 4-Bit-Register, ein Akkumulator</strong>.</p>
+<p>In diesem Meilenstein programmieren wir genau dieses Modell — als <strong>framework­artigen Baukasten</strong>, in dem verschiedene CPU-Varianten wie <em>Konfigurationen</em> aussehen: dieselben drei Bus-Schleifen, derselbe Mikrocode-Dekoder, aber jede Variante hat einen anderen Satz an Registern, ALU-Operationen und Befehlen.</p>
+<p>So schlicht das Design auch ist — es enthält bereits alle Bausteine, die einen Computer zu einem Computer machen: <strong>Speicher, Rechnen, Kontrollfluss, ein einzelner Bus</strong> und eine <strong>fest verdrahtete Regel, wie aus einem Bit-Muster ein Verhalten wird</strong>.</p>
+<blockquote>
+<p><strong>📚 Wer verstehen will, wie die einzelnen Bausteine unterhalb dieser
+Simulation elektronisch zusammenkommen — UND/ODER/NICHT, Halb- und
+Volladdierer, Flip-Flops, Tri-State-Gatter und der Bus als
+Konfliktressource — findet die ausführliche Herleitung im Deep Dive
+<a href="../grundlagen/schaltnetze/">→ Schaltnetze und Schaltwerke</a>.</strong></p>
+<p><strong>Und für die formale Definition der Von-Neumann-Architektur (was ein
+Computer als Automat <em>ist</em>, wie Fetch und Execute mathematisch
+zusammengehören, wie Mikrocode am 4-Bit-Beispiel Schritt für Schritt
+aussieht):</strong> <a href="../grundlagen/von_neumann/">→ Die Von-Neumann-Architektur</a>.</p>
+</blockquote>
+<h2 id="historischer-kontext">🕰️ Historischer Kontext<a class="headerlink" href="#historischer-kontext" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Jahr</th>
+<th>Ereignis</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1936</strong></td>
+<td>Alan Turing: <em>On Computable Numbers</em></td>
+<td>Definiert die <em>Universal­maschine</em> — jede berechenbare Funktion ist mit unbeschränkter Zeit und einem Band voll Symbolen realisierbar</td>
+</tr>
+<tr>
+<td><strong>1945</strong></td>
+<td>John von Neumann: <em>First Draft, EDVAC</em></td>
+<td>Programm und Daten im selben Speicher; ALU, PC, IR, Control Unit als getrennte Bausteine</td>
+</tr>
+<tr>
+<td><strong>1949</strong></td>
+<td>EDSAC (Cambridge)</td>
+<td>Erster praktisch funktionierender Computer nach der Von-Neumann-Architektur</td>
+</tr>
+<tr>
+<td><strong>1955</strong></td>
+<td>Maurice Wilkes: Mikrocode</td>
+<td>Steuerung der ALU/Register durch ein <em>inneres Programm</em> im Control-Store — die Idee dieser Simulation</td>
+</tr>
+<tr>
+<td><strong>1971</strong></td>
+<td><strong>Intel 4004</strong></td>
+<td>Der erste kommerzielle Ein-Chip-Prozessor: <strong>4-Bit-CPU, 640 Bytes RAM, 108 kHz</strong> — die direkte Vorlage für dieses Modell</td>
+</tr>
+<tr>
+<td><strong>1976</strong></td>
+<td>Wozniak: Apple I</td>
+<td>Zeigt, dass ein einzelner Mensch mit 6502 (8-Bit) einen Personal Computer bauen kann</td>
+</tr>
+<tr>
+<td><strong>heute</strong></td>
+<td>Milliarden Transistoren, GPUs</td>
+<td>Alles nur <em>Skalierung</em> derselben Grundidee: Register, ALU, Speicher, Bus, Control Unit</td>
+</tr>
+</tbody>
+</table>
+<p>Der 4-Bit-Prozessor ist damit <strong>kein historisches Kuriosum</strong>, sondern der elementare Baustein, aus dem alle modernen Computer aufgebaut sind — inklusive derjenigen, auf denen die neuronalen Netze aus Teil 2 dieses Projekts trainiert werden.</p>
+<hr />
+<h2 id="die-aufgabe-rechne-3-4-1-und-zeige-das-ergebnis">🧠 Die Aufgabe: „Rechne (3 + 4) − 1 und zeige das Ergebnis"<a class="headerlink" href="#die-aufgabe-rechne-3-4-1-und-zeige-das-ergebnis" title="Permanent link">¶</a></h2>
+<p>Das minimalste Programm für unsere Akku-CPU liest sich fast wie Pseudocode:</p>
+<div class="language-asm highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">LDI</span><span class="w"> </span><span class="mi">3</span><span class="w">        </span><span class="c1">; ACC ← 3</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nf">ADD</span><span class="w"> </span><span class="mi">4</span><span class="w">        </span><span class="c1">; ACC ← ACC + 4      (Operand kommt direkt aus IR)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nf">SUB</span><span class="w"> </span><span class="mi">1</span><span class="w">        </span><span class="c1">; ACC ← ACC − 1  = 6</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nf">STA</span><span class="w"> </span><span class="mi">5</span><span class="w">        </span><span class="c1">; RAM[5] ← ACC</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nf">LDI</span><span class="w"> </span><span class="mi">0</span><span class="w">        </span><span class="c1">; ACC ← 0</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nf">LDA</span><span class="w"> </span><span class="mi">5</span><span class="w">        </span><span class="c1">; ACC ← RAM[5]   (= 6)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nf">OUT</span><span class="w">          </span><span class="c1">; OUT-Register ← ACC</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nf">HLT</span>
+</span></code></pre></div>
+<p>Auffällig: es gibt kein Zwischenregister. Der zweite Operand für <code>ADD</code>/<code>SUB</code> kommt <strong>direkt aus dem Instruction Register</strong> — das enthält nach dem Fetch ohnehin schon den Operanden des aktuellen Befehls. Ein extra <code>TMP</code>-Register wäre redundant. Diese Architektur heißt klassisch <strong>Akkumulator-Maschine</strong> (SAP-1, Intel 4004, 8-Bit-Mikros wie 6502/8080).</p>
+<p>Auf einer echten CPU braucht das folgende Schritte:</p>
+<ol>
+<li><strong>Fetch</strong>: der Program Counter zeigt auf <code>LDI 3</code>. Die Control Unit liest den Befehl, füllt das Instruction Register mit der <code>3</code> und erhöht den Program Counter.</li>
+<li><strong>Execute</strong>: die Control Unit schaltet zwei Gates am Bus — das IR schreibt seine <code>3</code> auf den Bus, ACC liest sie ab.</li>
+<li>Und so weiter — jeder Befehl wird in <strong>kleinere Mikroschritte</strong> zerlegt, jeder Mikroschritt aktiviert nur ein paar wenige Steuerleitungen gleichzeitig.</li>
+</ol>
+<p>Unsere Simulation zeigt genau diese Zerlegung — live, mit farbigen Boxen, einem sichtbaren Bus, einem Program Counter, der pro Takt weiterspringt, und einer Mikrocode-Tabelle, in der man den aktuellen Schritt markiert sieht.</p>
+<p><strong>Warum diese Aufgabe?</strong> Sie ist minimal, aber vollständig:</p>
+<ol>
+<li><strong>Immediate-Load</strong> (<code>LDI</code>, <code>LDT</code>) — zeigt, wie eine Konstante aus dem Instruction Register auf den Bus kommt.</li>
+<li><strong>ALU-Nutzung</strong> (<code>ADD</code>) — zeigt Register→ALU→Register über den Bus.</li>
+<li><strong>Speicherzugriff</strong> (<code>STA</code>, <code>LDA</code>) — zeigt RAM als <em>echten</em> Bus-Teilnehmer, nicht nur als Zahlen­feld.</li>
+<li><strong>Halt</strong> (<code>HLT</code>) — zeigt, wie ein reines <em>Aktionssignal</em> (kein Datenfluss) die CPU stoppt.</li>
+</ol>
+<hr />
+<h2 id="architektur-des-frameworks">🧩 Architektur des Frameworks<a class="headerlink" href="#architektur-des-frameworks" title="Permanent link">¶</a></h2>
+<p>Bevor wir auf die Python-Klassen schauen, lohnt sich ein Blick auf das
+Grundprinzip: Eine CPU ist im Kern ein <strong>Zustandsautomat</strong>.</p>
+<ul>
+<li>Der <strong>Zustand</strong> besteht aus den aktuellen Inhalten von PC, IR, ACC, RAM,
+  OUT und den übrigen Registern.</li>
+<li>In jedem Takt erzeugt die <strong>Control Unit</strong> ein <strong>Steuerwort</strong>.</li>
+<li>Dieses Steuerwort sagt, welche Ausgänge und Eingänge geöffnet sind: Wer darf
+  auf den Bus schreiben? Wer darf vom Bus lesen? Welche ALU-Operation ist
+  aktiv? Soll der Program Counter erhöht werden? Ist der Befehl fertig?</li>
+<li>Dadurch entsteht für genau diesen Takt ein kontrollierter <strong>Datenfluss</strong>:
+  ein Wert wandert aus Speicher, Register oder ALU auf den Bus und von dort in
+  ein Zielregister oder zurück in den Speicher.</li>
+</ul>
+<p>Ein <strong>Maschinenbefehl</strong> wie <code>ADD 4</code> ist also nicht „magisch". Er ist eine kurze
+Folge solcher Steuerworte. Diese inneren Mini-Befehle heißen <strong>Mikrocode</strong>.
+Der <strong>Decoder</strong> liest den Opcode des aktuellen Maschinenbefehls und schlägt im
+Mikrocode-ROM nach, welche Steuerworte nacheinander ausgeführt werden müssen.</p>
+<p>Das Framework besteht aus <strong>wiederverwendbaren Bausteinen</strong> und
+<strong>CPU-Konfigurationen</strong>, die diese Bausteine unterschiedlich zusammensetzen:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌────────────────────────────────────────────────────────────────────────────┐
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│                              Steuerwerk                                    │
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│                                                                            │
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   Opcode im IR ─→ Decoder ─→ Mikrocode-ROM ─→ Steuerwort pro Takt          │
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│                                                                            │
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│   Beispiel: { IR_OUT, ACC_IN, END }                                        │
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│   heißt: IR darf senden, ACC darf lesen, der Maschinenbefehl ist fertig.   │
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>└──────────────────────────────────┬─────────────────────────────────────────┘
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>                                   │ Steuersignale öffnen/schließen Gates
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                                   ▼
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>┌────────────────────────────────────────────────────────────────────────────┐
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│                             CPU-Zustand                                    │
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│                                                                            │
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐          │
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>│   │   PC   │   │   IR   │   │  ACC   │   │  RAM   │   │  OUT   │   ...    │
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>│   └───┬────┘   └───┬────┘   └───┬────┘   └───┬────┘   └───┬────┘          │
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>│       │            │            │            │            │               │
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>│       └────────────┴────────────┼────────────┴────────────┘               │
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>│                                  │                                          │
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>│                         4-Bit-Datenbus                                     │
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>│                                  │                                          │
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>│                            ┌─────┴─────┐                                    │
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>│                            │    ALU    │                                    │
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>│                            └───────────┘                                    │
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>│                                                                            │
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>│   Ein Takt später: neuer Zustand in PC, IR, ACC, RAM, OUT, ...             │
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>└────────────────────────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<p>Der wichtige Zusammenhang ist: <strong>Das Steuerwort verändert nicht direkt die
+Daten. Es verändert die Verbindungen.</strong> Es öffnet und schließt Gates. Erst
+dadurch kann ein Wert auf dem Bus fließen und am Ende des Takts in einem neuen
+Registerzustand landen.</p>
+<p>Ein einfacher Befehl wie <code>LDI 3</code> wird zum Beispiel so ausgeführt:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Ebene</th>
+<th style="text-align: left;">Was steht dort?</th>
+<th style="text-align: left;">Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Maschinenbefehl</td>
+<td style="text-align: left;"><code>LDI 3</code></td>
+<td style="text-align: left;">Lade die Konstante 3 in den Akkumulator</td>
+</tr>
+<tr>
+<td style="text-align: left;">Opcode im IR</td>
+<td style="text-align: left;"><code>LDI</code></td>
+<td style="text-align: left;">Der Decoder erkennt: Dafür brauche ich den Mikrocode von <code>LDI</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Steuerwort</td>
+<td style="text-align: left;"><code>{ IR_OUT, ACC_IN, END }</code></td>
+<td style="text-align: left;">IR legt den Operanden <code>3</code> auf den Bus, ACC übernimmt ihn</td>
+</tr>
+<tr>
+<td style="text-align: left;">Neuer Zustand</td>
+<td style="text-align: left;"><code>ACC = 3</code></td>
+<td style="text-align: left;">Der nächste Maschinenbefehl kann beginnen</td>
+</tr>
+</tbody>
+</table>
+<p>Bei komplexeren Befehlen besteht der Maschinenbefehl aus mehreren
+Steuerworten. Deshalb kann man sagen: <strong>Maschinencode wird intern in Mikrocode
+zerlegt</strong>. In dieser Simulation ist diese Zerlegung sichtbar, statt in einem
+Chip verborgen zu sein.</p>
+<p>Die <strong>Konfiguration</strong> entscheidet dabei, welche konkreten Bausteine existieren:
+Welche Register gibt es? Welche ALU-Operationen sind erlaubt? Und welcher
+Opcode wird auf welche Steuerwort-Folge abgebildet?</p>
+<p>Mathematisch lässt sich ein Takt so beschreiben:</p>
+<div class="arithmatex">\[
+\text{signals}_t = \text{decode}\bigl(\text{opcode}_t,\ \text{step}_t\bigr)
+\]</div>
+<div class="arithmatex">\[
+\text{bus}_t = \bigvee_{e \in E}\ (e \text{ ist OUT-Treiber in } \text{signals}_t \to \text{value}(e))
+\]</div>
+<div class="arithmatex">\[
+\forall e: \text{value}(e)_{t+1} =
+\begin{cases}
+\text{bus}_t &amp; \text{wenn } e \text{ IN-Empfänger in } \text{signals}_t \\
+\text{value}(e)_t &amp; \text{sonst}
+\end{cases}
+\]</div>
+<ul>
+<li>Der <strong>Bus</strong> ist die zentrale Datenautobahn: pro Takt darf <strong>höchstens ein</strong> Element schreiben (<code>OUT</code>), beliebig viele lesen (<code>IN</code>).</li>
+<li>Der <strong>Mikrocode-ROM</strong> bildet jeden Opcode auf eine <strong>Liste von 1–4 Steuerwörtern</strong> ab. Ein Steuerwort ist einfach die Menge der Signale, die in diesem Takt aktiv sind (z.B. <code>{ACC_IN, ALU_OUT, ALU_ADD, END}</code>).</li>
+<li><strong><code>FETCH</code></strong> (Step 0) ist bei allen Befehlen identisch und daher fest verdrahtet, nicht im ROM.</li>
+</ul>
+<p><strong>Größenordnungen der drei mitgelieferten CPUs:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Eigenschaft</th>
+<th style="text-align: left;"><em>Minimal</em></th>
+<th style="text-align: left;"><em>Akku (SAP-1)</em></th>
+<th style="text-align: left;"><em>Two-Reg (AX+BX)</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Register</td>
+<td style="text-align: left;">1 (ACC)</td>
+<td style="text-align: left;">1 (ACC)</td>
+<td style="text-align: left;">2 (AX + BX)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Zweiter ALU-Operand</td>
+<td style="text-align: left;">– (unär)</td>
+<td style="text-align: left;">IR (Immediate)</td>
+<td style="text-align: left;">BX (Register)</td>
+</tr>
+<tr>
+<td style="text-align: left;">ALU-Ops</td>
+<td style="text-align: left;">2 (INC, NOT)</td>
+<td style="text-align: left;">2 (ADD, SUB)</td>
+<td style="text-align: left;">2 (ADD, SUB)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Opcodes</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ausdrucks-Modell</td>
+<td style="text-align: left;">Turing-Kern</td>
+<td style="text-align: left;">Immediate-Ops</td>
+<td style="text-align: left;">Register-Register</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>(a + b)</code>, a,b in RAM</td>
+<td style="text-align: left;">Schleife</td>
+<td style="text-align: left;">via RAM</td>
+<td style="text-align: left;">direkt (<code>LDA a; LDBM b; ADD</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Der springende Punkt:</strong> <em>acc</em> und <em>two-reg</em> sehen auf den ersten Blick ähnlich aus (beide 1 Zielregister, beide 2 ALU-Ops), sind aber in dem Sinne, was man <strong>elegant ausdrücken kann</strong>, sehr unterschiedlich:</p>
+<ul>
+<li><strong>acc</strong> kann in einem Befehl nur „Register + Konstante" rechnen. Für „Register + Register" (also <code>a + b</code>, beides Variablen) muss man den einen Operanden zwischendurch in RAM ablegen und zurückladen.</li>
+</ul>
+<hr />
+<h2 id="der-ablauf-pro-takt-drei-bus-schleifen">⚙️ Der Ablauf pro Takt (drei Bus-Schleifen)<a class="headerlink" href="#der-ablauf-pro-takt-drei-bus-schleifen" title="Permanent link">¶</a></h2>
+<p>Jeder Takt besteht aus exakt fünf Schritten:</p>
+<ol>
+<li><strong>CU liefert Steuerwort</strong> — die Control Unit fragt ihren Mikrocode-ROM: „was ist der aktuelle Schritt für den aktuellen Opcode?" Das Ergebnis ist eine Menge von Signalen wie <code>{ACC_OUT, RAM_IN, END}</code>.</li>
+<li><strong><code>set_gates</code></strong> — jedes Element bekommt sein Gate anhand seines Namens: <code>ACC</code> mit dem Signal <code>ACC_OUT</code> steht auf <strong>OUT</strong>, <code>RAM</code> mit <code>RAM_IN</code> steht auf <strong>IN</strong>, alle anderen sind <strong>NONE</strong>.</li>
+<li><strong>ALU rechnet</strong> <em>(vor dem Bus)</em> — das ist wichtig: die ALU liest die <em>aktuellen</em> Register-Werte, nicht den Bus. Sonst würde <code>ACC += 1</code> zu <code>ACC += 2</code> werden.</li>
+<li><strong><code>write_bus</code></strong> — der eine OUT-Treiber legt seinen Wert auf den Bus. Mehr als ein OUT-Signal ergibt einen <strong>Bus-Konflikt</strong> und die Simulation stoppt mit Fehler — genau wie an echter Hardware, wo das ein Kurzschluss wäre.</li>
+<li><strong><code>read_bus</code></strong> — alle IN-Empfänger übernehmen den Bus-Wert in ihr Register.</li>
+<li><strong>Post-Bus-Aktionen</strong> — Program Counter erhöhen (<code>CE</code>), CPU anhalten (<code>HLT</code>).</li>
+<li><strong>Step-Counter weiter</strong> — wenn <code>END</code> im Steuerwort war → zurück auf 0 (nächster Befehl), sonst +1 (nächster Mikroschritt).</li>
+</ol>
+<p>Das ist alles. Jeder komplexe Prozessor der Welt macht im Kern genau das — nur mit deutlich mehr Registern, breiteren Bussen, mehreren ALUs parallel, Pipeline-Stufen und einem Cache dazwischen.</p>
+<hr />
+<h2 id="so-startest-du-das-programm">▶️ So startest du das Programm<a class="headerlink" href="#so-startest-du-das-programm" title="Permanent link">¶</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>CPU/src
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>python<span class="w"> </span>cpu_sim.py<span class="w">                                    </span><span class="c1"># Akku-CPU + Default-Programm</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>python<span class="w"> </span>cpu_sim.py<span class="w"> </span>acc<span class="w">     </span>programs/acc_add.asm
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>python<span class="w"> </span>cpu_sim.py<span class="w"> </span>minimal<span class="w"> </span>programs/minimal_count.asm
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>python<span class="w"> </span>cpu_sim.py<span class="w"> </span>two_reg<span class="w"> </span>programs/two_reg_add.asm<span class="w">   </span><span class="c1"># Register-Register-Ops (AX+BX)</span>
+</span></code></pre></div>
+<p>Das Programm:</p>
+<ol>
+<li>lädt die gewählte <strong>CPU-Konfiguration</strong> (<code>acc</code>, <code>minimal</code> oder <code>two_reg</code>),</li>
+<li>lädt das gewünschte <strong>Assembler-Programm</strong> aus einer <code>.asm</code>-Datei (oder aus dem eingebauten Default, wenn du keins angibst),</li>
+<li>rendert das Panel <strong>live im Terminal</strong>: Register, ALU, Bus, Program Counter, RAM, Control Unit und einen kombinierten Decoder + Mikrocode-ROM,</li>
+<li>läuft Takt für Takt, hebt farbig hervor, wer gerade <strong>sendet</strong> (grün), wer <strong>liest</strong> (cyan) und welcher <strong>Mikroschritt</strong> gerade abgearbeitet wird (magenta).</li>
+</ol>
+<p>Voraussetzung: <strong>Python 3.7+</strong>, keine externen Abhängigkeiten. Für die farbigen Boxen ein ANSI-fähiges Terminal (Windows Terminal, PowerShell 7+, alles Unix-ähnliche).</p>
+<p>Selbst-Test von der Wurzel <code>CPU/</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>test_configs.py
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># → beide CPUs headless laufen lassen, Ergebnisse pruefen</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="beispielausgabe-akku-cpu-acc_addasm">📈 Beispielausgabe (Akku-CPU, <code>acc_add.asm</code>)<a class="headerlink" href="#beispielausgabe-akku-cpu-acc_addasm" title="Permanent link">¶</a></h2>
+<p>Nach 16 Takten:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>╔ PC ════════════╗  ╔ ACC ═══════════╗  ╔ IR ════════════╗  ╔ ALU ═══════════╗  ╔ OUT ═══════════╗
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>║ 8  0b1000      ║  ║ 6  0b0110      ║  ║ 0  0b0000      ║  ║ 6  0b0110      ║  ║ 6  0b0110      ║
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>║ program counter║  ║ 4-bit register ║  ║ operand field  ║  ║ ADD  C=0       ║  ║ 4-bit register ║
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>╚════════════════╝  ╚════════════════╝  ╚════════════════╝  ╚════════════════╝  ╚════════════════╝
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>═══════════════════════════ BUS ═══════════════════════════
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>╔ RAM 16x4 ══════════════════════════════╗    ╔ ControlUnit ═══════════════════════════════╗
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>║     0   1   2   3                      ║    ║ phase=HALT   step=[*][ ][ ][ ]             ║
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>║ 0:  0   0   0   0                      ║    ║ opcode=HLT   operand=0   carry=0           ║
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>║ 1:  0   0   0   0                      ║    ║ CE          PC_IN       ACC_IN     ACC_OUT ║
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>║ 5:  6                                  ║    ║ ALU_OUT     ALU_ADD     ALU_SUB    IR_OUT  ║
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>╚════════════════════════════════════════╝    ║ RAM_IN      RAM_OUT     OUT_IN     HLT     ║
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>                                              ║ END                                        ║
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>                                              ╚════════════════════════════════════════════╝
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a> ► CPU angehalten. Ergebnis: ACC=6  OUT=6  RAM=[5:6]
+</span></code></pre></div>
+<p><strong>Und der Star des Kapitels — die Mikroschritt-Zerlegung:</strong></p>
+<p>Für den Befehl <code>ADD</code> liest man in der Decoder-View:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ADD   ACC ← ACC + imm   1: { ACC_IN, ALU_ADD, ALU_OUT, END }
+</span></code></pre></div>
+<p>Das ist <em>ein einziger</em> Mikroschritt: das Signal <code>ALU_ADD</code> wählt die Addition, die ALU rechnet <code>ACC + IR</code> (der zweite Operand ist direkt der Instruktions-Operand), <code>ALU_OUT</code> treibt das Ergebnis auf den Bus, <code>ACC_IN</code> übernimmt es. Und mit <code>END</code> weiß die Control Unit: nächster Befehl. Das ist es. Es gibt keine geheime Ebene darunter.</p>
+<hr />
+<h2 id="die-minimal-cpu-nur-inc-und-not-und-trotzdem-alles">🪶 Die Minimal-CPU: nur INC und NOT — und trotzdem alles<a class="headerlink" href="#die-minimal-cpu-nur-inc-und-not-und-trotzdem-alles" title="Permanent link">¶</a></h2>
+<p>Die zweite mitgelieferte Konfiguration ist eine <strong>radikal reduzierte</strong> CPU:</p>
+<ul>
+<li><strong>ein einziges Register</strong> (ACC),</li>
+<li><strong>eine ALU mit zwei Operationen</strong>: <code>INC</code> (ACC + 1) und <code>NOT</code> (bitweises Invertieren),</li>
+<li><strong>kein zweiter Operand</strong>, kein ADD, kein SUB.</li>
+</ul>
+<p>Alles, was man an gewöhnlicher Arithmetik gewohnt ist, muss man daraus <strong>konstruieren</strong>:</p>
+<ul>
+<li><strong>Addition</strong> von <span class="arithmatex">\(n\)</span> zu ACC: <code>n</code>-mal <code>INC</code> in einer Schleife.</li>
+<li><strong>Negation</strong> (–x) in 2 Takten: <code>NOT</code> (→ Einerkomplement) + <code>INC</code> (→ Zweierkomplement). In 4-Bit-Arithmetik gilt: <code>-5 = NOT(5) + 1 = 0xA + 1 = 0xB</code>.</li>
+<li><strong>Subtraktion</strong> <span class="arithmatex">\(a - b\)</span>: negiere <span class="arithmatex">\(b\)</span>, dann addiere.</li>
+<li><strong>Multiplikation</strong>, <strong>Division</strong>, <strong>Modulo</strong>: verschachtelte Schleifen.</li>
+</ul>
+<p>Das Beispielprogramm <code>minimal_count.asm</code> zählt in einer Schleife von 0 bis 5, indem es einen Loop-Counter (RAM[1]) auf <span class="arithmatex">\(-5\)</span> initialisiert und pro Durchgang mit <code>INC</code> Richtung 0 laufen lässt. Beendet wird die Schleife per <code>JZ</code> (jump if zero) — die einzige bedingte Instruktion.</p>
+<p>Diese Minimal-CPU ist ausreichend, um <strong>jede berechenbare Funktion</strong> zu implementieren (Church–Turing). Man braucht mehr <em>Zeit</em> und mehr <em>RAM</em>, aber nichts qualitativ Neues. Genau das ist der Punkt: <strong>alles, was ein moderner Prozessor mehr kann, ist Skalierung</strong> — mehr Register, breitere Datenpfade, mehr ALU-Operationen, Pipeline, Cache, Multicore. Aber keine dieser Erweiterungen fügt eine neue <em>Klasse</em> von Berechnung hinzu.</p>
+<p>Das ist eine schöne Parallele zum ersten Meilenstein von Teil 2 dieses Projekts:</p>
+<blockquote>
+<p><strong>Perceptron → GPT</strong> ist Skalierung <em>eines</em> Neurons.
+<strong>Minimal-CPU → moderner Prozessor</strong> ist Skalierung <em>einer</em> Rechen-Einheit.</p>
+</blockquote>
+<p>Beide Male: kein Rätsel, keine geheime Schicht — nur <em>mehr davon</em>.</p>
+<hr />
+<h2 id="ehrliche-diskussion-was-zeigt-dieses-modell-und-was-nicht">❗ Ehrliche Diskussion: Was zeigt dieses Modell — und was nicht?<a class="headerlink" href="#ehrliche-diskussion-was-zeigt-dieses-modell-und-was-nicht" title="Permanent link">¶</a></h2>
+<p><strong>Was es korrekt zeigt:</strong></p>
+<ul>
+<li>Die <strong>Von-Neumann-Architektur</strong> (Programm und Daten im selben Speicher, ALU, PC, IR, CU).</li>
+<li>Das <strong>Mikroprogramm-Prinzip</strong> (Wilkes 1955): jeder Befehl wird intern in kleinere Steuerworte zerlegt.</li>
+<li>Den <strong>Bus als Konfliktressource</strong>: nur ein Sender pro Takt, sonst Kurzschluss.</li>
+<li>Die <strong>Trennung zwischen Fetch und Execute</strong> — jeder Befehl braucht ≥2 Takte.</li>
+<li>Die <strong>Turing-Vollständigkeit</strong> kleinster Befehlsätze (Minimal-CPU).</li>
+</ul>
+<p><strong>Was es bewusst <em>nicht</em> zeigt:</strong></p>
+<ul>
+<li><strong>Pipelining</strong> — alle Takte sind hier sequenziell. Echte CPUs überlappen Fetch/Decode/Execute mehrerer Befehle.</li>
+<li><strong>Cache-Hierarchien</strong> — hier gibt es nur einen einstufigen RAM.</li>
+<li><strong>Interrupts</strong> — es gibt kein Konzept „hier passiert etwas außerhalb der CPU, unterbrich den aktuellen Ablauf". Deshalb bleibt in unserem Modell <strong>echtes Multitasking und I/O</strong> unerreichbar.</li>
+<li><strong>Virtueller Speicher</strong> — MMU, Seiten­tabellen, Schutz zwischen Prozessen. Wieder eine Skalierungs­frage.</li>
+<li><strong>Zeitverhalten</strong> — jeder Takt ist ein <code>time.sleep()</code>, nicht ein Nanosekunden-Takt.</li>
+<li><strong>Compiler und Betriebssystem</strong> — folgen im nächsten Ausbau (siehe Ausblick).</li>
+</ul>
+<p>Anders gesagt: diese Simulation zeigt <strong>die Idee</strong>, nicht die technische Perfektion. Und genau das macht sie didaktisch nützlich — man sieht <em>worauf es ankommt</em>, nicht <em>warum ein Intel Core i9 komplizierter ist</em>.</p>
+<hr />
+<h2 id="ubungen">📝 Übungen<a class="headerlink" href="#ubungen" title="Permanent link">¶</a></h2>
+<p><strong>1. Akku-Programm schreiben.</strong> Rechne <span class="arithmatex">\((6 + 3) - 2\)</span> auf der <code>acc</code>-CPU. Wie viele Takte brauchst du? <em>(Erwartung: 5 Instruktionen × 2 Takte = 10 Takte, plus Loads.)</em></p>
+<p><strong>2. Minimal-CPU: Subtraktion.</strong> Berechne <span class="arithmatex">\(7 - 3\)</span> auf der Minimal-CPU. Tipp: erst <code>NOT</code> + <code>INC</code> für <span class="arithmatex">\(-3\)</span>, dann in einer Schleife 3-mal <code>INC</code> auf <span class="arithmatex">\(7\)</span>. Wie viele Takte sind das?</p>
+<p><strong>3. Neue ALU-Operation hinzufügen.</strong> Erweitere <code>config_acc.py</code> um <code>XOR</code> (bitweises XOR von ACC und IR). Das geht in genau 3 Zeilen: neuen <code>ALUOp("XOR", …)</code> in <code>_build_alu</code>, <code>XOR</code>-Opcode im MICROCODE-Dict und ein Eintrag in <code>OPCODE_INFO</code>. Baue anschließend ein Testprogramm, das mit <code>XOR</code> zwei Werte vergleicht.</p>
+<p><strong>4. Neue CPU-Variante bauen.</strong> Erstelle <code>config_no_alu.py</code> — eine CPU, die keine ALU hat, sondern nur Register-Kopien und Speicherzugriffe. Argument: ist diese CPU noch Turing-vollständig? <em>(Antwort: ja, wenn man Speicher als Lookup-Table missbraucht — aber es wird sehr mühsam.)</em></p>
+<p><strong>5. Bus-Konflikt provozieren.</strong> Ändere den Mikrocode so, dass in einem Schritt gleichzeitig <code>ACC_OUT</code> und <code>RAM_OUT</code> gesetzt sind. Was passiert? <em>(Antwort: <code>RuntimeError: Bus-Konflikt</code> — die Simulation erwischt es, wie ein echter Kurzschluss die Elektronik erwischen würde.)</em></p>
+<p><strong>6. Speicher ist knapp: 16 Zellen.</strong> Schreibe ein Programm, das die Fibonacci-Folge berechnet und in RAM ablegt, bis die Zellen voll sind. Wieweit kommst du bevor die 4-Bit-Register überlaufen (<code>0xF + 1 = 0x0</code>, Carry-Flag gesetzt)?</p>
+<p><strong>7. Two-Register-Programm schreiben.</strong> Rechne <span class="arithmatex">\((a + b) - c\)</span> auf der <code>two_reg</code>-CPU, wo <span class="arithmatex">\(a\)</span>, <span class="arithmatex">\(b\)</span>, <span class="arithmatex">\(c\)</span> als <strong>Variablen</strong> in RAM[0], RAM[1], RAM[2] liegen. Das ist genau das Programm, das die Akku-CPU nur mühsam schreiben kann (weil dort der zweite ALU-Operand immer aus IR kommt). Muster: <code>LDA 0; LDBM 1; ADD; LDBM 2; SUB; STA 3; ...</code>. Vergleiche die Taktzahl mit einer entsprechenden Lösung auf der Akku-CPU.</p>
+<hr />
+<h2 id="wo-steht-die-4-bit-cpu-heute">🧭 Wo steht die 4-Bit-CPU heute?<a class="headerlink" href="#wo-steht-die-4-bit-cpu-heute" title="Permanent link">¶</a></h2>
+<p><strong>Kurz gesagt:</strong> Als eigenständiges Modell ist eine 4-Bit-CPU praktisch nie mehr im Einsatz — sie ist schlicht zu klein. Aber der <strong>konzeptionelle Kern</strong> ist in <strong>jedem</strong> modernen Prozessor enthalten:</p>
+<ul>
+<li>Ein moderner x86-Kern rechnet <strong>exakt dasselbe</strong> wie hier: Register laden, ALU rechnen, Ergebnis speichern. Nur mit 64-Bit-Datenpfaden, ≥16 Registern, Vector-SIMD (AVX-512 = 512 Bit auf einmal), und Milliarden Transistoren im Chip.</li>
+<li>Ein Modell wie ein Apple-M-Chip enthält <strong>Milliarden Transistoren</strong>, die im Kern immer noch Register/ALU/Bus/Steuerwerk sind, aber ergänzt um: Pipeline, Cache-Hierarchie, Sprungvorhersage, Out-of-Order-Execution, GPU-Kerne, NPU-Kerne (für neuronale Netze).</li>
+<li><strong>Mikroprogramm</strong> ist bei Intel/AMD immer noch da: viele CISC-Befehle werden intern in kleinere „µops" zerlegt — das ist wortwörtlich der Nachfolger dessen, was Wilkes 1955 vorschlug.</li>
+</ul>
+<p>Die Grenze, die wir bei der Minimal-CPU gesehen haben — sehr wenige Ops, viel Schleifen — hat historisch die <em>RISC-Bewegung</em> geprägt (Patterson, Hennessy in den 1980ern): lieber weniger, einfachere Befehle in großer Zahl schnell ausführen, als wenige, komplexe. Das ist genau die Idee, die unsere Minimal-CPU ins Extrem treibt.</p>
+<blockquote>
+<p><strong>📚 Der Skalierungspfad im Detail — Pipelining (mit Speed-up-Formel),
+Flynn-Klassifikation (SISD/SIMD/MIMD, plus warum GPUs SIMT sind),
+Cache-Hierarchien, Mooresches Gesetz mit Transistorzahlen von 1971
+bis 2024 — steht im Deep Dive:</strong>
+<a href="../grundlagen/moderne_prozessoren/">→ Moderne Prozessoren: vom SAP-1 zum GPU-Cluster</a>.</p>
+</blockquote>
+<h2 id="abschlieende-bemerkungen">🧠 Abschließende Bemerkungen<a class="headerlink" href="#abschlieende-bemerkungen" title="Permanent link">¶</a></h2>
+<p>Wenn du dir dieses Kapitel angesehen hast, hast du die grundlegendste Idee der Computertechnik in ihrer reinsten Form gesehen:</p>
+<ol>
+<li><strong>Ein Bus mit Sendern und Empfängern</strong>, dessen Verkabelung sich per Steuersignal ändert.</li>
+<li><strong>Eine Control Unit</strong>, die pro Takt ein Steuerwort ausliest und die richtigen Gates öffnet.</li>
+<li><strong>Ein Mikrocode-ROM</strong>, der die Bedeutung jedes Befehls in wenige Steuerworte zerlegt.</li>
+</ol>
+<p>Und eine subtile, aber wichtige Einsicht: <strong>Der Prozessor ist selbst ein Programm.</strong> Sein „Programm" ist der Mikrocode — die Regeln, wie er Bits interpretiert. Der eigentliche Anwendungscode ist demgegenüber nur eine <em>Daten­struktur</em>, auf die der Prozessor angewendet wird. Genau darum lassen sich moderne Prozessoren per <strong>Mikrocode-Update</strong> patchen (Intel hat das schon getan, wenn Sicherheitslücken in der ISA-Implementierung gefunden wurden).</p>
+<p>Und deshalb ist die Frage „<em>Wie funktioniert ein Computer?</em>" letztlich dieselbe Frage wie „<em>Wie beschreibt man Berechnung überhaupt?</em>" — nur einmal in Hardware und einmal in Mathematik.</p>
+<hr />
+<h2 id="nachste-kapitel-compiler-und-betriebssystem">🚀 Nächste Kapitel: Compiler und Betriebssystem<a class="headerlink" href="#nachste-kapitel-compiler-und-betriebssystem" title="Permanent link">¶</a></h2>
+<p>Wir haben jetzt eine Maschine, die <strong>Maschinencode</strong> ausführt. Aber wer schreibt Maschinencode noch von Hand? Die nächsten beiden Meilensteine schließen die Kette:</p>
+<ul>
+<li>
+<p><strong>Compiler</strong>: eine kleine Hochsprache (<code>var x = 3; out = x + 4</code>) wird in unsere Assembler übersetzt. Zeigt: <strong>Symbol­tabelle</strong>, <strong>Ausdrucks­zerlegung</strong>, <strong>Kontrollfluss → Labels + JZ/JMP</strong>. Der Compiler ist selbst ein Programm, das <em>Programme lesen und übersetzen</em> kann — eine der ältesten Ideen der Informatik (Grace Hopper, A-0 Compiler 1952).</p>
+</li>
+<li>
+<p><strong>Betriebssystem (Batch)</strong>: eine Liste von Jobs wird nacheinander in die CPU geladen und ausgeführt. Zeigt: <strong>Program Loader</strong>, <strong>Speicher­verwaltung</strong> (Base-Register für Programm-Offset im RAM), <strong>Prozess­kontext</strong> (Register zwischen Jobs zurücksetzen). Ein OS in der Größe einer 4-Bit-Maschine kann nicht viel — aber es zeigt die <em>Prinzipien</em>, die alle folgenden Betriebssysteme groß gemacht haben.</p>
+</li>
+</ul>
+<p>Damit haben wir dann die vollständige Software-Hardware-Kette:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Hochsprache   →   Compiler   →   Assembler   →   Mikrocode   →   Bus-Signale
+</span></code></pre></div>
+<p>...und alles davon ist in dieser Reihe <strong>von Hand geschrieben</strong>, ohne Frameworks, ohne Blackbox.</p>
+<hr />
+<h2 id="referenzen">📚 Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
+<ul>
+<li>Turing, A. M. (1936). <em>On Computable Numbers, with an Application to the Entscheidungsproblem</em>. Proceedings of the London Mathematical Society, 42(1), 230–265.</li>
+<li>von Neumann, J. (1945). <em>First Draft of a Report on the EDVAC</em>. Moore School of Electrical Engineering, University of Pennsylvania.</li>
+<li>Wilkes, M. V., &amp; Stringer, J. B. (1953). <em>Microprogramming and the Design of the Control Circuits in an Electronic Digital Computer</em>. Proceedings of the Cambridge Philosophical Society, 49, 230–238.</li>
+<li>Faggin, F., Hoff, M. E., Mazor, S., &amp; Shima, M. (1971). <em>The Intel 4004 microprocessor</em>. Intel Corporation.</li>
+<li>Patterson, D., &amp; Hennessy, J. (1990ff). <em>Computer Organization and Design</em> (aktuelle Ausgaben). Morgan Kaufmann. Das Standardwerk zur Rechnerarchitektur, das jede Konzept­stufe genau in dieser Reihenfolge behandelt.</li>
+<li>Malvino, A. P., &amp; Brown, J. A. (1993). <em>Digital Computer Electronics</em> (3rd ed.). McGraw-Hill. Enthält das <em>SAP-1</em> (Simple As Possible), das direkte Vorbild für diese Simulation.</li>
+<li>Eater, B. (2016ff). <em>Building an 8-bit breadboard computer from scratch</em> (YouTube-Serie). Ein bemerkenswert didaktischer, hardware-nah gebauter SAP-Nachfolger; unsere Signalnamen (<code>IR_OUT</code>, <code>CE</code>, <code>HLT</code>) sind bewusst kompatibel gewählt.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024–2026 Dr. Thilo Böhm. Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/boehmt/The-Computational-Minimum" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

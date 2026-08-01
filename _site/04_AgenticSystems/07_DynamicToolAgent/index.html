@@ -1,0 +1,2422 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen Sprachmodell, alles selbst geschrieben ohne Frameworks.
+">
+      
+      
+        <meta name="author" content="Dr. Thilo Böhm">
+      
+      
+        <link rel="canonical" href="https://boehmt.github.io/The-Computational-Minimum/04_AgenticSystems/07_DynamicToolAgent/">
+      
+      
+        <link rel="prev" href="../06_WhenNotToBuild/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>4.7 · Dynamic Tool Agent - The Computational Minimum</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kapitel-7-der-agent-der-seine-eigenen-werkzeuge-schreibt" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="The Computational Minimum" class="md-header__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Computational Minimum
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              4.7 · Dynamic Tool Agent
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu dunklem Modus wechseln"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Zu dunklem Modus wechseln" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu hellem Modus wechseln"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Zu hellem Modus wechseln" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Startseite
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../PREFACE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Vorwort
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../STYLE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Style-Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil I · Computing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/grundlagen/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Grundlagen (Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../02_MachineIntelligence/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil II · Maschinelle Intelligenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../03_LanguageModelling/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil III · Entwicklung der Sprachmodelle
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil IV · Agentic Systems
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="The Computational Minimum" class="md-nav__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    The Computational Minimum
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startseite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PREFACE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorwort
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STYLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Style-Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil I · Computing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil I · Computing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/00_Fundament/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Fundament
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/01_CPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/02_OS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · Betriebssystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/03_Compiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · Compiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/04_PerceptronOnCPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · Perceptron auf CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/05_GPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · GPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/06_Networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Netzwerk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/grundlagen/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grundlagen (Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grundlagen (Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/schaltnetze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schaltnetze und Schaltwerke
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/von_neumann/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Von-Neumann-Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/moderne_prozessoren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderne Prozessoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../02_MachineIntelligence/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/01_Perceptron/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 · Perceptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/02_MLP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 · Multi-Layer-Perzeptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/03_CNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.3 · CNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/04_Word2Vec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/05_RNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.5 · RNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/06_Seq2Seq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.6 · Seq2Seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/07_Transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../03_LanguageModelling/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/01_TinyGPT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 · TinyGPT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/02_TinyInstruct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.2 · TinyInstruct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/03_TinyChat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/04_TinyMoE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.4 · TinyMoE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/05_TinyReason/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.5 · TinyReason
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil IV · Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil IV · Agentic Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_TextInTextOut/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 · Text-in / Text-out
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_ToolsAndPlanning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.2 · Tools & Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_TheLoop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.3 · Der Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_ReasoningInside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.4 · Reasoning innen drin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_ProtocolsAndScale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.5 · Protokolle & Skalierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_WhenNotToBuild/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.6 · Wann NICHT bauen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#skalierung-als-roter-faden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📏 Skalierung als roter Faden
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-drei-miniaturen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔬 Die drei Miniaturen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔬 Die drei Miniaturen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src01_dynamic_tool_agentpy-der-agent-generiert-seine-werkzeuge-zur-laufzeit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        src/01_dynamic_tool_agent.py — der Agent generiert seine Werkzeuge zur Laufzeit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src02_dynamic_tool_agent_persistedpy-die-werkzeuge-uberleben-den-prozess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        src/02_dynamic_tool_agent_persisted.py — die Werkzeuge überleben den Prozess
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src03_dynamic_tool_agent_self_healingpy-der-agent-repariert-den-kaputten-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        src/03_dynamic_tool_agent_self_healing.py — der Agent repariert den kaputten Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wow-moment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💡 Wow-Moment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sicherheit-was-diese-miniatur-bewusst-nicht-tut" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ Sicherheit — was diese Miniatur bewusst nicht tut
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ausfuhren" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Ausführen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-dieses-kapitel-im-bogen-steht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo dieses Kapitel im Bogen steht
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#skalierung-als-roter-faden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📏 Skalierung als roter Faden
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-drei-miniaturen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔬 Die drei Miniaturen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔬 Die drei Miniaturen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src01_dynamic_tool_agentpy-der-agent-generiert-seine-werkzeuge-zur-laufzeit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        src/01_dynamic_tool_agent.py — der Agent generiert seine Werkzeuge zur Laufzeit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src02_dynamic_tool_agent_persistedpy-die-werkzeuge-uberleben-den-prozess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        src/02_dynamic_tool_agent_persisted.py — die Werkzeuge überleben den Prozess
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src03_dynamic_tool_agent_self_healingpy-der-agent-repariert-den-kaputten-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        src/03_dynamic_tool_agent_self_healing.py — der Agent repariert den kaputten Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wow-moment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💡 Wow-Moment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sicherheit-was-diese-miniatur-bewusst-nicht-tut" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ Sicherheit — was diese Miniatur bewusst nicht tut
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ausfuhren" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Ausführen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-dieses-kapitel-im-bogen-steht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo dieses Kapitel im Bogen steht
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="kapitel-7-der-agent-der-seine-eigenen-werkzeuge-schreibt">Kapitel 7 · Der Agent, der seine eigenen Werkzeuge schreibt<a class="headerlink" href="#kapitel-7-der-agent-der-seine-eigenen-werkzeuge-schreibt" title="Permanent link">¶</a></h1>
+<p><strong>Wenn das Modell nicht nur entscheidet, <em>welches</em> Werkzeug es benutzt, sondern das Werkzeug bei Bedarf <em>neu erschafft</em> — was ändert sich dann am Prinzip 3?</strong></p>
+<p>Drei Miniaturen, jede eine Ausbaustufe der gleichen Idee. Der Agent hat <strong>keine fest verdrahteten Werkzeuge</strong> mehr. Wenn er für eine Aufgabe ein Werkzeug braucht, das er noch nicht kennt, lässt er sich den Python-Code dafür von einem zweiten LLM-Aufruf generieren, validiert ihn (AST-Whitelist + eingeschränkte Builtins), führt ihn aus und legt ihn in einer Registry ab — für spätere Aufgaben. Die zweite Ausbaustufe persistiert die generierten Tools auf Platte, sodass sie über Programm-Läufe hinweg erhalten bleiben. Die dritte Ausbaustufe repariert den generierten Code selbst, wenn er kaputt ist — mit einem spezialisierten Repair-LLM-Aufruf.</p>
+<p>Am Ende hat dein Agent nach 4 Fragen 4 neu geschriebene Werkzeuge in seiner Registry, die er beim nächsten Mal <em>nicht mehr neu generieren muss</em>. Und eine dritte Miniatur zeigt: <strong>wenn der generierte Code kaputt ist, lässt der Agent ihn von einem weiteren LLM-Aufruf reparieren</strong> — dieselbe LLM-guided-Recovery-Idee aus Kap. 3, nur eine Ebene tiefer.</p>
+<blockquote>
+<p><strong>Slide-Anker im Foliensatz:</strong> Slides <strong>45</strong> (<em>"Where agents are heading — from tool users to tool makers: Fixed tools → Generated tools → Self-extending capability"</em>) und <strong>46</strong> (<em>"How this deck was made"</em> — der Foliensatz selbst wurde von Cline gebaut, dem Agenten, der zur Laufzeit Werkzeuge generiert). Kapitel 7 ist die kleinstmögliche ehrliche Miniatur der mittleren Stufe: ein Agent, der zwischen "Fixed tools" (Kap. 1–6) und "Self-extending" (Devin, SWE-agent) sitzt.</p>
+</blockquote>
+<hr />
+<h2 id="skalierung-als-roter-faden">📏 Skalierung als roter Faden<a class="headerlink" href="#skalierung-als-roter-faden" title="Permanent link">¶</a></h2>
+<p>Bevor die Miniaturen im Detail beschrieben werden, lohnt es sich, kurz <em>einen einzigen Punkt</em> aus dem Repo herauszuziehen: <strong>jede Erweiterung bisher war eine Skalierung derselben Grundidee.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kapitel</th>
+<th>Werkzeug-Palette</th>
+<th>Wer definiert die Werkzeuge?</th>
+<th>Was skaliert?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>keine</td>
+<td>—</td>
+<td>(nur LLM, kein Werkzeug)</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>1 Werkzeug (<code>calculator</code>)</td>
+<td>Entwickler, zur Design-Zeit</td>
+<td>Prinzip: <em>Trennung Modell/Werkzeug</em></td>
+</tr>
+<tr>
+<td><strong>2</strong> (Miniatur 2)</td>
+<td>2 Werkzeuge (<code>calculator</code> + <code>currency_converter</code>)</td>
+<td>Entwickler, zur Design-Zeit</td>
+<td><em>Modell wählt aus Menge</em></td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>2 Werkzeuge, im Loop</td>
+<td>Entwickler, zur Design-Zeit</td>
+<td><em>Werkzeug-Aufrufe verketten</em></td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>beliebig viele, über MCP</td>
+<td>Fremde Teams, zur Design-Zeit</td>
+<td><em>Werkzeug-Katalog wächst extern</em></td>
+</tr>
+<tr>
+<td><strong>7 · M1/M2</strong></td>
+<td>beliebig viele, <strong>runtime-generiert</strong></td>
+<td>Das Modell, zur Laufzeit</td>
+<td><em>Katalog wächst intern beim Benutzen</em></td>
+</tr>
+<tr>
+<td><strong>7 · M3</strong></td>
+<td>dito, <strong>plus Selbstheilung</strong></td>
+<td>Das Modell + ein Repair-LLM</td>
+<td><em>Katalog wird auch repariert, wenn er kaputt ist</em></td>
+</tr>
+</tbody>
+</table>
+<p>Der Bogen lautet: <em>Wenn der Calculator ein Werkzeug sein kann, dann kann alles ein Werkzeug sein.</em> Und <em>wenn eine feste Menge von Werkzeugen funktioniert, kann eine dynamische Menge funktionieren.</em> Und <em>wenn ein Runtime-generiertes Werkzeug kaputt sein kann, dann muss die Reparatur auch Runtime sein — mit demselben LLM-Muster wie in Kap. 3.</em></p>
+<p>Das ist der eigentliche Wert von Kap. 7: nicht die Neuheit der Werkzeug-Generierung, sondern das Wiedererkennen. <strong>Kap. 7 ist Kap. 3 mit Werkzeugen auf beiden Ebenen</strong> — beim Aufrufen <em>und</em> beim Erzeugen.</p>
+<hr />
+<h2 id="historischer-kontext">📜 Historischer Kontext<a class="headerlink" href="#historischer-kontext" title="Permanent link">¶</a></h2>
+<p>Die sechs vorigen Kapitel folgten einem klaren Bogen: das Modell nutzt Werkzeuge, die <em>du</em> geschrieben hast. Kapitel 2 (<code>calculator</code>, <code>currency_converter</code>). Kapitel 3 (Loop, der die vorhandenen Werkzeuge orchestriert). Kapitel 5 (fremde Werkzeuge über MCP). Immer: <strong>Werkzeuge sind statisch, der Loop ist dynamisch.</strong></p>
+<p>Ab 2024 begann eine kleine, aber folgenreiche Verschiebung. In der Reihenfolge:</p>
+<ul>
+<li><strong>März 2023</strong> · Cai, Chen et al. — <em>"Large Language Models as Tool Makers"</em> (LATM, arXiv:2305.17126). Ein "Tool-Maker"-Modell schreibt wiederverwendbare Python-Funktionen für einen "Tool-User"-Agenten. Erstmals wird die Werkzeug-Bibliothek zur Laufzeit gebaut, nicht vorab.</li>
+<li><strong>Ende 2023</strong> · Voyager (Wang et al., NVIDIA/Caltech) demonstriert dasselbe Prinzip in Minecraft: ein LLM-Agent, der sich sein Skill-Repertoire beim Spielen selbst schreibt — und dessen Skill-Bibliothek nach 200 Stunden Spielzeit mehr Fähigkeiten enthält als der Basis-Agent je hatte.</li>
+<li><strong>2024</strong> · Code-Interpreter-artige Systeme werden Mainstream (OpenAI Advanced Data Analysis, Claude Code, Cursor-Agenten). Alle teilen dieselbe Struktur: das Modell schreibt Code, der Runner führt ihn aus, das Ergebnis fließt zurück ins nächste Modell-Turn.</li>
+<li><strong>2025</strong> · State-of-the-Art-Agenten (Devin, SWE-agent, Claude Code) generieren zur Laufzeit ganze Sub-Programme, nicht mehr nur einzelne Tool-Calls. Der Unterschied zwischen <em>"das Modell benutzt Werkzeuge"</em> und <em>"das Modell schreibt Software"</em> verschwimmt.</li>
+</ul>
+<p>Dieses Kapitel zeigt die kleinste ehrliche Version davon: <strong>ein Agent, dessen Werkzeuge Runtime-generierter Python-Code sind</strong>. Kein Framework. ~450 Zeilen inklusive Sandbox und Persistenz.</p>
+<hr />
+<h2 id="die-drei-miniaturen">🔬 Die drei Miniaturen<a class="headerlink" href="#die-drei-miniaturen" title="Permanent link">¶</a></h2>
+<h3 id="src01_dynamic_tool_agentpy-der-agent-generiert-seine-werkzeuge-zur-laufzeit"><code>src/01_dynamic_tool_agent.py</code> — der Agent generiert seine Werkzeuge zur Laufzeit<a class="headerlink" href="#src01_dynamic_tool_agentpy-der-agent-generiert-seine-werkzeuge-zur-laufzeit" title="Permanent link">¶</a></h3>
+<p>Der Kern-Loop hat drei mögliche Aktionen pro Turn, jede als JSON:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;generate_tool&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tool_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">  </span><span class="nt">&quot;tool_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">}</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">{</span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;call_tool&quot;</span><span class="p">,</span><span class="w">     </span><span class="nt">&quot;tool_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">  </span><span class="nt">&quot;tool_args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}}</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">{</span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;final_answer&quot;</span><span class="p">,</span><span class="w">  </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">}</span>
+</span></code></pre></div>
+<p>Der Ablauf für eine typische Aufgabe (<em>"Ist 97 eine Primzahl?"</em>):</p>
+<ol>
+<li><strong>Turn 1</strong> — Der Agent sieht: Registry ist leer, es gibt kein <code>is_prime</code>. Er antwortet mit <code>generate_tool</code> und liefert Name (<code>is_prime</code>) und eine präzise Beschreibung.</li>
+<li><strong>Zwischenschritt</strong> — Der Runner schickt Name + Beschreibung an einen <em>zweiten</em> LLM-Aufruf (mit einem ganz eigenen System-Prompt für Code-Generierung), bekommt Python-Code zurück, prüft ihn via AST-Whitelist, kompiliert ihn im Sandbox-Namespace und legt die Funktion in der Registry ab.</li>
+<li><strong>Turn 2</strong> — Der Agent sieht jetzt: <code>is_prime</code> ist verfügbar. Er antwortet mit <code>call_tool</code>, <code>tool_args={"n": 97}</code>.</li>
+<li><strong>Zwischenschritt</strong> — Der Runner ruft die frisch registrierte Funktion auf, bekommt <code>True</code> zurück, hängt das Ergebnis an die Historie.</li>
+<li><strong>Turn 3</strong> — Der Agent antwortet mit <code>final_answer</code>: <em>"Ja, 97 ist eine Primzahl."</em></li>
+</ol>
+<p>Für die <em>nächste</em> Frage, wenn sie wieder ein <code>is_prime</code>-artiges Werkzeug braucht, überspringt der Agent Schritt 1-2 und geht direkt zu <code>call_tool</code> — das Werkzeug ist ja schon da.</p>
+<h3 id="src02_dynamic_tool_agent_persistedpy-die-werkzeuge-uberleben-den-prozess"><code>src/02_dynamic_tool_agent_persisted.py</code> — die Werkzeuge überleben den Prozess<a class="headerlink" href="#src02_dynamic_tool_agent_persistedpy-die-werkzeuge-uberleben-den-prozess" title="Permanent link">¶</a></h3>
+<p>Dieselbe Logik, plus eine Registry, die jedes registrierte Tool zusätzlich als <code>.py</code>-Datei unter <code>src/generated_tools/</code> schreibt, mit einer <code>index.json</code> als Metadaten. Beim nächsten Programm-Start lädt die Registry alle vorhandenen Tools von Platte — und validiert sie <strong>erneut</strong> über dieselbe AST-Whitelist. Das ist bewusst wichtig: wenn jemand die Dateien zwischen zwei Läufen manuell verändert hat, greift die Sicherheitsprüfung trotzdem.</p>
+<p>Das Ergebnis: nach ein paar Läufen hat dein Agent eine kleine, wachsende Bibliothek an Werkzeugen, die er sich selbst geschrieben hat. Du kannst sie im Ordner <code>generated_tools/</code> anschauen und feststellen: das ist gewöhnlicher Python-Code. Zum Beispiel <code>is_prime.py</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be an int&quot;</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">return</span> <span class="kc">True</span>
+</span></code></pre></div>
+<p>Kein magischer Wrapper. Kein Framework-Objekt. Nur eine Funktion, die das Modell geschrieben hat und die der Runner beim nächsten Start wieder einliest.</p>
+<h3 id="src03_dynamic_tool_agent_self_healingpy-der-agent-repariert-den-kaputten-code"><code>src/03_dynamic_tool_agent_self_healing.py</code> — der Agent repariert den kaputten Code<a class="headerlink" href="#src03_dynamic_tool_agent_self_healingpy-der-agent-repariert-den-kaputten-code" title="Permanent link">¶</a></h3>
+<p>In Miniatur 1 und 2 gibt der Agent auf, wenn der generierte Code die AST-Validierung nicht besteht oder zur Laufzeit eine Exception wirft. Das ist die pädagogisch ehrlichste Version — es macht sichtbar, dass Fehler passieren. Aber es ist nicht das, was moderne Code-Agenten wie Cline oder Claude Code tun. Die machen etwas Konkreteres: sie <strong>rufen ein weiteres LLM</strong> mit einem Repair-Prompt auf, der den fehlerhaften Code plus die Fehlermeldung sieht, und lassen sich eine korrigierte Version geben.</p>
+<p>Genau das steckt in <code>SelfHealingToolRegistry</code>. Ein Beispiel aus einem Lauf mit <code>temperature=0.2</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[Schritt 1] &#39;Ich brauche ein Werkzeug für Median.&#39; -&gt; action=generate_tool
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    -&gt; generiere Tool-Code für &#39;median_of_list&#39; ...
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    -&gt; Tool &#39;median_of_list&#39; registriert (auf Anhieb korrekt).
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>[Schritt 2] -&gt; action=call_tool
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    -&gt; Ergebnis von &#39;median_of_list({&#39;values&#39;: [3, 1, 4, ...]})&#39;: 4.0
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>[Schritt 3] &#39;Ich brauche ein Mittelwert-Werkzeug für die zweite Liste.&#39;
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>             -&gt; action=generate_tool
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    -&gt; generiere Tool-Code für &#39;arithmetic_mean&#39; ...
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    -&gt; Tool &#39;arithmetic_mean&#39; registriert.
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>[Schritt 4] -&gt; action=call_tool  (mit leerer Liste!)
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    [repair] Runtime-Fehler in &#39;arithmetic_mean&#39;: ZeroDivisionError: division by zero
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    [repair] Versuch 1/2 -- rufe Repair-LLM...
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    -&gt; Neuer Code registriert (jetzt mit if not values: raise ValueError...)
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    -&gt; Ergebnis: ValueError: &#39;arithmetic_mean&#39; benötigt eine nicht-leere Liste
+</span></code></pre></div>
+<p>Zwei Punkte zum Anschauen:</p>
+<ol>
+<li><strong>Die Retry-Politik lebt in der Registry, nicht im Agent-Loop.</strong> Der Agent-Code aus Miniatur 1 wird unverändert wiederverwendet. Genau wie in Kap. 3, wo <code>03_retry_strategies.py</code> zeigt, dass eine Retry-Strategie ein austauschbares Modul ist — nicht ein fest verdrahtetes <code>try/except</code> mitten im Loop. Prinzip 3 in sauberer Form.</li>
+<li><strong>Der Repair-Prompt ist ein <em>separater</em> System-Prompt.</strong> Nicht dasselbe LLM mit derselben Rolle wie beim ersten Wurf, sondern ein spezialisierter Debugger-Prompt, der Name, Beschreibung, Code und Fehlermeldung bekommt. Das ist genau die "LLM-guided Recovery"-Strategie aus Kap. 3, hier auf den Sonderfall "kaputter generierter Code" spezialisiert.</li>
+</ol>
+<p>Nach dem Repair-Loop gibt es dann drei mögliche Endzustände:</p>
+<ul>
+<li><strong>Erfolg</strong> — der reparierte Code besteht die Validierung, läuft, gibt einen sinnvollen Wert zurück. Der neue Code ersetzt die alte Version in der Registry und wird auf Platte persistiert.</li>
+<li><strong>Aufgabe</strong> — nach <code>max_repair_attempts</code> (Default 2) reißt der Repair-Loop ab und wirft die letzte Exception nach oben durch. Der Agent-Loop sieht dann eine normale <code>ToolCodeError</code>-/Runtime-Fehler-Meldung und muss selbst entscheiden, was er tut (meist: <code>final_answer</code> mit "leider ging das nicht").</li>
+<li><strong><code>ValueError</code> durchgelassen</strong> — wenn das Tool bewusst per <code>raise ValueError</code> seine Eingabe zurückweist (das gehört zum Contract, siehe <code>TOOL_GENERATOR_SYSTEM_PROMPT</code>), gilt das nicht als Bug. Die Registry lässt den Wurf durch und der Agent sieht ihn als normale Fehler-Observation — genau wie in Kap. 3 den Fehler eines statischen Tools.</li>
+</ul>
+<p>Die Zeile, die die Rekursion greifbar macht, steht im Docstring des Skripts:</p>
+<blockquote>
+<p><em>In Kap. 3 haben wir vier Retry-Strategien verglichen: naive, exponential backoff, circuit breaker, LLM-guided recovery. Genau die letzte Strategie wiederholt sich hier eine Ebene tiefer: das LLM debuggt seinen eigenen generierten Code. Das ist keine neue Idee — es ist die Rekursion von Kap. 3 auf Kap. 7.</em></p>
+</blockquote>
+<hr />
+<h2 id="wow-moment">💡 Wow-Moment<a class="headerlink" href="#wow-moment" title="Permanent link">¶</a></h2>
+<p>Der wichtigste Moment ist nicht die Code-Generierung selbst — das ist inzwischen Standard-Repertoire jedes fähigen Modells. Der wichtige Moment ist die <strong>Rekursion des Prinzips 3</strong>.</p>
+<blockquote>
+<p>Prinzip 3 sagt: <em>alles rund um das Modell ist dein Code.</em></p>
+</blockquote>
+<p>In Kapitel 2 hieß das: der Parser ist dein Code, der Dispatcher ist dein Code, die Werkzeug-Implementierung ist dein Code.</p>
+<p>In Kapitel 3 hieß das: der Loop ist dein Code, die Retry-Policy ist dein Code, die Stop-Bedingung ist dein Code.</p>
+<p>In diesem Kapitel wird ein Stück <em>"dein Code"</em> zur Laufzeit vom Modell selbst geschrieben. <strong>Aber die Verantwortung wandert nicht mit.</strong> Was du weiterhin schreiben musst:</p>
+<ul>
+<li>Die <strong>Sandbox</strong> (<code>_validate_tool_ast</code>) — welche Sprach-Konstrukte sind erlaubt, welche verboten?</li>
+<li>Die <strong>Namespace-Definition</strong> (<code>ALLOWED_BUILTINS</code>, <code>ALLOWED_MODULES</code>) — was darf der generierte Code sehen?</li>
+<li>Die <strong>Persistenz-Politik</strong> — was wird auf Platte geschrieben, was gelöscht, was beim Start neu validiert?</li>
+<li>Das <strong>Fehlerprotokoll</strong> — was passiert, wenn der generierte Code die Validierung nicht besteht, eine Exception wirft, oder Unsinn zurückgibt?</li>
+</ul>
+<p>Genau diese vier Verantwortungen sind der Grund, warum wir mit einer <em>engen</em> Sandbox anfangen (nur <code>math</code>, <code>re</code>, <code>statistics</code>, <code>datetime</code>; keine imports, kein <code>open</code>, kein <code>eval</code>). Sie sind nicht schön, aber sie sind der Preis dafür, dass man dem generierten Code trauen kann, während er im selben Python-Prozess wie der Agent läuft.</p>
+<p>Das Kapitel-Skript sagt es im Docstring selbst deutlich:</p>
+<blockquote>
+<p><em>Dynamisch generierten Code auszuführen ist grundsätzlich riskant. Die Validierung hier (AST-Whitelist + eingeschränkte Builtins) ist eine didaktische Annäherung, KEIN Ersatz für ein echtes Sandboxing (z. B. Subprozess mit Ressourcenlimits, WASM-Sandbox, RestrictedPython o. Ä.).</em></p>
+</blockquote>
+<p>Das ist Prinzip 3 in seiner härtesten Form. Das Framework, das dir das abnimmt, gibt es nicht — beziehungsweise: die Frameworks, die es <em>versuchen</em> (LangChain-<code>PythonREPLTool</code>, <code>LlamaIndex</code>-CodeInterpreter, Anthropics <code>computer_use</code>), verstecken die Politik nur, sie machen sie nicht sicher.</p>
+<hr />
+<h2 id="sicherheit-was-diese-miniatur-bewusst-nicht-tut">⚠️ Sicherheit — was diese Miniatur bewusst <em>nicht</em> tut<a class="headerlink" href="#sicherheit-was-diese-miniatur-bewusst-nicht-tut" title="Permanent link">¶</a></h2>
+<p>Zur Erinnerung, kurz und ehrlich:</p>
+<ul>
+<li><strong>Kein Prozess-Isolation.</strong> Der generierte Code läuft im selben Python-Interpreter wie der Runner. Ein Ausbruch aus der AST-Whitelist würde reichen, um den Agent-Prozess zu übernehmen.</li>
+<li><strong>Keine Ressourcen-Limits.</strong> Ein generiertes <code>while True: pass</code> wird den Agenten aufhängen. Kein Timeout, keine CPU-Grenze.</li>
+<li><strong>Kein Netzwerk-Schutz</strong> außerhalb der Whitelist. Wir verlassen uns darauf, dass <code>socket</code>, <code>urllib</code>, <code>requests</code> in <code>FORBIDDEN_NAMES</code> stehen — das ist Verbieten-per-Namen, nicht Verbieten-per-Fähigkeit. Ein raffinierter generierter Code könnte über Umwege daran vorbei.</li>
+<li><strong>Keine formale Verifikation.</strong> Wir prüfen die <em>Form</em> des Codes (AST), nicht seine <em>Semantik</em>. Ein syntaktisch harmloses <code>for i in range(10**12)</code> erfüllt die Whitelist und legt trotzdem den Prozess lahm.</li>
+</ul>
+<p>Wenn du das Muster produktiv nutzen willst, ersetze <code>compile_tool()</code> durch einen echten Isolations-Mechanismus:</p>
+<ul>
+<li><strong>Subprozess</strong> mit <code>resource.setrlimit</code> (CPU-Zeit, Speicher, Datei-Deskriptoren) und Kommunikation über JSON auf stdin/stdout — die einfachste ehrliche Antwort.</li>
+<li><strong><code>RestrictedPython</code></strong> (Zope-Ökosystem) mit denselben Modul-Whitelists — mehr Bibliothek, weniger eigener Code.</li>
+<li><strong>WASM-Sandbox</strong> (Wasmer, Wasmtime) mit einem Python-nach-WASM-Compiler wie Pyodide — echtes Prozess-Isolat mit Speicher-Grenze.</li>
+<li><strong>Container pro Aufruf</strong> (Firecracker, gVisor) — die Enterprise-Antwort, mit Millisekunden-Kaltstart.</li>
+</ul>
+<p>Die didaktische Version hier existiert, damit du siehst, <em>welche</em> Fragen ein Sandbox-Design überhaupt beantworten muss. Sobald du das siehst, wird die Wahl zwischen den vier Optionen oben zu einer nüchternen Kosten-/Sicherheits-Rechnung — statt zu einem "das kann doch nicht so schwer sein"-Bauchgefühl.</p>
+<hr />
+<h2 id="ausfuhren">🚀 Ausführen<a class="headerlink" href="#ausfuhren" title="Permanent link">¶</a></h2>
+<p>Voraussetzung: <code>.env</code> konfiguriert (siehe <code>../README.md</code>) und die Standard-Abhängigkeiten aus <code>../requirements.txt</code> installiert.</p>
+<div class="language-powershell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd </span><span class="s2">&quot;C:\Users\&lt;USERNAME&gt;\Source\Agentic Systems&quot;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c"># Miniatur 1 — In-Memory-Registry, jedes Mal frisch</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">python</span> <span class="s2">&quot;07_DynamicToolAgent/src/01_dynamic_tool_agent.py&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c"># Miniatur 2 — Persistente Registry, Tools überleben den Prozess</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">python</span> <span class="s2">&quot;07_DynamicToolAgent/src/02_dynamic_tool_agent_persisted.py&quot;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c"># Beim zweiten Aufruf siehst du: &quot;[Persistenz] Geladen: &#39;is_prime&#39;&quot;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c"># und der Agent überspringt die Code-Generierung.</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c"># Miniatur 3 — Selbstheilend: Repair-LLM bei kaputtem generierten Code</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">python</span> <span class="s2">&quot;07_DynamicToolAgent/src/03_dynamic_tool_agent_self_healing.py&quot;</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c"># Die dritte Beispiel-Aufgabe (Mittelwert einer leeren Liste) triggert</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="c"># üblicherweise den Repair-Loop — du siehst &quot;[repair]&quot;-Zeilen mit dem</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c"># Fehler-Typ und dem korrigierten Code.</span>
+</span></code></pre></div>
+<p>Erwartete Ausgabe für Miniatur 1 (erste der vier Beispiel-Fragen):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>FRAGE: Was ist 12345 * 6789?
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>[Schritt 1] &#39;Ich brauche ein Multiplikationswerkzeug&#39; -&gt; action=generate_tool
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    -&gt; generiere Tool-Code für &#39;multiply_integers&#39; ...
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    -&gt; Tool &#39;multiply_integers&#39; registriert:
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>def multiply_integers(a: int, b: int) -&gt; int:
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    if not isinstance(a, int) or not isinstance(b, int):
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        raise ValueError(&quot;a und b müssen ganze Zahlen sein&quot;)
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    return a * b
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>[Schritt 2] &#39;Tool ist da, jetzt aufrufen&#39; -&gt; action=call_tool
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    -&gt; Ergebnis von &#39;multiply_integers({&#39;a&#39;: 12345, &#39;b&#39;: 6789})&#39;: 83810205
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>[Schritt 3] &#39;Ergebnis vorhanden, antworten&#39; -&gt; action=final_answer
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>ANTWORT: 12345 * 6789 ergibt 83.810.205.
+</span></code></pre></div>
+<p>Nach allen vier Beispielen listet der Runner die Registry:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Am Ende registrierte Tools:
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>- multiply_integers: multipliziert zwei ganze Zahlen
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>- miles_to_meters:   konvertiert Meilen in Meter
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>- is_prime:          prüft, ob eine ganze Zahl &gt;= 2 eine Primzahl ist
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>- factorial:         berechnet die Fakultät einer nichtnegativen ganzen Zahl
+</span></code></pre></div>
+<p>Vier Aufgaben → vier selbst geschriebene Werkzeuge, alle zur Wiederverwendung bereit.</p>
+<hr />
+<h2 id="wo-dieses-kapitel-im-bogen-steht">🧭 Wo dieses Kapitel im Bogen steht<a class="headerlink" href="#wo-dieses-kapitel-im-bogen-steht" title="Permanent link">¶</a></h2>
+<p>Der historische Bogen der ersten sechs Kapitel war:</p>
+<blockquote>
+<p>Kapitel 1: das Modell antwortet. → Aber die Antwort ist falsch.
+Kapitel 2: gib ihm ein Werkzeug. → Aber die Werkzeuge sind statisch.
+Kapitel 3: bau einen Loop. → Aber der Loop kostet Tokens.
+Kapitel 4: manche Modelle iterieren intern. → Aber sie ersetzen den Loop nicht.
+Kapitel 5: standardisiere die Werkzeug-Schnittstelle. → Aber die Werkzeuge kommen weiter von Menschen.
+Kapitel 6: das Urteil — nicht alles ist ein Agent.</p>
+</blockquote>
+<p><strong>Kapitel 7 fragt: was, wenn nicht mal mehr die Werkzeuge von Menschen kommen müssen?</strong></p>
+<p>Die Antwort dieses Kapitels ist zweigeteilt:</p>
+<ol>
+<li><strong>Ja, das geht</strong> — das Modell kann sich seine Werkzeuge selbst schreiben, und die Registry wächst mit jeder Aufgabe.</li>
+<li><strong>Aber der Preis wandert nach unten</strong> — jede Zeile, die früher ein Menschen-geschriebenes Werkzeug validiert hätte (Code-Review, Tests, Type-Checker), musst du jetzt durch Sandbox-Politik ersetzen. Und die Sandbox ist strenger als jeder Code-Review es je sein könnte, weil sie über beliebigen unbekannten Code entscheiden muss.</li>
+</ol>
+<p>Das ist der State-of-the-Art im Sommer 2026. Systeme wie Devin, SWE-agent, Claude Code sind Ausbaustufen genau dieses Musters — mit besseren Sandboxes, mit echtem Tooling (git, filesystem, browser), mit mehreren zusammenwirkenden Agent-Rollen. Aber der Kern-Loop ist dieser hier.</p>
+<p>Wenn du diesen Loop verstanden hast — die drei Aktionen, die Registry, die Sandbox — hast du das begriffliche Werkzeug in der Hand, um jedes moderne Code-Agent-System zu analysieren. Der Rest ist Engineering.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024–2026 Dr. Thilo Böhm. Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/boehmt/The-Computational-Minimum" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

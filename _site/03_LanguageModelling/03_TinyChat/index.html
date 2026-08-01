@@ -1,0 +1,2348 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen Sprachmodell, alles selbst geschrieben ohne Frameworks.
+">
+      
+      
+        <meta name="author" content="Dr. Thilo Böhm">
+      
+      
+        <link rel="canonical" href="https://boehmt.github.io/The-Computational-Minimum/03_LanguageModelling/03_TinyChat/">
+      
+      
+        <link rel="prev" href="../02_TinyInstruct/">
+      
+      
+        <link rel="next" href="../04_TinyMoE/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>3.3 · TinyChat - The Computational Minimum</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#33-praferenz-ausrichtung-tinychat" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="The Computational Minimum" class="md-header__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Computational Minimum
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3.3 · TinyChat
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu dunklem Modus wechseln"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Zu dunklem Modus wechseln" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu hellem Modus wechseln"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Zu hellem Modus wechseln" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Startseite
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../PREFACE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Vorwort
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../STYLE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Style-Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil I · Computing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/grundlagen/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Grundlagen (Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../02_MachineIntelligence/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil II · Maschinelle Intelligenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil III · Entwicklung der Sprachmodelle
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../04_AgenticSystems/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil IV · Agentic Systems
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="The Computational Minimum" class="md-nav__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    The Computational Minimum
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startseite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PREFACE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorwort
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STYLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Style-Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil I · Computing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil I · Computing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/00_Fundament/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Fundament
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/01_CPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/02_OS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · Betriebssystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/03_Compiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · Compiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/04_PerceptronOnCPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · Perceptron auf CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/05_GPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · GPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/06_Networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Netzwerk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/grundlagen/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grundlagen (Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grundlagen (Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/schaltnetze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schaltnetze und Schaltwerke
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/von_neumann/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Von-Neumann-Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/moderne_prozessoren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderne Prozessoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../02_MachineIntelligence/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/01_Perceptron/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 · Perceptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/02_MLP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 · Multi-Layer-Perzeptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/03_CNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.3 · CNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/04_Word2Vec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/05_RNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.5 · RNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/06_Seq2Seq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.6 · Seq2Seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_MachineIntelligence/07_Transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_TinyGPT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 · TinyGPT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_TinyInstruct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.2 · TinyInstruct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#das-problem-des-vorgangers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Das Problem des Vorgängers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext-rlhf-aus-der-robotik-zur-sprache-und-zuruck-zur-einfachheit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 Historischer Kontext: RLHF, aus der Robotik zur Sprache und zurück zur Einfachheit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-wow-effekt-selbes-modell-andere-praferenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        😮 Der Wow-Effekt: Selbes Modell, andere Präferenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-du-baust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Was du baust
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schnelleinstieg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Schnelleinstieg
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quellen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Quellen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✏️ Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grenzen-dieses-meilensteins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ➡️ Grenzen dieses Meilensteins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_TinyMoE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.4 · TinyMoE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_TinyReason/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.5 · TinyReason
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../04_AgenticSystems/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil IV · Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil IV · Agentic Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/01_TextInTextOut/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 · Text-in / Text-out
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/02_ToolsAndPlanning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.2 · Tools & Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/03_TheLoop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.3 · Der Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/04_ReasoningInside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.4 · Reasoning innen drin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/05_ProtocolsAndScale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.5 · Protokolle & Skalierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/06_WhenNotToBuild/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.6 · Wann NICHT bauen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/07_DynamicToolAgent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#das-problem-des-vorgangers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Das Problem des Vorgängers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext-rlhf-aus-der-robotik-zur-sprache-und-zuruck-zur-einfachheit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 Historischer Kontext: RLHF, aus der Robotik zur Sprache und zurück zur Einfachheit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-wow-effekt-selbes-modell-andere-praferenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        😮 Der Wow-Effekt: Selbes Modell, andere Präferenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-du-baust" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Was du baust
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schnelleinstieg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Schnelleinstieg
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quellen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Quellen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✏️ Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grenzen-dieses-meilensteins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ➡️ Grenzen dieses Meilensteins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="33-praferenz-ausrichtung-tinychat">📖 3.3 Präferenz-Ausrichtung — TinyChat<a class="headerlink" href="#33-praferenz-ausrichtung-tinychat" title="Permanent link">¶</a></h1>
+<h2 id="das-problem-des-vorgangers">🎯 Das Problem des Vorgängers<a class="headerlink" href="#das-problem-des-vorgangers" title="Permanent link">¶</a></h2>
+<p>Kapitel 3.2 (TinyInstruct) hat gezeigt, dass ein Sprachmodell durch
+maskiertes Fine-Tuning zum <em>Instruction-Follower</em> wird: Es beantwortet
+Fragen, statt sie zu vervollständigen. Aber SFT hat eine subtile Grenze,
+die man erst sieht, wenn man das Modell länger benutzt.</p>
+<p>Wenn zu einer Instruktion <strong>mehrere plausible Antworten</strong> möglich sind —
+etwa eine kurze und eine lange, eine höfliche und eine schroffe, eine
+hilfreiche und eine ausweichende, eine faktisch korrekte und eine
+oberflächlich-schöne — dann kann SFT nur <em>eine</em> davon als „richtig"
+verwenden. Alle anderen zählen als „falsch", obwohl sie ebenfalls
+plausibel wären. Das Modell lernt also <em>einen bestimmten Stil</em>, den zufällig
+die Trainingsdaten hatten — nicht eine allgemeine Präferenz „was ist eine
+gute Antwort".</p>
+<p>Die Frage, die dieses Kapitel beantwortet: <strong>Wie bringt man einem Modell
+bei, aus mehreren plausiblen Antworten die <em>bessere</em> zu wählen — nach
+menschlichem Maßstab?</strong></p>
+<h2 id="historischer-kontext-rlhf-aus-der-robotik-zur-sprache-und-zuruck-zur-einfachheit">📜 Historischer Kontext: RLHF, aus der Robotik zur Sprache und zurück zur Einfachheit<a class="headerlink" href="#historischer-kontext-rlhf-aus-der-robotik-zur-sprache-und-zuruck-zur-einfachheit" title="Permanent link">¶</a></h2>
+<p>Die Idee, Modelle nach <em>menschlichen Präferenzen</em> statt nach einer festen
+Ground-Truth zu trainieren, kommt nicht ursprünglich aus dem NLP-Bereich.
+Sie kommt aus dem Reinforcement Learning — genauer: aus einer Reihe von
+Arbeiten, die zunächst Spiel- und Robotik-Aufgaben lösen sollten und dann
+schrittweise auf Sprache übertragen wurden.</p>
+<table>
+<thead>
+<tr>
+<th>Jahr</th>
+<th>Paper / Modell</th>
+<th>Beitrag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2017</td>
+<td>Christiano et al., <em>Deep RL from Human Preferences</em> (OpenAI, DeepMind)</td>
+<td>Führt <strong>RLHF als Methode</strong> überhaupt ein: statt einer festen Belohnung wird ein Reward-Modell aus paarweisen Menschen-Präferenzen gelernt. Ursprünglich für Atari und Robotik, nicht für Sprache.</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>Ziegler et al., <em>Fine-Tuning Language Models from Human Preferences</em> (OpenAI)</td>
+<td>Überträgt RLHF <strong>erstmals auf Sprachmodelle</strong> — zunächst für Stil-Steuerung, noch weit weg von Chat.</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>Stiennon et al., <em>Learning to Summarize from Human Feedback</em> (OpenAI)</td>
+<td>Erste überzeugende Sprachanwendung: <strong>Zusammenfassungen</strong>, die von Menschen als besser als die Referenz bewertet werden. Direkte methodische Vorlage für InstructGPT.</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>Ouyang et al., <em>InstructGPT</em> (OpenAI)</td>
+<td>Verbindet SFT (aus 3.2) mit RLHF: <strong>zuerst SFT auf Instruction-Daten, dann RLHF auf menschlichen Präferenzen zwischen Modell-Antworten</strong>. Das ist das Rezept, aus dem später ChatGPT wird.</td>
+</tr>
+<tr>
+<td>2022</td>
+<td><em>ChatGPT</em> (OpenAI, kein Paper)</td>
+<td>Produktifizierung von InstructGPT: gleiches Rezept, dazu Multi-Turn-Chat-Format und kontinuierliche Nutzer-Feedback-Schleife. <strong>Der Punkt, an dem breite Öffentlichkeit erstmals mit einem Sprachmodell interagiert.</strong></td>
+</tr>
+<tr>
+<td>2023</td>
+<td>Bai et al., <em>Constitutional AI / RLAIF</em> (Anthropic)</td>
+<td>Ersetzt menschliche Präferenzen teilweise durch <strong>KI-generierte Präferenzen anhand einer schriftlichen Verfassung</strong> — RLHF wird selbstversorgend. Klaudius/Claude ist das darauf aufbauende Produkt.</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>Rafailov et al., <em>Direct Preference Optimization (DPO)</em></td>
+<td><strong>Der Vereinfachungssprung.</strong> Zeigt: Man braucht das Reward-Modell und das PPO gar nicht. Präferenz-Ausrichtung lässt sich als <em>einfaches Supervised-Learning-Ziel</em> auf Paaren (bevorzugte Antwort, abgelehnte Antwort) formulieren. <strong>DPO ist heute der Standard in Open-Source-Chatmodellen.</strong></td>
+</tr>
+<tr>
+<td>2024</td>
+<td>Zephyr, Nemotron, LLaMA-Instruct u. v. m.</td>
+<td>Alle offenen Chatmodelle der letzten zwei Jahre folgen dem Rezept: <strong>SFT (aus 3.2) → DPO (aus diesem Kapitel)</strong> — die ursprüngliche PPO-basierte RLHF-Pipeline ist außerhalb der großen Labs faktisch verschwunden.</td>
+</tr>
+</tbody>
+</table>
+<p>Der rote Faden hier ist bemerkenswert und passt exakt zum Grundmotiv aus
+<code>00_Fundament</code> und <code>PREFACE.md</code>:</p>
+<ul>
+<li><strong>Christiano 2017 bis Ouyang 2022</strong> ist eine Kette von Experimenten, die
+  RLHF Schritt für Schritt von Spielen über Zusammenfassungen zu vollen
+  Chatmodellen tragen. Jede Stufe wird durch Ausprobieren gefunden, keine
+  Theorie sagt vorher „so muss es aussehen".</li>
+<li><strong>DPO 2023</strong> ist die vielleicht schönste didaktische Pointe des ganzen
+  Themas: Die zunächst hochkomplizierte RLHF-Pipeline (Reward-Modell +
+  PPO + KL-Constraint) stellt sich, wenn man die Mathematik sauber
+  aufschreibt, als <em>äquivalent zu einem einfachen Klassifikations-Loss auf
+  Präferenzpaaren</em> heraus. Was jahrelang als „RL auf Sprache" galt, war in
+  Wahrheit eine verkleidete Supervised-Learning-Aufgabe.</li>
+</ul>
+<blockquote>
+<p><strong>Ein wichtiger Punkt zur Einordnung</strong>: „ChatGPT" ist kein
+wissenschaftlicher Beitrag mit eigenem Paper. Es ist eine
+<strong>Produktversion aus GPT-3.5 + InstructGPT-Rezept + Chat-Format +
+laufendem Nutzer-Feedback</strong>. Der wissenschaftliche Sprung, den ChatGPT
+populär gemacht hat, geschah in den vier Papers <strong>FLAN + InstructGPT +
+DPO + (RLAIF)</strong> — die drei Zutaten dieses Kapitels plus der SFT-Sprung
+aus 3.2.</p>
+</blockquote>
+<h2 id="der-wow-effekt-selbes-modell-andere-praferenzen">😮 Der Wow-Effekt: Selbes Modell, andere Präferenzen<a class="headerlink" href="#der-wow-effekt-selbes-modell-andere-praferenzen" title="Permanent link">¶</a></h2>
+<p>Der Vergleich in diesem Kapitel geht <em>nicht</em> wieder gegen das Base-Modell
+aus 3.1, sondern gegen das schon <em>instruktionsfähige</em> SFT-Modell aus 3.2:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Prompt: &quot;Erkläre mir, wie eine CPU funktioniert.&quot;
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>3.2 (SFT):
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>   &quot;Eine CPU führt Instruktionen aus. Sie hat Register, eine ALU und
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    einen Programmzähler. Sie liest Instruktionen aus dem Speicher.&quot;
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>   → korrekt, aber knapp, sprunghaft, wenig didaktisch
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>3.3 (SFT + DPO):
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>   &quot;Eine CPU ist wie ein sehr eifriger, aber sturer Arbeiter, der eine
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    Liste von Anweisungen der Reihe nach abarbeitet. Er hat: ein
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    Notizbuch (die Register), einen Taschenrechner (die ALU), und einen
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    Zeigefinger auf der aktuellen Zeile (den Programmzähler). Bei jeder
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    Anweisung ...&quot;
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>   → dieselben Fakten, aber strukturiert, verständlich, hilfreich —
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>     weil Menschen (oder eine Verfassung) diese Formulierungen bevorzugt
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>     haben, als sie Präferenzpaare erstellten
+</span></code></pre></div>
+<p><em>[Platzhalter — konkrete Beispielausgaben einfügen]</em></p>
+<h2 id="was-du-baust">🧠 Was du baust<a class="headerlink" href="#was-du-baust" title="Permanent link">¶</a></h2>
+<p>Wir bauen bewusst <strong>die didaktisch einfachste Variante — DPO — und nicht
+das historische RLHF/PPO-Rezept</strong>. Der Grund: DPO ist mathematisch
+transparent, hat keine separate Reward-Modell-Trainingsphase, keine PPO-
+Rollout-Infrastruktur, und ist heute der de-facto-Standard im Open-Source-
+Bereich. Das RLHF/PPO-Rezept aus InstructGPT wird als <em>historisch</em> und
+<em>konzeptionell</em> erklärt, aber nicht implementiert.</p>
+<p>Konkret:</p>
+<ul>
+<li>Ein <strong>Präferenzdatensatz</strong> aus Tripeln <code>(prompt, chosen, rejected)</code> —
+  entweder aus einem öffentlichen Datensatz (z. B. <code>HH-RLHF</code> von Anthropic,
+  <code>UltraFeedback</code>) oder synthetisch generiert (RLAIF-Stil, mit einer
+  einfachen Verfassung).</li>
+<li>Der <strong>DPO-Loss</strong> — implementiert von Hand in wenigen Zeilen, als Beweis,
+  dass er tatsächlich nur ein maskiertes Log-Ratio auf Präferenzpaaren
+  ist.</li>
+<li>Ein <strong>Referenzmodell-Anker</strong> (das SFT-Modell aus 3.2, eingefroren): die
+  Log-Wahrscheinlichkeiten des trainierten Modells werden mit ihm ins
+  Verhältnis gesetzt, damit das Modell nicht zu weit vom instruktionsfähigen
+  Ausgangspunkt driftet.</li>
+<li>Ein <strong>Evaluierungsblock</strong>, in dem dieselben Prompts durch das SFT-Modell
+  aus 3.2 und das DPO-Modell aus diesem Kapitel geschickt werden — und
+  ausgewählte Paare in einer kleinen menschlichen (oder KI-basierten)
+  Rangordnung landen.</li>
+</ul>
+<p><strong>Konzeptioneller Anhang (kein Code)</strong>: Ein Abschnitt, in dem gezeigt
+wird, wie das <em>ursprüngliche</em> RLHF/PPO-Rezept aus InstructGPT aussieht
+(Reward-Modell + PPO + KL-Penalty), warum es funktioniert, und warum die
+DPO-Vereinfachung mathematisch äquivalent ist. Das ist die <em>historische
+Ehrlichkeit</em>: DPO ist eleganter, aber ohne den RLHF-Umweg wäre es nie
+gefunden worden.</p>
+<blockquote>
+<p>⚠️ Wie in 3.1 und 3.2 gilt: Wir bauen auf einem PyTorch-Grundgerüst auf.
+Was in diesem Kapitel neu ist, ist der <strong>DPO-Loss</strong> — buchstäblich eine
+Handvoll Zeilen, deren Einfachheit die eigentliche Pointe ist.</p>
+</blockquote>
+<h2 id="schnelleinstieg">🚀 Schnelleinstieg<a class="headerlink" href="#schnelleinstieg" title="Permanent link">¶</a></h2>
+<p>Die Struktur in <code>src/</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>src/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── config.json         Trainings-Profile (test | laptop) inkl. DPO_BETA
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── data.py             Praeferenzdatensatz (chosen/rejected) - HH-RLHF oder Fallback
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── train_dpo.py        Trainings-Loop mit DPO-Loss
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── evaluate.py         Vorher/Nachher-Vergleich SFT-Modell vs. DPO-Modell
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>└── test_dpo_loss.py    Standalone-Beweis der DPO-Formel (laeuft OHNE PyTorch)
+</span></code></pre></div>
+<p><strong>Schritt 0 — die Idee ohne Training verstehen</strong> <em>(kein PyTorch noetig, kein Netz):</em></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>03_LanguageModelling/03_TinyChat/src/test_dpo_loss.py
+</span></code></pre></div>
+<p>Zeigt in drei synthetischen Szenarien, wie sich der DPO-Loss verhaelt:
+- Policy bevorzugt schon <code>chosen</code> -&gt; Loss ist am <em>kleinsten</em> (verifiziert: 0.5981).
+- Policy neutral (== Referenz) -&gt; Loss ist genau <code>ln 2 ≈ 0.693</code> (verifiziert: 0.6931).
+- Policy bevorzugt <code>rejected</code> -&gt; Loss ist am <em>groessten</em> (verifiziert: 0.7981).</p>
+<p>Das ist der ganze DPO-Trainings-Mechanismus - eine Rechnung, viele
+Wiederholungen.</p>
+<p><strong>Schritt 1 — DPO trainieren:</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>03_LanguageModelling/03_TinyChat/src/train_dpo.py<span class="w"> </span>--profile<span class="w"> </span><span class="nb">test</span>
+</span></code></pre></div>
+<p>Setze <strong>unbedingt</strong> <code>SFT_MODEL_CKPT</code> in <code>config.json</code> auf den Pfad zum
+SFT-Modell aus Kapitel 3.2. Ohne diesen Anker startet DPO von zufaelligen
+Gewichten und die Rewards bleiben nahe 0 (das Skript warnt in diesem
+Fall).</p>
+<p><strong>Schritt 2 — Vorher/Nachher-Vergleich (SFT vs. DPO):</strong></p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>03_LanguageModelling/03_TinyChat/src/evaluate.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--sft-ckpt<span class="w"> </span>../../02_TinyInstruct/checkpoints/tinyinstruct_sft.pt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--dpo-ckpt<span class="w"> </span>../checkpoints/tinychat_dpo.pt<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--profile<span class="w">  </span>laptop
+</span></code></pre></div>
+<p>Voraussetzungen: <code>torch</code>, <code>transformers</code>, <code>datasets</code>, <code>tqdm</code>.</p>
+<h2 id="quellen">📚 Quellen<a class="headerlink" href="#quellen" title="Permanent link">¶</a></h2>
+<ul>
+<li>Christiano, P. et al. (2017). <em>Deep Reinforcement Learning from Human Preferences.</em></li>
+<li>Ziegler, D. et al. (2019). <em>Fine-Tuning Language Models from Human Preferences.</em></li>
+<li>Stiennon, N. et al. (2020). <em>Learning to Summarize from Human Feedback.</em></li>
+<li>Ouyang, L. et al. (2022). <em>Training Language Models to Follow Instructions with Human Feedback.</em> (InstructGPT)</li>
+<li>Bai, Y. et al. (2022). <em>Constitutional AI: Harmlessness from AI Feedback.</em> (Anthropic, RLAIF)</li>
+<li>Rafailov, R. et al. (2023). <em>Direct Preference Optimization: Your Language Model is Secretly a Reward Model.</em> (DPO)</li>
+</ul>
+<h2 id="ubungen">✏️ Übungen<a class="headerlink" href="#ubungen" title="Permanent link">¶</a></h2>
+<p><strong>1. DPO vs. reines SFT — der Unterschied in Zahlen.</strong> Nimm zehn Prompts,
+lass dir vom SFT-Modell (3.2) und vom DPO-Modell (3.3) je fünf Antworten
+generieren. Lass eine Testperson (oder ein starkes externes Modell) je
+zwei Antworten paarweise vergleichen. In wie viel Prozent der Vergleiche
+gewinnt DPO?</p>
+<p><strong>2. Was passiert bei zu vielen DPO-Schritten?</strong> Trainiere DPO absichtlich
+zu lange. Beobachtung? <em>(Erwartung: Das Modell driftet vom SFT-Anker weg,
+antwortet stereotyp, verliert die Vielseitigkeit. Das ist der Grund für
+den KL-Term im DPO-Loss — er hält das Modell nahe am SFT-Startpunkt.)</em></p>
+<p><strong>3. RLAIF selbst ausprobieren.</strong> Formuliere eine kleine Verfassung von
+5 Regeln (z. B. „Antworte klar strukturiert", „Nenne unsichere Angaben als
+solche"). Lass ein größeres Modell für Prompt-Antworten anhand dieser
+Regeln paarweise Präferenzen erstellen und trainiere DPO darauf. Wie
+weit trägt reine KI-Präferenz?</p>
+<p><strong>4. Konzeptionell: DPO als vereinfachtes RLHF.</strong> Rekonstruiere aus dem
+DPO-Paper die Argumentation, warum der DPO-Loss algebraisch äquivalent
+zum Optimum der ursprünglichen RLHF-Formulierung ist. Wo geht die
+Vereinfachung genau ein? <em>(Hinweis: Die entscheidende Umformung ist, dass
+das optimale Policy-Reward-Modell-Paar bei Bradley-Terry-Präferenzen eine
+geschlossene Form hat.)</em></p>
+<h2 id="grenzen-dieses-meilensteins">➡️ Grenzen dieses Meilensteins<a class="headerlink" href="#grenzen-dieses-meilensteins" title="Permanent link">¶</a></h2>
+<p>TinyChat folgt Instruktionen zuverlässig und antwortet in einem
+präferenz-ausgerichteten Stil — aber es ist immer noch ein <strong>dichtes</strong>
+Modell: Jedes einzelne Token durchläuft alle Parameter. Für mehr
+Kapazität muss das ganze Modell größer werden, und die Rechenkosten pro
+Token wachsen mit. Kapitel 3.4 (TinyMoE) zeigt, wie sich diese
+Skalierungsachse aufbrechen lässt: Kapazität wächst, ohne dass die Kosten
+pro Token proportional mitwachsen — die zweite große Skalierungsachse,
+die in <code>PREFACE.md</code> als roter Faden des ganzen Teils benannt ist.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024–2026 Dr. Thilo Böhm. Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/boehmt/The-Computational-Minimum" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

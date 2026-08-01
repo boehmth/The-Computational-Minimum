@@ -134,6 +134,14 @@
   line-height: 1.45;
 }
 
+/* Etwas mehr vertikaler Atem um Code-Bloecke im Fliesstext. */
+.md-content .highlight,
+.md-content pre {
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+
 /* --- Blockzitate (fuer die Motto-Blocks und Deep-Dive-Absprungboxen) --- */
 .md-typeset blockquote {
   border-left: 3px solid var(--tcm-red);
@@ -149,16 +157,24 @@
 }
 
 /* --- Trennlinien (horizontal rules) ----------------------------------- */
+/* Serien-Trenner: ein zentrierter ◆-Divider statt einer simplen Linie. */
 .md-typeset hr {
   border: none;
-  border-top: 1px solid var(--tcm-blue);
-  opacity: 0.25;
-  margin: 2rem 0;
+  text-align: center;
+  height: 1.5rem;
+  margin: 2.5rem auto;
+}
+.md-typeset hr::before {
+  content: "◆    ◆    ◆";
+  letter-spacing: 0.5em;
+  color: var(--md-default-fg-color--lightest);
+  font-size: 0.9rem;
 }
 
-[data-md-color-scheme="slate"] .md-typeset hr {
-  border-top-color: var(--tcm-paper);
+[data-md-color-scheme="slate"] .md-typeset hr::before {
+  color: var(--md-default-fg-color--lightest);
 }
+
 
 /* --- Tabellen ---------------------------------------------------------- */
 .md-typeset table:not([class]) {

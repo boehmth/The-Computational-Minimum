@@ -1,0 +1,1 @@
+"""Compiler-Paket: mehrere Sprachen -> gemeinsamer AST -> Assembler."""

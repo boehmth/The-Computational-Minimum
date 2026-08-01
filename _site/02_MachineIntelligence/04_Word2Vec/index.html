@@ -1,0 +1,2554 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen Sprachmodell, alles selbst geschrieben ohne Frameworks.
+">
+      
+      
+        <meta name="author" content="Dr. Thilo Böhm">
+      
+      
+        <link rel="canonical" href="https://boehmt.github.io/The-Computational-Minimum/02_MachineIntelligence/04_Word2Vec/">
+      
+      
+        <link rel="prev" href="../03_CNN/">
+      
+      
+        <link rel="next" href="../05_RNN/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>2.4 · Word2Vec - The Computational Minimum</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ki-meilenstein-4-word-embeddings-word2vec" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="The Computational Minimum" class="md-header__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Computational Minimum
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2.4 · Word2Vec
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu dunklem Modus wechseln"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Zu dunklem Modus wechseln" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu hellem Modus wechseln"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Zu hellem Modus wechseln" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Startseite
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../PREFACE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Vorwort
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../STYLE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Style-Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil I · Computing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/grundlagen/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Grundlagen (Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil II · Maschinelle Intelligenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../03_LanguageModelling/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil III · Entwicklung der Sprachmodelle
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../04_AgenticSystems/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil IV · Agentic Systems
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="The Computational Minimum" class="md-nav__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    The Computational Minimum
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startseite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PREFACE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorwort
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STYLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Style-Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil I · Computing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil I · Computing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/00_Fundament/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Fundament
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/01_CPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/02_OS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · Betriebssystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/03_Compiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · Compiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/04_PerceptronOnCPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · Perceptron auf CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/05_GPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · GPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/06_Networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Netzwerk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/grundlagen/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grundlagen (Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grundlagen (Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/schaltnetze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schaltnetze und Schaltwerke
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/von_neumann/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Von-Neumann-Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/moderne_prozessoren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderne Prozessoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Perceptron/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 · Perceptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MLP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 · Multi-Layer-Perzeptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_CNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.3 · CNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#auf-einmal-geht-es-ums-verstehen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌉 Auf einmal geht es ums Verstehen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-aufgabe-bedeutung-aus-kontext-lernen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Die Aufgabe: Bedeutung aus Kontext lernen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modellarchitektur-skip-gram-mit-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧩 Modellarchitektur: Skip-Gram mit Negative Sampling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧩 Modellarchitektur: Skip-Gram mit Negative Sampling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#das-skip-gram-prinzip-in-einem-bild" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Das Skip-Gram-Prinzip in einem Bild
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#was-word2vec-bewusst-weglasst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was Word2Vec bewusst weglässt
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚙️ Training: Negative Sampling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-startest-du-das-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ▶️ So startest du das Programm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispielausgabe-echter-trainingslauf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📈 Beispielausgabe (echter Trainingslauf)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ehrliche-diskussion-grenzen-und-wackel-effekte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❗ Ehrliche Diskussion: Grenzen und Wackel-Effekte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-steht-word2vec-heute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo steht Word2Vec heute?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abschlieende-bemerkungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Abschließende Bemerkungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nachstes-kapitel-recurrent-neural-networks-rnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Nächstes Kapitel: Recurrent Neural Networks (RNNs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_RNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.5 · RNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_Seq2Seq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.6 · Seq2Seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_Transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../03_LanguageModelling/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/01_TinyGPT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 · TinyGPT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/02_TinyInstruct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.2 · TinyInstruct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/03_TinyChat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/04_TinyMoE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.4 · TinyMoE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/05_TinyReason/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.5 · TinyReason
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../04_AgenticSystems/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil IV · Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil IV · Agentic Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/01_TextInTextOut/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 · Text-in / Text-out
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/02_ToolsAndPlanning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.2 · Tools & Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/03_TheLoop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.3 · Der Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/04_ReasoningInside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.4 · Reasoning innen drin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/05_ProtocolsAndScale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.5 · Protokolle & Skalierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/06_WhenNotToBuild/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.6 · Wann NICHT bauen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/07_DynamicToolAgent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#auf-einmal-geht-es-ums-verstehen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌉 Auf einmal geht es ums Verstehen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-aufgabe-bedeutung-aus-kontext-lernen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Die Aufgabe: Bedeutung aus Kontext lernen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modellarchitektur-skip-gram-mit-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧩 Modellarchitektur: Skip-Gram mit Negative Sampling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧩 Modellarchitektur: Skip-Gram mit Negative Sampling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#das-skip-gram-prinzip-in-einem-bild" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Das Skip-Gram-Prinzip in einem Bild
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#was-word2vec-bewusst-weglasst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was Word2Vec bewusst weglässt
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚙️ Training: Negative Sampling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-startest-du-das-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ▶️ So startest du das Programm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispielausgabe-echter-trainingslauf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📈 Beispielausgabe (echter Trainingslauf)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ehrliche-diskussion-grenzen-und-wackel-effekte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❗ Ehrliche Diskussion: Grenzen und Wackel-Effekte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-steht-word2vec-heute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo steht Word2Vec heute?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abschlieende-bemerkungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Abschließende Bemerkungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nachstes-kapitel-recurrent-neural-networks-rnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Nächstes Kapitel: Recurrent Neural Networks (RNNs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ki-meilenstein-4-word-embeddings-word2vec">KI-Meilenstein 4: Word Embeddings (Word2Vec)<a class="headerlink" href="#ki-meilenstein-4-word-embeddings-word2vec" title="Permanent link">¶</a></h1>
+<blockquote>
+<p><strong>🎯 Warum ist das cool?</strong>
+Nach dem Training kann man mit Wörtern <strong>rechnen wie mit Vektoren</strong>: <code>König − Mann + Frau ≈ Königin</code>. Niemand hat dem Modell die Bedeutung der Wörter erklärt — es hat sie allein aus den Kontexten in den Grimmschen Märchen abgelesen. Und genau dieses Prinzip — <strong>Bedeutung aus Kontext</strong> — ist die Grundlage aller heutigen großen Sprachmodelle wie GPT und Claude.</p>
+</blockquote>
+<h2 id="auf-einmal-geht-es-ums-verstehen">🌉 Auf einmal geht es ums Verstehen<a class="headerlink" href="#auf-einmal-geht-es-ums-verstehen" title="Permanent link">¶</a></h2>
+<p>Mit diesem Kapitel beginnt <strong>Phase B</strong> der Reihe. Bis hierher konnten wir Zeichen und Wörter <em>lesen</em> — als Bytes, als Pixel, als klassifizierbare Muster. Ab jetzt geht es um etwas Neues:</p>
+<blockquote>
+<p><strong>Was bedeuten diese Zeichen eigentlich?</strong></p>
+</blockquote>
+<p>Ein Computer, der ein Handschrift-Foto in die Buchstabenfolge <code>KOENIG</code> überführt, weiß immer noch nichts über <em>Könige</em>. Für ihn ist das nur eine Kette von sechs Zeichen. Er hat keine Ahnung, dass ein König etwas mit einer Königin zu tun hat, oder dass Könige in einem Schloss wohnen und nicht in einer Zahnbürste.</p>
+<p>Bis jetzt haben wir mit <strong>Bildern</strong> und <strong>Zahlen</strong> gearbeitet — Dinge, die man leicht in einen Vektor stecken kann. Ein Pixel ist eine Zahl, 81 Pixel sind 81 Zahlen. So einfach. Jetzt kommt Sprache. Und Sprache besteht aus <strong>Wörtern</strong> — und Wörter sind keine Zahlen. Sie sind Symbole. Wie füttert man einem neuronalen Netz das Wort <em>Königin</em>?</p>
+<p>Der erste Versuch: <strong>One-Hot-Kodierung.</strong> Man nummeriert alle Wörter des Vokabulars und macht aus jedem einen 1636-Vektor mit einer einzigen <code>1</code> an seiner Position und lauter <code>0</code> sonst. Damit kann ein Netz <em>rechnen</em> — aber es weiß nichts. Denn One-Hot-Vektoren enthalten <strong>keinerlei Information über Bedeutung</strong>. Der Vektor für <em>König</em> steht senkrecht auf dem Vektor für <em>Königin</em> — genauso wie er senkrecht auf <em>Zahnbürste</em> steht. Aus Sicht des Netzes sind alle Wörter gleich weit voneinander entfernt.</p>
+<p>Die Lösung ist eine der schönsten Ideen der modernen KI:</p>
+<blockquote>
+<p><strong>Wir lernen für jedes Wort einen kleinen Vektor (z. B. 64 Zahlen), der seine Bedeutung repräsentiert — indirekt, aus dem Kontext, in dem das Wort im Text auftaucht.</strong></p>
+</blockquote>
+<p>Wörter, die in ähnlichem Kontext vorkommen — <em>König</em> und <em>Königin</em>, <em>Wald</em> und <em>Baum</em>, <em>Vater</em> und <em>Mutter</em> — bekommen ähnliche Vektoren. Und dann kann man sogar <strong>mit Bedeutungen rechnen</strong>: <code>König − Mann + Frau ≈ Königin</code>. Diese Idee ist so radikal wie schön: <strong>Bedeutung als Position im Vektorraum.</strong> Sie stammt in ihrer heute gebräuchlichen Form von <strong>Tomáš Mikolov</strong> und Kollegen (Google, 2013) und heißt <strong>Word2Vec</strong>.</p>
+<hr />
+<h2 id="historischer-kontext">🕰️ Historischer Kontext<a class="headerlink" href="#historischer-kontext" title="Permanent link">¶</a></h2>
+<p>Wörter als Vektoren zu repräsentieren ist älter als 2013 — die Idee reicht bis in die 1980er zurück (Hinton u. a., <em>Distributed Representations</em>) und findet 2003 einen ersten prominenten neuronalen Ausdruck. Word2Vec ist <strong>nicht</strong> der Erfinder dieser Idee, sondern ihr <strong>radikaler Simplifizierer</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Jahr</th>
+<th>Ereignis</th>
+<th>Was daran neu ist</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1986</strong></td>
+<td>Hinton et al.: <em>Distributed Representations</em></td>
+<td>Konzept: Bedeutung als Vektor, verteilt über viele Neuronen</td>
+</tr>
+<tr>
+<td><strong>2003</strong></td>
+<td><strong>Bengio et al.: Neural Language Model (NNLM)</strong></td>
+<td>Ein NN, das das nächste Wort vorhersagt. Embeddings entstehen als <em>Nebenprodukt</em> dieser Sprachmodell-Aufgabe.</td>
+</tr>
+<tr>
+<td><strong>2010</strong></td>
+<td><strong>Mikolov et al.: RNN-basiertes Sprachmodell</strong></td>
+<td>Erstes <em>rekurrentes</em> Sprachmodell — verarbeitet Wörter <em>in Reihenfolge</em>, mit Gedächtnis. (Kommt in Meilenstein 5!)</td>
+</tr>
+<tr>
+<td><strong>2013</strong></td>
+<td><strong>Mikolov et al.: Word2Vec</strong> (Skip-Gram, CBOW)</td>
+<td><strong>Bewusste Vereinfachung</strong>: Kein Sprachmodell mehr, nur noch Embeddings. Kein Hidden Layer, keine volle Softmax — dadurch 1000× schneller als 2003.</td>
+</tr>
+<tr>
+<td><strong>2014</strong></td>
+<td>Pennington: GloVe</td>
+<td>Alternative Methode über Kookkurrenz-Statistiken</td>
+</tr>
+<tr>
+<td><strong>2018+</strong></td>
+<td>ELMo, BERT, GPT</td>
+<td>Kontextabhängige Embeddings (jedes Wort bekommt je nach Satz einen anderen Vektor)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kurz gesagt:</strong> Bengio 2003 zeigte, dass ein NN Sprache modellieren <em>kann</em>. Mikolov 2010 zeigte, dass RNNs es <em>besser</em> können. Und Mikolov 2013 (Word2Vec) sagte: <em>„Wenn wir nur die Embeddings brauchen — dann sparen wir uns den ganzen Rest."</em> Das machte Wort-Embeddings zum ersten Mal für jeden zugänglich.</p>
+<hr />
+<h2 id="die-aufgabe-bedeutung-aus-kontext-lernen">🧠 Die Aufgabe: Bedeutung aus Kontext lernen<a class="headerlink" href="#die-aufgabe-bedeutung-aus-kontext-lernen" title="Permanent link">¶</a></h2>
+<p>Wir laden die <strong>englische Grimm-Ausgabe</strong> von <em>Project Gutenberg</em> (eBook #2591) — sie enthält Übersetzungen der berühmten <em>Kinder- und Hausmärchen</em>. Auf Deutsch gibt es leider keine gut zugängliche Volltextausgabe im Netz, deshalb arbeiten wir mit der englischen Fassung. Die Grimm-Story bleibt dieselbe — nur die Wortoberfläche wechselt.</p>
+<p><strong>Umfang:</strong> ca. 530 kB Text, ca. 100 000 Wörter, Vokabular ca. 1 600 Wörter (min. 5 Vorkommen). Beim ersten Aufruf wird der Text automatisch heruntergeladen und lokal in <code>grimm_en.txt</code> zwischen­gespeichert.</p>
+<p>Aus diesem Text soll Word2Vec <strong>ohne jedes Label</strong> lernen, welche Wörter zusammengehören. Die Aufgabe für jedes Wort lautet: <em>„Welche Wörter stehen typischerweise in deiner Nähe?"</em></p>
+<p><strong>Warum diese Aufgabe?</strong></p>
+<ol>
+<li><strong>Klarer Bedeutungsraum</strong> — Märchen enthalten wiederkehrende Themenfelder (Könige, Wälder, Tiere, Zauber). Damit haben Wörter starke Kontext-Signale.</li>
+<li><strong>Klein genug für Minuten-Training</strong> — 100 000 Wörter reichen für erste, brauchbare Embeddings.</li>
+<li><strong>Self-Supervised</strong> — keine Labels nötig; die Struktur des Textes selbst ist Trainingssignal. Genau das ist die Idee, die alle heutigen LLMs antreibt.</li>
+<li><strong>Wow-Effekt vorhanden</strong> — mit <code>king − man + woman ≈ queen</code> bekommen wir eine spektakuläre Demonstration des gelernten Bedeutungsraums.</li>
+</ol>
+<hr />
+<h2 id="modellarchitektur-skip-gram-mit-negative-sampling">🧩 Modellarchitektur: Skip-Gram mit Negative Sampling<a class="headerlink" href="#modellarchitektur-skip-gram-mit-negative-sampling" title="Permanent link">¶</a></h2>
+<p>Word2Vec besteht aus <strong>zwei Embedding-Matrizen</strong> der Größe V × D:</p>
+<ul>
+<li><strong><code>W_in</code></strong> — ein Vektor pro Wort als <strong>Zentrumswort</strong>.</li>
+<li><strong><code>W_out</code></strong> — ein Vektor pro Wort als <strong>Kontext-/Negativwort</strong>.</li>
+</ul>
+<p>Nach dem Training verwenden wir <code>W_in</code> als die eigentlichen Wort-Embeddings.</p>
+<p>Zwei Word2Vec-Varianten sind möglich:</p>
+<ul>
+<li><strong>CBOW:</strong> Aus dem Kontext das mittlere Wort vorhersagen. Schneller, gut bei viel Daten.</li>
+<li><strong>Skip-Gram:</strong> Aus dem mittleren Wort die Kontextwörter vorhersagen. Robuster bei kleineren Datenmengen.</li>
+</ul>
+<p>Wir wählen <strong>Skip-Gram</strong>, weil unser Grimm-Korpus mit ~100 000 Wörtern klein ist.</p>
+<h3 id="das-skip-gram-prinzip-in-einem-bild">Das Skip-Gram-Prinzip in einem Bild<a class="headerlink" href="#das-skip-gram-prinzip-in-einem-bild" title="Permanent link">¶</a></h3>
+<p>Fenster über den Text schieben. Mittleres Wort = <strong>Zentrum</strong> <code>c</code>, umliegende Wörter = <strong>Kontext</strong> <code>o</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>...  the  golden  |  BIRD  |  sang  a  song  ...
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                     (c)      (o)  (o) (o)
+</span></code></pre></div>
+<p>Für jedes Paar <code>(c, o)</code> soll das Modell lernen: <em>„Diese beiden Wörter stehen zusammen."</em></p>
+<p><strong>Größenordnungen:</strong>
+- Vokabular: V = 1 636
+- Embedding-Dimension: D = 64
+- Parameter (zwei Matrizen): 2 · V · D ≈ <strong>210 000</strong>
+- Fenster: ±5 Wörter
+- Negative Samples: 5 pro Positiv-Paar</p>
+<h3 id="was-word2vec-bewusst-weglasst">Was Word2Vec bewusst <em>weglässt</em><a class="headerlink" href="#was-word2vec-bewusst-weglasst" title="Permanent link">¶</a></h3>
+<p>Bengios NNLM (2003) war ein volles <strong>Sprachmodell</strong>: Es sollte die <em>Wahrscheinlichkeit des nächsten Wortes</em> über das gesamte Vokabular vorhersagen. Word2Vec verzichtet auf all das — bewusst:</p>
+<table>
+<thead>
+<tr>
+<th>Aspekt</th>
+<th>Bengio 2003 (NNLM)</th>
+<th>Word2Vec 2013</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aufgabe</td>
+<td>Nächstes Wort vorhersagen</td>
+<td>Nur: „gehören zwei Wörter zusammen?"</td>
+</tr>
+<tr>
+<td>Architektur</td>
+<td>Embedding + Hidden + Softmax</td>
+<td>Nur zwei Embedding-Matrizen</td>
+</tr>
+<tr>
+<td>Ausgabe­schicht</td>
+<td>Softmax über V</td>
+<td>Sigmoid pro Wortpaar</td>
+</tr>
+<tr>
+<td>Ziel</td>
+<td>Sprachmodell (Wortfolgen)</td>
+<td>Reine Wort-Embeddings</td>
+</tr>
+<tr>
+<td>Trainings­aufwand</td>
+<td>Stunden bis Tage auf einer CPU</td>
+<td>Minuten</td>
+</tr>
+</tbody>
+</table>
+<p>Word2Vec ist also <strong>nicht</strong> nur eine schnellere Bengio-Variante — es ist ein anderes Ziel, das nebenbei extrem schnell erreichbar ist. Deshalb sagt es <em>kein nächstes Wort</em> vorher; es weiß nur, welche Wörter „zusammengehören". Für ein vollwertiges Sprachmodell brauchen wir wieder mehr — dazu kommen wir in Meilenstein 5 (RNN) und Meilenstein 8 (Mini-GPT).</p>
+<hr />
+<h2 id="training-negative-sampling">⚙️ Training: Negative Sampling<a class="headerlink" href="#training-negative-sampling" title="Permanent link">¶</a></h2>
+<p>Eine echte Softmax über alle V Wörter wäre teuer. Der Trick von Mikolov: statt aller V Alternativen ziehen wir <strong>wenige zufällige „Negativ-Wörter"</strong> (typisch 5–15) und lernen zwei Regeln:</p>
+<ul>
+<li>Das echte Paar <code>(c, o)</code> → Sigmoid soll gegen <strong>1</strong> gehen.</li>
+<li>Jedes Zufallspaar <code>(c, n_j)</code> → Sigmoid soll gegen <strong>0</strong> gehen.</li>
+</ul>
+<p>Verlust für ein einzelnes Trainingspaar:</p>
+<div class="arithmatex">\[
+L = -\log \sigma(v_c \cdot u_o) \;-\; \sum_j \log \sigma(-v_c \cdot u_{n_j})
+\]</div>
+<p>wobei <span class="arithmatex">\(\sigma\)</span> das Sigmoid ist und <span class="arithmatex">\(v_c, u_o, u_{n_j}\)</span> die entsprechenden Zeilen aus <code>W_in</code> bzw. <code>W_out</code>.</p>
+<p>Wenn wir <span class="arithmatex">\(\sigma^+ = \sigma(v_c \cdot u_o)\)</span> und <span class="arithmatex">\(\sigma^-_j = \sigma(v_c \cdot u_{n_j})\)</span> abkürzen, sind die Gradienten schön einfach:</p>
+<div class="arithmatex">\[
+\frac{\partial L}{\partial (v_c \cdot u_o)} = \sigma^+ - 1
+\qquad
+\frac{\partial L}{\partial (v_c \cdot u_{n_j})} = \sigma^-_j
+\]</div>
+<p>Das heißt: Wir schieben das echte Kontextwort <strong>näher</strong> an das Zentrumswort, die Zufallswörter <strong>weg</strong> — mit einer Stärke, die davon abhängt, wie falsch das Modell gerade liegt. Die vollständige Herleitung steht als Kommentar im NumPy-Code in <code>word2vec.py</code>.</p>
+<p><strong>Selbstüberwachtes Lernen.</strong> Wir müssen <strong>keine Labels von Hand vergeben</strong> — der Text selbst liefert das Trainingssignal. Diese Idee — <strong>self-supervised learning</strong> — ist die Grundlage aller heutigen großen Sprachmodelle (GPT, BERT, LLaMA).</p>
+<p><strong>Hyperparameter:</strong>
+- Epochen: 4
+- Lernrate: 0.025 (linear abfallend)
+- Fenstergröße: 5
+- Negative Samples: 5</p>
+<hr />
+<h2 id="so-startest-du-das-programm">▶️ So startest du das Programm<a class="headerlink" href="#so-startest-du-das-programm" title="Permanent link">¶</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>Word2Vec/src
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>scikit-learn
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>python<span class="w"> </span>main.py
+</span></code></pre></div>
+<p>Das Programm:
+1. lädt den Grimm-Text (~10 Sekunden Download beim ersten Aufruf, danach gecacht),
+2. baut Vokabular und Trainings-Token,
+3. trainiert Skip-Gram + Negative Sampling (~2 Minuten auf CPU),
+4. gibt <strong>Nachbarwörter</strong>, <strong>Analogien</strong> und einen <strong>2D-PCA-Plot</strong> in der Konsole aus.</p>
+<hr />
+<h2 id="beispielausgabe-echter-trainingslauf">📈 Beispielausgabe (echter Trainingslauf)<a class="headerlink" href="#beispielausgabe-echter-trainingslauf" title="Permanent link">¶</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Tokens gesamt: 101,632   Vokabular: 1,636   Trainings-IDs: 95,942
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>[W2V] Epoche 1/4  Loss=2.80  Zeit=21s
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>[W2V] Epoche 2/4  Loss=2.55  Zeit=29s
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>[W2V] Epoche 3/4  Loss=2.51  Zeit=30s
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>[W2V] Epoche 4/4  Loss=2.49  Zeit=24s
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>Nachbarwoerter (Kosinusaehnlichkeit):
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  king    -&gt; [&#39;bride&#39;, &#39;cook&#39;, &#39;merchant&#39;, &#39;boy&#39;, &#39;queen&#39;, &#39;woman&#39;, &#39;fox&#39;, ...]
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>  queen   -&gt; [&#39;princess&#39;, &#39;bride&#39;, &#39;frog&#39;, &#39;fisherman&#39;, &#39;merchant&#39;, &#39;miller&#39;, ...]
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>  forest  -&gt; [&#39;kitchen&#39;, &#39;wood&#39;, &#39;town&#39;, &#39;close&#39;, &#39;cellar&#39;, &#39;spot&#39;, &#39;room&#39;, ...]
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  castle  -&gt; [&#39;courtyard&#39;, &#39;country&#39;, &#39;village&#39;, &#39;cottage&#39;, &#39;palace&#39;, &#39;mill&#39;, ...]
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  gold    -&gt; [&#39;wine&#39;, &#39;pair&#39;, &#39;fur&#39;, &#39;kinds&#39;, &#39;flowers&#39;, &#39;stones&#39;, &#39;silver&#39;, ...]
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  night   -&gt; [&#39;same&#39;, &quot;o&#39;clock&quot;, &#39;knocked&#39;, &#39;morning&#39;, &#39;arrived&#39;, &#39;noon&#39;, ...]
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>Analogien:
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>  man : king    :: woman  : ?  -&gt;  [&#39;queen&#39;, &#39;next&#39;, &#39;princess&#39;, &#39;fox&#39;, &#39;cook&#39;]
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>  father : son  :: mother : ?  -&gt;  [&#39;daughter&#39;, &#39;hans&#39;, &#39;woman&#39;, &#39;gretel&#39;, ...]
+</span></code></pre></div>
+<p><strong>Und der Star des Kapitels — die Analogie:</strong></p>
+<p><code>man : king :: woman : ?</code> → <strong>queen</strong>. Das Modell hat <em>niemand</em> beigebracht, dass Frauen und Männer im Gegensatz stehen. Es hat diese Struktur allein aus dem Grimm-Text abgeleitet — indem es beobachtet hat, dass <em>king</em> in ähnlichen Kontexten steht wie <em>queen</em>, und dass <em>man</em> in ähnlichen Kontexten steht wie <em>woman</em>. Die Differenz <em>king − man</em> wird zu einem Vektor, der grob „männlich → königlich" bedeutet — und wenn man ihn auf <em>woman</em> addiert, landet man tatsächlich bei <em>queen</em>.</p>
+<p>Das ist ein sichtbarer Beweis für die zentrale These dieses Kapitels: <strong>Bedeutung ist Position im Vektorraum, und semantische Beziehungen sind Richtungen.</strong></p>
+<p>Zusätzlich fällt auf: Die Nachbarwörter bilden thematische Gruppen — <code>castle</code> neben <em>courtyard, palace, cottage, mill</em>; <code>night</code> neben <em>morning, noon, o'clock</em>; <code>gold</code> neben <em>silver, stones, flowers</em>. Der PCA-Plot in 2D zeigt Cluster:</p>
+<ul>
+<li><strong>oben</strong>: Zeit-Wörter (<em>night, morning, day</em>)</li>
+<li><strong>rechts</strong>: königliche Familie (<em>king, queen, princess, prince, daughter, son</em>)</li>
+<li><strong>links</strong>: Räume und Natur (<em>forest, wood, tree, castle, house, sea</em>)</li>
+<li><strong>unten</strong>: Eltern-Wörter und Metalle (<em>mother, father, gold, silver</em>)</li>
+</ul>
+<hr />
+<h2 id="ehrliche-diskussion-grenzen-und-wackel-effekte">❗ Ehrliche Diskussion: Grenzen und Wackel-Effekte<a class="headerlink" href="#ehrliche-diskussion-grenzen-und-wackel-effekte" title="Permanent link">¶</a></h2>
+<p>Bei 100 000 Wörtern sind viele Analogien noch <strong>instabil</strong>. Zum Beispiel:</p>
+<ul>
+<li><code>boy : prince :: girl : ?</code> liefert bei uns Unsinn — das Muster „Mann/Frau" ist stark, aber „Kind/Prinz" tritt zu selten im Korpus auf.</li>
+<li>Nicht alle Nachbarwörter machen semantisch Sinn: Bei <code>king</code> steht neben <em>queen</em> und <em>bride</em> auch <em>fox</em> — vermutlich weil in Grimm-Märchen viele Tiere in Königs-Kontexten auftauchen.</li>
+</ul>
+<p>Word2Vec entfaltet seine Stärke erst auf <strong>hundertfach größeren Texten</strong>. Das Original-Modell von Mikolov wurde auf mehreren Milliarden Wörtern trainiert — dort werden Analogien zuverlässiger und Cluster feiner.</p>
+<p>Und eine grundsätzlichere Grenze:</p>
+<blockquote>
+<p><strong>Ein Wort bekommt hier immer genau einen Vektor — egal in welchem Satz es steht.</strong></p>
+</blockquote>
+<p>Das Wort <em>bank</em> hat für Word2Vec dieselbe Bedeutung, ob wir <em>„ich sitze auf einer Bank"</em> oder <em>„die Bank ist geschlossen"</em> sagen. Das reicht offensichtlich nicht, um Sprache wirklich zu verstehen. <strong>Kontextabhängige Embeddings</strong> (ELMo, BERT, GPT) haben dieses Problem 2018 gelöst — dazu kommen wir in späteren Kapiteln.</p>
+<hr />
+<h2 id="ubungen">📝 Übungen<a class="headerlink" href="#ubungen" title="Permanent link">¶</a></h2>
+<p><strong>1. Andere Nachbarwörter erkunden.</strong> Ergänze in <code>main.py</code> weitere Wörter (<code>bread</code>, <code>mountain</code>, <code>witch</code>, <code>dragon</code> ...). Welche Nachbarn ergeben Sinn, welche überraschen dich?</p>
+<p><strong>2. Analogien selbst finden.</strong> Probiere eigene Analogien: <code>queen : king :: princess : ?</code>, <code>wolf : forest :: fish : ?</code>. Bei welchen funktioniert es, bei welchen nicht — und warum?</p>
+<p><strong>3. Embedding-Dimension variieren.</strong> Setze <code>EMBED_DIM = 16</code> oder <code>EMBED_DIM = 128</code>. Was ändert sich an der Qualität der Nachbarwörter und an der Trainingszeit? <em>(Lernziel: Mehr Dimensionen erlauben feinere Unterscheidungen, kosten aber Rechenzeit und brauchen mehr Daten.)</em></p>
+<p><strong>4. Fenstergröße variieren.</strong> Setze <code>WINDOW = 2</code> (nur direkte Nachbarn) oder <code>WINDOW = 10</code> (breiter Kontext). Beobachtung: kleines Fenster → <em>syntaktische</em> Ähnlichkeit (Verben mit Verben); großes Fenster → <em>thematische</em> Ähnlichkeit.</p>
+<p><strong>5. Vektor-Kombinationen.</strong> Berechne den Nachbarn zu einem selbst gewählten Vektor, z. B. <code>0.5 * (v[wolf] + v[fox])</code>. Welche Wörter erscheinen?</p>
+<hr />
+<h2 id="wo-steht-word2vec-heute">🧭 Wo steht Word2Vec heute?<a class="headerlink" href="#wo-steht-word2vec-heute" title="Permanent link">¶</a></h2>
+<p><strong>Kurz gesagt:</strong> Word2Vec selbst ist Geschichte, seine Ideen leben weiter.</p>
+<ul>
+<li><strong>Was heute genutzt wird</strong>: Moderne Sprachmodelle wie <strong>BERT</strong> (Devlin et al. 2018) und <strong>GPT</strong> benutzen <strong>kontextabhängige Embeddings</strong>. Das Wort <em>„bank"</em> bekommt in <em>„ich sitze auf einer Bank"</em> einen anderen Vektor als in <em>„die Bank ist geschlossen"</em>. Diese Kontext-Abhängigkeit war der große Bruch mit Word2Vec.</li>
+<li><strong>Was Word2Vec beigetragen hat</strong>: Die <strong>Grundidee</strong> <em>„Bedeutung als Position im Vektorraum"</em> steckt trotzdem in jedem heutigen Sprachmodell. Auch GPT-4 beginnt mit einer Embedding-Matrix, die genau wie unsere hier funktioniert (nur viel größer und meist mit <strong>Byte-Pair Encoding</strong> statt Wörtern).</li>
+<li><strong>Der wichtigste Erbe von Word2Vec</strong>: das <strong>self-supervised learning</strong>. Vor Word2Vec brauchte man mühsam gelabelte Datensätze; danach war klar, dass <strong>der Text selbst als Trainingssignal</strong> ausreicht. Diese Idee trägt heute die gesamte KI-Forschung.</li>
+<li><strong>Klassische Anwendungen</strong> von Word2Vec-artigen Embeddings (Suche, Recommender, Clustering) laufen heute meist mit <strong>Sentence-BERT</strong> oder ähnlichen Nachfolger-Modellen, die ganze Sätze einbetten statt einzelne Wörter.</li>
+</ul>
+<p><strong>Historisch war Word2Vec ein Erdbeben.</strong> Mikolovs Paper (2013) hat einen ganzen Forschungs­zweig ausgelöst — GloVe, FastText, Doc2Vec, StarSpace usw. — und die NLP-Community bereitgemacht für die noch größere Revolution 2017 (Transformer).</p>
+<hr />
+<h2 id="abschlieende-bemerkungen">🧠 Abschließende Bemerkungen<a class="headerlink" href="#abschlieende-bemerkungen" title="Permanent link">¶</a></h2>
+<p>Word2Vec markiert einen Bruch: Zum ersten Mal in dieser Reihe haben wir ein Modell, das <strong>niemand explizit gelabelt hat</strong>. Der Text selbst war Lehrer.</p>
+<p>Diese Idee — <strong>die Struktur der Daten als Trainingssignal zu benutzen</strong> — ist der Kern aller heutigen großen Sprachmodelle. GPT lernt „das nächste Wort vorherzusagen"; BERT lernt „das maskierte Wort zu ergänzen". Beides sind direkte Verwandte des Skip-Gram-Ziels.</p>
+<p>Und eine subtile, aber wichtige Einsicht: <strong>Bedeutung ist keine Eigenschaft eines Wortes an sich, sondern der Kontexte, in denen es steht.</strong> Das ist eine linguistische These, die der britische Sprachwissenschaftler <strong>J. R. Firth</strong> 1957 in dem berühmten Satz zusammenfasste:</p>
+<blockquote>
+<p><em>„You shall know a word by the company it keeps."</em></p>
+</blockquote>
+<p>Word2Vec macht diesen Satz zum ersten Mal mathematisch messbar. Alle weiteren Sprachmodelle bauen darauf auf.</p>
+<hr />
+<h2 id="nachstes-kapitel-recurrent-neural-networks-rnns">🚀 Nächstes Kapitel: Recurrent Neural Networks (RNNs)<a class="headerlink" href="#nachstes-kapitel-recurrent-neural-networks-rnns" title="Permanent link">¶</a></h2>
+<p>Wir haben jetzt Wortvektoren mit Bedeutung. Aber Sprache ist mehr als ein Beutel von Wörtern — sie ist eine <strong>Reihenfolge</strong>:</p>
+<blockquote>
+<p><em>„Der Wolf frisst das Schaf"</em> ≠ <em>„Das Schaf frisst den Wolf"</em></p>
+</blockquote>
+<p>Ein RNN (Recurrent Neural Network) verarbeitet Wörter <strong>eines nach dem anderen</strong> und trägt dabei einen inneren <strong>Gedächtnis­zustand</strong> mit. Damit kann es Reihenfolgen erfassen und sogar neue Sätze <strong>generieren</strong>.</p>
+<p>Historisch geht der Ansatz auf <strong>Elman (1990)</strong> zurück; das erste <em>Sprachmodell</em> auf RNN-Basis stammt von <strong>Mikolov (2010)</strong> — also drei Jahre <em>vor</em> Word2Vec. LSTMs (<strong>Hochreiter &amp; Schmidhuber, 1997</strong>) haben RNNs später deutlich lernfähiger gemacht.</p>
+<p>Als Testaufgabe werden wir das RNN im nächsten Kapitel dazu bringen, <strong>grimm-ähnliche Sätze zu erzeugen</strong>: Zeichen für Zeichen, mit dem Charme alter Märchen. Es war einmal…</p>
+<hr />
+<h2 id="referenzen">📚 Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
+<ul>
+<li>Firth, J. R. (1957). <em>A Synopsis of Linguistic Theory 1930–1955</em>. In <em>Studies in Linguistic Analysis</em>. Oxford: Blackwell.</li>
+<li>Bengio, Y., Ducharme, R., Vincent, P., &amp; Jauvin, C. (2003). <em>A Neural Probabilistic Language Model</em>. JMLR.</li>
+<li>Mikolov, T., Karafiát, M., Burget, L., Černocký, J., &amp; Khudanpur, S. (2010). <em>Recurrent Neural Network Based Language Model</em>. Interspeech.</li>
+<li>Mikolov, T., Chen, K., Corrado, G., &amp; Dean, J. (2013). <em>Efficient Estimation of Word Representations in Vector Space</em>. arXiv:1301.3781.</li>
+<li>Mikolov, T., Sutskever, I., Chen, K., Corrado, G., &amp; Dean, J. (2013). <em>Distributed Representations of Words and Phrases and their Compositionality</em>. NeurIPS.</li>
+<li>Pennington, J., Socher, R., &amp; Manning, C. D. (2014). <em>GloVe: Global Vectors for Word Representation</em>. EMNLP.</li>
+<li>Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K. (2018). <em>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</em>. arXiv:1810.04805.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024–2026 Dr. Thilo Böhm. Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/boehmt/The-Computational-Minimum" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

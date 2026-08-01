@@ -1,0 +1,36 @@
+{
+  "test": {
+    "SFT_MODEL_CKPT": null,
+    "N_TRAIN_TASKS": 100,
+    "N_ROLLOUTS_PER_TASK": 4,
+    "BLOCK_SIZE": 384,
+    "BATCH_SIZE": 4,
+    "EPOCHS": 1,
+    "LEARNING_RATE": 5e-5,
+    "TEMPERATURE": 1.0,
+    "TOP_K": 40,
+    "MAX_NEW_TOKENS": 100,
+    "MIN_REWARD_TO_KEEP": 0.5,
+    "EMBED_DIM": 128,
+    "HEADS": 4,
+    "LAYERS": 4,
+    "COMMENT": "Rauchtest: 100 Aufgaben * 4 Rollouts = 400 Sampling-Ausgaben. Nur solche mit reward >= 0.5 (also mindestens teilweise gutes Format) werden zum Nachtrainieren behalten. Das ist die STaR-Idee (Zelikman 2022)."
+  },
+  "laptop": {
+    "SFT_MODEL_CKPT": null,
+    "N_TRAIN_TASKS": 1000,
+    "N_ROLLOUTS_PER_TASK": 4,
+    "BLOCK_SIZE": 384,
+    "BATCH_SIZE": 8,
+    "EPOCHS": 3,
+    "LEARNING_RATE": 5e-5,
+    "TEMPERATURE": 1.0,
+    "TOP_K": 40,
+    "MAX_NEW_TOKENS": 100,
+    "MIN_REWARD_TO_KEEP": 0.5,
+    "EMBED_DIM": 192,
+    "HEADS": 6,
+    "LAYERS": 6,
+    "COMMENT": "Standard-Laptop-Setup. Kompatibel zur Modell-Geometrie von TinyInstruct/TinyChat. Idealerweise startet man mit dem SFT-Modell aus 3.2 (in SFT_MODEL_CKPT), damit das Base-Modell bereits Instruktionen befolgen kann."
+  }
+}

@@ -100,7 +100,7 @@ liegen genau 60 Jahre — dieselbe Zeitspanne wie vom Elektron (1897) zum
 Transistor (1947). In beiden Fällen folgte auf die lange Grundlagenphase
 eine kurze, explosive Anwendungsphase. Diese ist Gegenstand von Teil 3.
 
-### [`03_AgenticSystems/`](03_AgenticSystems/) — Anwenden und Skalieren
+### [`03_LanguageModelling/`](03_LanguageModelling/) — Anwenden und Skalieren
 
 Der zehn-Jahres-Sprint 2018 → heute. Hier folgen die Kapitel nicht mehr
 einer Chronologie einzelner Modell-Erfindungen, sondern einer *Kette
@@ -115,13 +115,13 @@ entdeckt wurden:
 | 4 | `04_TinyMoE` | Mixture of Experts — zweite Skalierungsachse: Kapazität wächst, Kosten pro Token bleiben |
 | 5 | `05_TinyReason` | Trainiertes Reasoning à la DeepSeek-R1 — dritte Achse: mehr Compute *zur Antwortzeit* statt beim Training |
 
-**Vorwort und Klammer:** `03_AgenticSystems/PREFACE.md` zeichnet nach, wie
+**Vorwort und Klammer:** `03_LanguageModelling/PREFACE.md` zeichnet nach, wie
 sich Skalierung in diesem Teil von einem Merkmal einzelner Kapitel zur
 *Betriebsweise des gesamten Feldes* wandelt — mit DeepSeek-R1-Zero als
 radikalstem Beleg dafür, dass sogar Reasoning experimentell *entdeckt*,
 nicht theoretisch *konstruiert* wurde.
 
-### [`04_AgenticSystemsEvo/`](04_AgenticSystemsEvo/) — Agentische Systeme als Laufzeit-Systeme
+### [`04_AgenticSystems/`](04_AgenticSystems/) — Agentische Systeme als Laufzeit-Systeme
 
 Ein neuer, praxisnäherer Anschluss an Teil 3: nicht mehr primär die Frage,
 wie LLMs **trainiert und skaliert** werden, sondern wie sie **zur Laufzeit**
@@ -134,9 +134,9 @@ Systemen werden.
 | Vom Einzelaufruf zum Agenten | externer Loop, Retry-Strategien, Reasoning-Modelle |
 | Vom Einzelsystem zum Ökosystem | MCP, A2A, Dynamic Tool Agent |
 
-**Einordnung:** `03_AgenticSystems/` erklärt den aktuellen LLM-Sprung eher aus
+**Einordnung:** `03_LanguageModelling/` erklärt den aktuellen LLM-Sprung eher aus
 der Perspektive von **Training, Alignment und Skalierungsachsen**.
-`04_AgenticSystemsEvo/` verschiebt den Blick auf die **Systemebene**:
+`04_AgenticSystems/` verschiebt den Blick auf die **Systemebene**:
 Was muss außerhalb des Modells gebaut werden, damit aus einem LLM ein Agent
 oder ein agentisches Softwaresystem wird?
 

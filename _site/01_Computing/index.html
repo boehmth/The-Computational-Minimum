@@ -1,0 +1,2337 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen Sprachmodell, alles selbst geschrieben ohne Frameworks.
+">
+      
+      
+        <meta name="author" content="Dr. Thilo Böhm">
+      
+      
+        <link rel="canonical" href="https://boehmt.github.io/The-Computational-Minimum/01_Computing/">
+      
+      
+        <link rel="prev" href="../STYLE/">
+      
+      
+        <link rel="next" href="00_Fundament/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Übersicht - The Computational Minimum</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#warum-dieser-teil" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href=".." title="The Computational Minimum" class="md-header__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Computational Minimum
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Übersicht
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu dunklem Modus wechseln"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Zu dunklem Modus wechseln" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu hellem Modus wechseln"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Zu hellem Modus wechseln" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Startseite
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../PREFACE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Vorwort
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../STYLE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Style-Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil I · Computing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="grundlagen/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Grundlagen (Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../02_MachineIntelligence/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil II · Maschinelle Intelligenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03_LanguageModelling/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil III · Entwicklung der Sprachmodelle
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04_AgenticSystems/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil IV · Agentic Systems
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="The Computational Minimum" class="md-nav__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    The Computational Minimum
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startseite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PREFACE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorwort
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../STYLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Style-Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil I · Computing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil I · Computing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="00_Fundament/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Fundament
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="01_CPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="02_OS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · Betriebssystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="03_Compiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · Compiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="04_PerceptronOnCPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · Perceptron auf CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="05_GPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · GPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="06_Networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Netzwerk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="grundlagen/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grundlagen (Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grundlagen (Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="grundlagen/schaltnetze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schaltnetze und Schaltwerke
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="grundlagen/von_neumann/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Von-Neumann-Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="grundlagen/moderne_prozessoren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderne Prozessoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../02_MachineIntelligence/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/01_Perceptron/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 · Perceptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/02_MLP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 · Multi-Layer-Perzeptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/03_CNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.3 · CNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/04_Word2Vec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/05_RNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.5 · RNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/06_Seq2Seq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.6 · Seq2Seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MachineIntelligence/07_Transformer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../03_LanguageModelling/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_LanguageModelling/01_TinyGPT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 · TinyGPT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_LanguageModelling/02_TinyInstruct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.2 · TinyInstruct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_LanguageModelling/03_TinyChat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_LanguageModelling/04_TinyMoE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.4 · TinyMoE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_LanguageModelling/05_TinyReason/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.5 · TinyReason
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../04_AgenticSystems/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil IV · Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil IV · Agentic Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/01_TextInTextOut/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 · Text-in / Text-out
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/02_ToolsAndPlanning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.2 · Tools & Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/03_TheLoop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.3 · Der Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/04_ReasoningInside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.4 · Reasoning innen drin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/05_ProtocolsAndScale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.5 · Protokolle & Skalierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/06_WhenNotToBuild/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.6 · Wann NICHT bauen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_AgenticSystems/07_DynamicToolAgent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#warum-dieser-teil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 Warum dieser Teil?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wer-die-not-hatte-baute-die-maschine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔥 Wer die Not hatte, baute die Maschine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-bogen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Bogen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-sechs-meilensteine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Die sechs Meilensteine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧭 Die sechs Meilensteine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#01_cpu-eine-4-bit-cpu-von-hand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        01_CPU/ — Eine 4-Bit-CPU von Hand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#02_os-ein-mini-betriebssystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        02_OS/ — Ein Mini-Betriebssystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#03_compiler-vier-sprachen-ein-assembler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        03_Compiler/ — Vier Sprachen, ein Assembler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#04_perceptrononcpu-das-erste-perceptron-als-assembler-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        04_PerceptronOnCPU/ — Das erste Perceptron als Assembler-Programm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#05_gpu-vom-grafikbeschleuniger-zum-ki-rechenwerk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        05_GPU/ — Vom Grafikbeschleuniger zum KI-Rechenwerk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#06_networks-das-netzwerk-aloha" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        06_Networks/ — Das Netzwerk: ALOHA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#der-rote-faden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Der rote Faden
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schnelleinstieg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Schnelleinstieg
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-dieser-teil-bewusst-nicht-zeigt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Was dieser Teil bewusst nicht zeigt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Übersicht</h1>
+
+<p align="center">
+  <img src="assets/title.svg" alt="I · Computing — Von 4 Bits zu 4 Milliarden" width="100%"/>
+</p>
+
+<p align="center">
+  <img src="assets/cover.png" alt="Skalierungs-Skala: von einem winzigen 4-Zellen-Block links über OS-Bloecke, Compiler-Bahn, Perceptron-Kreis und GPU-Grid bis zu einem Netzwerk-Knotenbild rechts." width="90%"/>
+</p>
+
+<p><em>4-Zellen-Block = 4-Bit-CPU ◆ OS-Bloecke = Prozesse ◆ Bahnknoten = Compiler ◆ Neuron = Perceptron ◆ Grids = GPU-Threads ◆ Netz-Web = verbundene Rechner ◆ dieselbe Idee, sechs Skalierungsstufen.</em></p>
+<p>──────────◆──────────◆──────────◆──────────◆──────────</p>
+<p><strong>Von Bleistift und Papier zu vernetzten Hochleistungsrechnern — sechs Meilensteine, die zeigen, wie aus einer Bürotätigkeit eine weltweite Infrastruktur wurde.</strong></p>
+<p>Alles selbst programmiert, ohne Frameworks. Jede Instruktion, jedes Bit, jedes Bus-Signal ist im Code sichtbar. Und weil moderne KI ohne massive Parallelität nicht existieren würde, gehört dazu auch ein Blick unter die Motorhaube der GPU.</p>
+<hr />
+<h2 id="warum-dieser-teil">📜 Warum dieser Teil?<a class="headerlink" href="#warum-dieser-teil" title="Permanent link">¶</a></h2>
+<p>Ein oft vergessener Punkt vorweg: bis in die 1940er Jahre hinein war <em>„Computer"</em> im Englischen keine Maschine, sondern ein <strong>Beruf</strong>. Ein Computer war ein Mensch — meistens eine Frau — die den ganzen Tag Zahlen rechnete. Rechen-Ämter mit dutzenden bis hunderten menschlicher Rechner gab es seit dem 18. Jahrhundert: für nautische Ephemeriden, für Napoleons Vermessungsbüro, für die amerikanischen Volkszählungen, für Ballistiktabellen der Artillerie. Die Maschine, die wir heute <em>Computer</em> nennen, hat den Beruf nicht neu erfunden — sie hat ihn übernommen.</p>
+<p>Was diesen Beruf über zwei Jahrhunderte hinweg vorangetrieben und schließlich in Maschinen überführt hat, waren nicht abstrakte Ideen, sondern <strong>konkrete Notwendigkeiten</strong>: eine Aufgabe wurde für die vorhandene Rechen­kapazität zu groß, jemand suchte den Ausweg, das nächste Werkzeug entstand. Astronomische Ephemeriden für die Schifffahrt. Der US-Zensus, der länger dauerte als der Zensus-Zyklus. Ballistik im Zweiten Weltkrieg. Die Trajektorien für Apollo. Handel und Buchhaltung. Das Internet. Deep Learning. Immer dasselbe Muster: <strong>wer die Not hatte, baute die Maschine.</strong></p>
+<p>Erst wenn man diese Kette sieht, wird klar, warum die Reihenfolge der Kapitel in diesem Buch keine Zufalls-Ordnung ist, sondern eine <em>Antwortkette</em>: eine CPU macht einen einzelnen menschlichen Rechner überflüssig. Ein OS erlaubt es, denselben teuren Rechner für mehrere Aufgaben zu nutzen. Ein Compiler erlaubt es, ihn ohne jahrelanges Assembler-Studium zu programmieren. Eine GPU erlaubt es, dieselbe Aufgabe (Matrix-Multiplikation) tausendfach parallel zu rechnen. Ein Netzwerk erlaubt es, die Rechenleistung vieler Maschinen zusammenzuschalten. Und dass in dieser Reihe genau die Bausteine sitzen, die ein modernes KI-Training braucht, ist kein Zufall — es ist die letzte Etappe derselben Not-treibt-Werkzeug-Kette.</p>
+<p>Deshalb steht dieser Teil am Anfang eines Buches über KI: <strong>weil KI die aktuelle Antwort auf eine 300 Jahre alte Frage ist.</strong> Und weil man Antworten besser versteht, wenn man die Fragen kennt, die sie beantworten.</p>
+<p>Ein pragmatischer Zusatzeffekt: wer versteht, wie CPU, OS, Compiler, GPU und Netzwerk funktionieren, wird bei Fragen wie <em>„Warum ist mein Training so langsam?"</em> oder <em>„Warum verhält sich mein Modell auf einer anderen Maschine anders?"</em> nicht mehr im Dunkeln tappen. Diese Grundlagen sind, anders als die Modelle aus Teil 2, <strong>zeitlos gültig</strong>: die Ideen, die Hollerith, Zuse, von Neumann, Backus, Ritchie und Kahn/Cerf hatten, funktionieren heute noch genau wie damals.</p>
+<hr />
+<h2 id="wer-die-not-hatte-baute-die-maschine">🔥 Wer die Not hatte, baute die Maschine<a class="headerlink" href="#wer-die-not-hatte-baute-die-maschine" title="Permanent link">¶</a></h2>
+<p>Ein knapper Überblick über die Bedarfstreiber, die aus einer Bürotätigkeit über 300 Jahre eine weltweite Infrastruktur gemacht haben:</p>
+<table>
+<thead>
+<tr>
+<th>Zeitraum</th>
+<th>Bedarfstreiber</th>
+<th>Antwort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1767–1830</strong></td>
+<td>Nautische Ephemeriden, Napoleons Vermessungsbüro (de Prony)</td>
+<td>„Computers" als <strong>Beruf</strong>: bis zu 90 menschliche Rechner im Fließband-Verfahren</td>
+</tr>
+<tr>
+<td><strong>1880–1890</strong></td>
+<td>US-Zensus: Auswertung von 1880 dauert 7 Jahre, 1890 droht zu überlaufen</td>
+<td>Herman <strong>Holleriths Tabulating Machine</strong> — mechanische Datenverarbeitung, Grundstein von IBM</td>
+</tr>
+<tr>
+<td><strong>1935–1941</strong></td>
+<td>Statik-Berechnungen, sich wiederholende ingenieurwissenschaftliche Aufgaben</td>
+<td><strong>Konrad Zuse Z1–Z3</strong> — der erste frei programmierbare Rechner, in einer Berliner Wohnung</td>
+</tr>
+<tr>
+<td><strong>1943–1946</strong></td>
+<td>Bletchley Park (Codebrechen), Los Alamos (Manhattan-Projekt), US-Ballistik</td>
+<td><strong>Colossus, ENIAC</strong> — die ersten elektronischen Groß-Rechner, gebaut aus reiner Kriegs-Not</td>
+</tr>
+<tr>
+<td><strong>1957–1972</strong></td>
+<td>Kalter Krieg, Wettlauf zum Mond, Apollo-Trajektorien</td>
+<td><strong>IBM 7090, Systemsoftware</strong>, die berühmten NASA-„human computers" (Katherine Johnson u.a.) werden schrittweise durch Mainframes ersetzt</td>
+</tr>
+<tr>
+<td><strong>1960–1980</strong></td>
+<td>Massenverwaltung: Banken, Versicherungen, Behörden</td>
+<td><strong>COBOL, Mainframes</strong>, Datenbanken — der Computer wird zum Büro-Werkzeug</td>
+</tr>
+<tr>
+<td><strong>1990–2010</strong></td>
+<td>Internet, E-Commerce, globale Kommunikation</td>
+<td><strong>Server-Farmen, TCP/IP-basierte Cloud-Architekturen</strong></td>
+</tr>
+<tr>
+<td><strong>2012 ff.</strong></td>
+<td>Deep Learning, Sprachmodelle — Aufgaben, die selbst 2010er-Server nicht schultern</td>
+<td><strong>GPU-Cluster</strong> (10⁴ Karten für GPT-3), spezielle KI-Beschleuniger (TPU, Trainium)</td>
+</tr>
+</tbody>
+</table>
+<p>Zwei Beobachtungen aus dieser Tabelle:</p>
+<ul>
+<li><strong>Die Maschine folgt der Not, nicht umgekehrt.</strong> Niemand hat einen Computer gebaut, weil es „interessant" wäre — die Aufgaben waren jeweils schon da und wurden untragbar. Der Computer ist eine Antwort, nicht ein Vorschlag.</li>
+<li><strong>Jede Ära hat ihren eigenen Bedarfstreiber</strong>, und der bestimmt, welche Art Maschine entsteht: kriegerische Not führt zu ENIAC (schnell, teuer, spezialisiert), Verwaltungs-Not zu COBOL-Mainframes (langlebig, robust, business-lesbar), KI-Not zu GPU-Clustern (massiv parallel, spezialisiert, teuer). Die Grund­struktur (von Neumann: Speicher, ALU, Kontrolle) bleibt in jeder Ära dieselbe. Das <em>Warum</em> ändert sich; das <em>Wie</em> skaliert.</li>
+</ul>
+<h2 id="historischer-bogen">🕰️ Historischer Bogen<a class="headerlink" href="#historischer-bogen" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Jahr</th>
+<th>Ereignis</th>
+<th>Kapitel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1945</strong></td>
+<td>Von Neumann — Architektur mit Speicher, ALU, Kontrolleinheit</td>
+<td><strong>1. CPU</strong></td>
+</tr>
+<tr>
+<td><strong>1947</strong></td>
+<td>Erste Transistoren bei Bell Labs (Bardeen, Brattain, Shockley)</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1948</strong></td>
+<td>Kilburn / Manchester — erstes speicherprogrammiertes System</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1955</strong></td>
+<td>GM-NAA I/O — erstes echtes Batch-Betriebssystem</td>
+<td><strong>2. OS</strong></td>
+</tr>
+<tr>
+<td><strong>1957</strong></td>
+<td>Backus (IBM) — FORTRAN, erster erfolgreicher Compiler</td>
+<td><strong>3. Compiler</strong></td>
+</tr>
+<tr>
+<td><strong>1958</strong></td>
+<td>McCarthy (MIT) — LISP</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1959</strong></td>
+<td>Hopper et al. — COBOL, natürlichsprachliche Programmierung</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1961</strong></td>
+<td>Atlas Supervisor — erstes OS mit virtuellem Speicher</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1969</strong></td>
+<td>Ritchie &amp; Thompson — Unix</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1969</strong></td>
+<td>ARPANET</td>
+<td><strong>6. Network</strong></td>
+</tr>
+<tr>
+<td><strong>1972</strong></td>
+<td>Ritchie — C, „portables Assembler"</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1974</strong></td>
+<td>Kahn &amp; Cerf — TCP/IP</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>1983</strong></td>
+<td>ARPANET wird zum Internet</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>2001</strong></td>
+<td>GeForce 3 — erste programmierbare Shader</td>
+<td><strong>5. GPU</strong></td>
+</tr>
+<tr>
+<td><strong>2004</strong></td>
+<td>Buck et al. — BrookGPU (Stanford), Beginn von GPGPU</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>2006</strong></td>
+<td>NVIDIA — CUDA 1.0</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>2012</strong></td>
+<td>AlexNet auf zwei GTX 580 — die GPU wird zum KI-Rechenwerk</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>2017</strong></td>
+<td>NVIDIA Volta — Tensor Cores, GPU passt sich der KI an</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Zwei Beobachtungen aus dieser Tabelle</strong>, die durch die ganze Reihe tragen:</p>
+<ul>
+<li>Vier der fünf klassischen Bausteine — <strong>CPU, OS, Compiler, Netzwerk</strong> — wurden zwischen 1945 und 1974 erfunden, in weniger als 30 Jahren. Die 50 Jahre danach waren im Kern <em>Skalierung</em> dieser Ideen, nicht ihre Ablösung. Genau das ist die These, die dieses Buch immer wieder aufgreift.</li>
+<li>Die einzige <em>neue</em> Klasse von Rechen­hardware, die für unser Thema in diesen 50 Jahren dazukam, ist die <strong>GPU</strong> — und auch sie ist im Kern kein Bruch mit dem Von-Neumann-Prinzip, sondern ein bewusster Kompromiss (sehr viele einfache Kerne statt weniger komplexer). Sie entstand aus einem Nebenmarkt (Videospiele) und wurde von Deep Learning erst <em>nachträglich</em> gefunden — nicht bestellt.</li>
+</ul>
+<hr />
+<h2 id="die-sechs-meilensteine">🧭 Die sechs Meilensteine<a class="headerlink" href="#die-sechs-meilensteine" title="Permanent link">¶</a></h2>
+<h3 id="01_cpu-eine-4-bit-cpu-von-hand"><a href="01_CPU/"><code>01_CPU/</code></a> — Eine 4-Bit-CPU von Hand<a class="headerlink" href="#01_cpu-eine-4-bit-cpu-von-hand" title="Permanent link">¶</a></h3>
+<p><strong>Kern:</strong> Ein simulierter Prozessor mit den fünf Bausteinen jeder Von-Neumann-Maschine — <strong>Programmzähler</strong>, <strong>Register</strong>, <strong>ALU</strong>, <strong>Bus</strong>, <strong>Kontrolleinheit mit Mikrocode-ROM</strong>. Programme sind in einer eigenen Assembler-Sprache mit 16 Opcodes geschrieben. Die Simulation läuft in einem Terminal-UI: man kann live zusehen, wie ein Programm Instruktion für Instruktion ausgeführt wird — welche Bus-Signale gerade aktiv sind, welche Werte in den Registern stehen, welcher Mikrocode-Eintrag gerade den Bus ansteuert.</p>
+<p><strong>Wow-Moment:</strong> Man sieht, wie aus einer einzigen Instruktion <code>ADD</code> in Wirklichkeit <em>drei</em> parallele Bus-Aktivitäten werden (<code>ALU_OUT</code>, <code>AX_IN</code>, <code>ALU_ADD</code>). Der Trick heißt Mikrocode, und er ist bis heute die Grundlage jeder CPU-Firmware.</p>
+<h3 id="02_os-ein-mini-betriebssystem"><a href="02_OS/"><code>02_OS/</code></a> — Ein Mini-Betriebssystem<a class="headerlink" href="#02_os-ein-mini-betriebssystem" title="Permanent link">¶</a></h3>
+<p><strong>Kern:</strong> Zwei verschiedene OS-Modelle auf derselben CPU-Basis:</p>
+<ul>
+<li>
+<p><strong>Weg 1</strong> — ein <em>kooperatives Multitasking-OS</em> mit <strong>Segment-Register</strong> und <strong>YIELD</strong>-Opcode. Zwei Prozesse laufen quasi-gleichzeitig, jeder in seinem eigenen RAM-Segment, das OS macht Context-Switches bei jedem YIELD. Nachbau von Mac OS Classic / Windows 3.x.</p>
+</li>
+<li>
+<p><strong>Weg 2</strong> — ein <em>Batch-OS, das selbst ein Assembler-Programm ist</em> (im 4-Bit-Instruktionssatz der CPU). Es liegt bei <code>BP=0</code> im Programmspeicher, wird beim Boot ausgeführt, ruft User-Jobs nacheinander auf und bekommt via <code>HLT</code>-Trap die Kontrolle zurück. <strong>10 Instruktionen</strong> OS-Code, mehr braucht es nicht. Nachbau von GM-NAA I/O (1955).</p>
+</li>
+</ul>
+<p><strong>Wow-Moment:</strong> Bei Weg 2 sieht man, wie ein „böser" User-Job durch einfaches Überschreiben einer RAM-Zelle den Scheduler manipulieren kann — genau die Unsicherheit, die zur Erfindung von MMUs und Speicherschutz führte.</p>
+<h3 id="03_compiler-vier-sprachen-ein-assembler"><a href="03_Compiler/"><code>03_Compiler/</code></a> — Vier Sprachen, ein Assembler<a class="headerlink" href="#03_compiler-vier-sprachen-ein-assembler" title="Permanent link">¶</a></h3>
+<p><strong>Kern:</strong> Vier Frontends (COBOL, FORTRAN, C, LISP), jedes mit eigener Grammatik und Boilerplate — von 5 Zeilen LISP bis 18 Zeilen COBOL. Alle produzieren denselben internen <strong>AST</strong> (Abstract Syntax Tree), aus dem ein gemeinsamer Codegenerator identischen Assembler-Code für die CPU aus Kapitel 1 erzeugt. Der Assembler läuft dann auf dem Simulator, und das Ergebnis-Register OUT enthält am Ende die berechnete Zahl.</p>
+<p><strong>Wow-Moment:</strong> Die Rechnung <code>(3 + 4) - 1 = 6</code> — in vier Sprachen geschrieben, kompiliert zu bit-identischen 13 Assembler-Instruktionen (nur COBOL braucht 2 mehr, weil <code>ADD ... GIVING</code> das Zwischenergebnis nach RAM zwingt). Die Botschaft: <strong>Sprache ist reine Ergonomie. Die Maschine sieht immer nur die 16 Opcodes.</strong></p>
+<h3 id="04_perceptrononcpu-das-erste-perceptron-als-assembler-programm"><a href="04_PerceptronOnCPU/"><code>04_PerceptronOnCPU/</code></a> — Das erste Perceptron als Assembler-Programm<a class="headerlink" href="#04_perceptrononcpu-das-erste-perceptron-als-assembler-programm" title="Permanent link">¶</a></h3>
+<p><strong>Kern:</strong> Rosenblatts Perceptron (1958) — ein einzelnes künstliches Neuron mit zwei Eingängen — in <strong>16 Instruktionen</strong> auf unserer 4-Bit-CPU. Wir erweitern die CPU um zwei neue Opcodes (<code>MUL</code> für die Gewichtungen, <code>JN</code> für „Jump if Negative" beim Schwellwert-Vergleich). Das Programm klassifiziert AND, OR, NAND perfekt. Beim vierten Test — XOR — findet auch eine erschöpfende Brute-Force-Suche über 512 Gewichts-Kombinationen keinen Satz, der alle 4 Fälle richtig klassifiziert.</p>
+<p><strong>Wow-Moment:</strong> Der Vergleich der drei Tabellen (AND/OR/NAND jeweils 4/4, XOR maximal 3/4) — und damit das empirische Wiedersehen von Minsky/Papert 1969. Der erste KI-Winter beginnt genau hier, an dieser einen 16-Instruktions-Grenze.</p>
+<p>Dieses Kapitel ist die <strong>Brücke zu Teil 2</strong>: es zeigt, dass ein neuronales Netz aus Sicht der CPU nur ein sehr kurzes Programm ist. GPT ist Milliarden mal komplexer, aber die Grundoperation <code>w·x + b</code> läuft genau so. Aber es zeigt auch die Grenze: schon ein MLP auf MNIST würde diese CPU Tage rechnen lassen. Was fehlt, ist massive Parallelität — und die kam historisch aus einer ganz anderen Richtung: der Grafikkarte.</p>
+<h3 id="05_gpu-vom-grafikbeschleuniger-zum-ki-rechenwerk"><a href="05_GPU/"><code>05_GPU/</code></a> — Vom Grafikbeschleuniger zum KI-Rechenwerk<a class="headerlink" href="#05_gpu-vom-grafikbeschleuniger-zum-ki-rechenwerk" title="Permanent link">¶</a></h3>
+<p><strong>Kern:</strong> Die Geschichte, wie eine für Videospiele gebaute Hardware zum wichtigsten Bauteil moderner KI wurde. Wir gehen den Weg <strong>Fixed-Function-Grafik (1996) → programmierbare Shader (2001) → GPGPU-Forschung / BrookGPU (2004) → CUDA (2006) → AlexNet auf zwei GTX 580 (2012)</strong> durch und zeigen an einem eigenen kleinen <strong>SIMT-Simulator</strong> in Python, warum eine GPU für Matrix-Multiplikation um Größenordnungen schneller ist als eine CPU — obwohl beide Turing-vollständig sind und im Kern dasselbe rechnen.</p>
+<p><strong>Wow-Moment:</strong> Der Sprung <em>„Pixel-Shader → Matrix-Kernel → MLP-Layer"</em> ist begrifflich winzig — dieselbe Struktur „viele Threads, dasselbe Programm, verschiedene Daten". Deep Learning hat die GPU <strong>nicht bestellt, sondern gefunden</strong>: die Hardware war schon da, aus Gründen des Spielemarktes. Der zweite KI-Winter endete zu einem Gutteil deshalb, weil zufällig eine passende Rechen-Hardware für ~1000 $ verfügbar geworden war.</p>
+<p>Dieses Kapitel ist die <strong>zweite Brücke zu Teil 2 und 3</strong>: es erklärt, warum Backpropagation (1986) für die eigentliche Deep-Learning-Welle <strong>26 Jahre</strong> warten musste, und warum jedes GPT auf tausenden GPUs trainiert wird.</p>
+<h3 id="06_networks-das-netzwerk-aloha"><a href="06_Networks/"><code>06_Networks/</code></a> — Das Netzwerk: ALOHA<a class="headerlink" href="#06_networks-das-netzwerk-aloha" title="Permanent link">¶</a></h3>
+<p><strong>Kern:</strong> Wir bauen den ALOHA-Simulator (Norman Abramson, Hawaii 1970) — das erste funktionierende Paket-Random-Access-Protokoll und Ur-Ahn von Ethernet und WLAN. Ein Kanal, viele Sender, keine Absprache: „sende, wenn du willst; bei Kollision zufällig warten und erneut senden". In <code>src/aloha.py</code> steckt die vollständige Simulation für Pure ALOHA und Slotted ALOHA, mitsamt geschlossenen Theoriekurven <span class="arithmatex">\(S = G e^{-2G}\)</span> bzw. <span class="arithmatex">\(S = G e^{-G}\)</span>.</p>
+<p><strong>Wow-Moment:</strong> Der <strong>Kollaps-Effekt</strong>. Für kleines <span class="arithmatex">\(G\)</span> steigt der Durchsatz. Bei <span class="arithmatex">\(G=0{,}5\)</span> (Pure) bzw. <span class="arithmatex">\(G=1{,}0\)</span> (Slotted) erreicht er sein Maximum — <strong>18,4 %</strong> bzw. <strong>36,8 %</strong>. Danach <em>sinkt</em> er wieder. Ein Kanal, der zu 100 % gefüllt wird, liefert weniger als einer, der zu 37 % gefüllt wird. Das ist genau die Kollisions-Rückkopplung, die auch bei TCP-Congestion oder Web-Servern unter Last auftritt — beobachtbar in einem 200-Zeilen-Python-Skript.</p>
+<p><strong>Bogen zu Teil 2:</strong> Hier endet die klassische <em>Wie-funktioniert-ein-Computer</em>-Frage. Wir können Rechner bauen, Programme kompilieren, Aufgaben parallelisieren und Bytes übertragen — aber kein einziges der übertragenen Bytes „weiß", ob es eine Frage, eine Antwort oder ein Wörterbucheintrag ist. Um Text zu <em>verstehen</em> statt nur zu <em>übertragen</em>, brauchen wir eine ganz andere Klasse von Programmen: Programme, die <em>trainiert</em> werden statt <em>ausgeführt</em>. Damit beginnt Teil 2.</p>
+<hr />
+<h2 id="der-rote-faden">🧭 Der rote Faden<a class="headerlink" href="#der-rote-faden" title="Permanent link">¶</a></h2>
+<p>Jedes Kapitel behebt eine Grenze des vorherigen:</p>
+<blockquote>
+<p><strong>CPU allein</strong>: Ein Programm läuft, aber wie kommen mehrere Programme auf denselben Rechner? → <strong>OS</strong><br />
+<strong>OS + CPU</strong>: Programme laufen, aber wie schreibt man sie in einer Sprache, die einen Menschen nicht verrückt macht? → <strong>Compiler</strong><br />
+<strong>Compiler + OS + CPU</strong>: Ein einzelnes Perceptron passt in 16 Instruktionen — aber ein MLP nicht mehr in vertretbare Zeit → <strong>GPU</strong><br />
+<strong>CPU + GPU</strong>: Eine Maschine reicht, um ein kleines Netz zu trainieren, aber nicht ein GPT-3 mit 175 Milliarden Parametern → <strong>Netzwerk</strong></p>
+</blockquote>
+<p>Am Ende dieses Teils hast du <strong>die sechs zeitlosen Bausteine moderner Rechen­technik</strong> einmal selbst gebaut — von der 4-Bit-CPU bis zum SIMT-Modell heutiger KI-Beschleuniger. Damit kannst du dann fundiert nach <code>02_MachineIntelligence/</code> wechseln, in dem wir aus diesem Fundament heraus lernende Maschinen bauen.</p>
+<hr />
+<h2 id="schnelleinstieg">🚀 Schnelleinstieg<a class="headerlink" href="#schnelleinstieg" title="Permanent link">¶</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>01_Computing
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Kapitel 1: CPU-Simulator (Live-UI)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>python<span class="w"> </span>01_CPU/src/main.py
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Kapitel 2, Weg 1: Kooperatives Multitasking mit YIELD</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>python<span class="w"> </span>02_OS/src/os_sim.py
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Kapitel 2, Weg 2: Batch-OS, das selbst ein Assembler-Programm ist</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>python<span class="w"> </span>02_OS/src/os_batch.py
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Kapitel 3: Compiler-Test — vier Sprachen, ein Assembler</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>python<span class="w"> </span>03_Compiler/test_compiler.py
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Einzelnes Beispiel kompilieren:</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="nb">cd</span><span class="w"> </span>03_Compiler
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>python<span class="w"> </span>-m<span class="w"> </span>src.compile<span class="w"> </span>examples/arith.c<span class="w"> </span>--run
+</span></code></pre></div>
+<p>Alle Programme laufen mit <strong>Python 3.7+</strong> ohne externe Abhängigkeiten. Für die Terminal-UI benötigt man ein ANSI-fähiges Terminal (Windows Terminal, iTerm, Linux-Konsole).</p>
+<hr />
+<h2 id="was-dieser-teil-bewusst-nicht-zeigt">🧠 Was dieser Teil bewusst nicht zeigt<a class="headerlink" href="#was-dieser-teil-bewusst-nicht-zeigt" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Digitale Logik unterhalb der CPU</strong> — wir setzen bei der Ebene „Bus, Register, ALU" ein, nicht bei Transistoren, Gattern, Flipflops. Das wäre ein eigener Meilenstein wert (z.B. ein NAND-Gate-Simulator, aus dem sich alles andere aufbauen lässt), aber er würde den Rahmen sprengen.</li>
+<li><strong>Moderne CPU-Techniken</strong> — Pipelining, Out-of-Order-Execution, Cache-Hierarchien, Branch Prediction, Vector-Instruktionen, Multicore. Alles wichtig, alles gehört auf eine reale CPU, aber didaktisch würde es die Ideen unter Details begraben.</li>
+<li><strong>Vollständige Sprachen</strong> — der Compiler in Kapitel 3 unterstützt nur einen winzigen Ausschnitt jeder Sprache. Er zeigt das <em>Prinzip</em>, nicht die Realität eines GCC oder LLVM.</li>
+<li><strong>Echtes CUDA / echte GPU-Ausführung</strong> — Kapitel 5 simuliert das SIMT-Modell in Python. Die Threads laufen softwareseitig nacheinander, wir zählen aber die <em>Schritte</em>, als liefen sie parallel. Auf einer echten NVIDIA-GPU wären es Millisekunden statt Sekunden — die <em>Ideen</em> (Kernel, Threads, Warp Divergence, Speicherbandbreite) sind aber identisch.</li>
+</ul>
+<p>Wenn du diese Beschränkungen für zu eng hältst, ist das genau der Punkt, an dem du bereit bist, dich mit den originalen Standards zu befassen — was dann viel einfacher fällt, wenn die Grundstruktur schon steht.</p>
+<hr />
+<h2 id="referenzen">📚 Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
+<p><strong>Zur Vorgeschichte — als „Computer" noch ein Beruf war:</strong></p>
+<ul>
+<li>Grier, D. A. (2005). <em>When Computers Were Human</em>. Princeton University Press. Die maßgebliche Studie zur Menschen-Computer-Ära von den 1750ern bis zu den 1940ern. Zeigt, wie de Prony, Maskelyne, das Nautical Almanac Office und das WPA Mathematical Tables Project funktionierten.</li>
+<li>Sobel, D. (1995). <em>Longitude</em>. Walker Books. John Harrison, der Längengrad, und die Not, die Ephemeriden und schließlich Rechen-Ämter für die Schifffahrt notwendig machte.</li>
+<li>Shetterly, M. L. (2016). <em>Hidden Figures: The American Dream and the Untold Story of the Black Women Mathematicians Who Helped Win the Space Race</em>. William Morrow. Die menschlichen „computers" der NACA/NASA, u.a. Katherine Johnson, die die Apollo-Trajektorien rechnete.</li>
+<li>Aspray, W. (1990). <em>Computing Before Computers</em>. Iowa State University Press. Sammelband zur mechanischen Rechen­geschichte vor Zuse: Pascaline, Leibniz, Babbage, Hollerith.</li>
+</ul>
+<p><strong>Zum modernen Computer:</strong></p>
+<ul>
+<li>Petzold, C. (2000). <em>Code: The Hidden Language of Computer Hardware and Software</em>. Microsoft Press. Der Klassiker: vom Morsezeichen zum Computer, ganz ohne Vorwissen.</li>
+<li>Nisan, S., &amp; Schocken, S. (2008). <em>The Elements of Computing Systems</em> — auch bekannt als „nand2tetris". Vom NAND-Gatter über CPU und Compiler bis zum Betriebssystem, alles selbst gebaut. Direkte Inspiration für diesen Teil.</li>
+<li>Patterson, D., &amp; Hennessy, J. (2020). <em>Computer Organization and Design</em> (6th ed.). Der Standard-Lehrtext zur Rechnerarchitektur.</li>
+<li>Silberschatz, A., Galvin, P., &amp; Gagne, G. (2018). <em>Operating System Concepts</em> (10th ed.). Standard-Referenz für OS.</li>
+<li>Aho, A. V., Lam, M. S., Sethi, R., &amp; Ullman, J. D. (2007). <em>Compilers: Principles, Techniques, and Tools</em> (2nd ed.). Der „Dragon Book".</li>
+<li>Kurose, J., &amp; Ross, K. (2020). <em>Computer Networking: A Top-Down Approach</em> (8th ed.). Standard-Text für Netzwerke.</li>
+<li>Tanenbaum, A. S. (2015). <em>Modern Operating Systems</em> (4th ed.). Pearson.</li>
+<li>Buck, I., et al. (2004). <em>Brook for GPUs: Stream Computing on Graphics Hardware</em>. ACM SIGGRAPH. Das Paper, das die GPGPU-Ära einläutet.</li>
+<li>Nickolls, J., Buck, I., Garland, M., &amp; Skadron, K. (2008). <em>Scalable Parallel Programming with CUDA</em>. ACM Queue, 6(2). Die kanonische Einführung in CUDA.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024–2026 Dr. Thilo Böhm. Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/boehmt/The-Computational-Minimum" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

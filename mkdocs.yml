@@ -2,9 +2,9 @@
 #  MkDocs-Konfiguration fuer "The Computational Minimum" (Online-Buch)
 # =============================================================================
 #
-#  Erststart-Version: nur Teil 1 (01_Computing).
-#  Teil 2 (Machine Intelligence) und Teil 3 (Agentic Systems) werden
-#  nachtraeglich aktiviert, sobald sie die Buch-Fassung erreicht haben.
+#  Alle vier Teile sind aktiv:
+#  Teil 1 (01_Computing), Teil 2 (02_MachineIntelligence),
+#  Teil 3 (03_LanguageModelling) und Teil 4 (04_AgenticSystems).
 #
 #  Zwei-Schritte-Build (wegen MkDocs-Anforderung docs_dir != root):
 #      python tools/sync_docs.py    # spiegelt Buch-Dateien nach docs/
@@ -22,16 +22,18 @@
 site_name: "The Computational Minimum"
 site_description: >
   Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+
   Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen
   Sprachmodell, alles selbst geschrieben ohne Frameworks.
-site_author: "Sebastian Ritter"
-site_url: "https://sritter.github.io/The-Computational-Minimum/"
+site_author: "Dr. Thilo Böhm"
+site_url: "https://boehmt.github.io/The-Computational-Minimum/"
 copyright: >
-  Copyright &copy; 2024–2026 Sebastian Ritter.
+  Copyright &copy; 2024–2026 Dr. Thilo Böhm.
   Text und Code stehen unter permissiver Lizenz — Details im Repo.
 
 repo_name: "The-Computational-Minimum"
-repo_url: "https://github.com/sritter/The-Computational-Minimum"
+repo_url: "https://github.com/boehmt/The-Computational-Minimum"
+
 edit_uri: "edit/main/"
 
 # ---------------------------------------------------------------------------
@@ -71,10 +73,39 @@ nav:
       - "Von-Neumann-Architektur":      01_Computing/grundlagen/von_neumann.md
       - "Moderne Prozessoren":          01_Computing/grundlagen/moderne_prozessoren.md
 
+  - "Teil II · Maschinelle Intelligenz":
+      - "Übersicht":                    02_MachineIntelligence/README.md
+      - "2.1 · Perceptron":             02_MachineIntelligence/01_Perceptron/README.md
+      - "2.2 · Multi-Layer-Perzeptron": 02_MachineIntelligence/02_MLP/README.md
+      - "2.3 · CNN":                    02_MachineIntelligence/03_CNN/README.md
+      - "2.4 · Word2Vec":               02_MachineIntelligence/04_Word2Vec/README.md
+      - "2.5 · RNN":                    02_MachineIntelligence/05_RNN/README.md
+      - "2.6 · Seq2Seq":                02_MachineIntelligence/06_Seq2Seq/README.md
+      - "2.7 · Transformer":            02_MachineIntelligence/07_Transformer/README.md
+
+  - "Teil III · Entwicklung der Sprachmodelle":
+      - "Übersicht":                    03_LanguageModelling/README.md
+      - "3.1 · TinyGPT":                03_LanguageModelling/01_TinyGPT/README.md
+      - "3.2 · TinyInstruct":           03_LanguageModelling/02_TinyInstruct/README.md
+      - "3.3 · TinyChat":               03_LanguageModelling/03_TinyChat/README.md
+      - "3.4 · TinyMoE":                03_LanguageModelling/04_TinyMoE/README.md
+      - "3.5 · TinyReason":             03_LanguageModelling/05_TinyReason/README.md
+
+  - "Teil IV · Agentic Systems":
+      - "Übersicht":                    04_AgenticSystems/index.md
+      - "4.1 · Text-in / Text-out":     04_AgenticSystems/01_TextInTextOut/README.md
+      - "4.2 · Tools & Planning":       04_AgenticSystems/02_ToolsAndPlanning/README.md
+      - "4.3 · Der Loop":               04_AgenticSystems/03_TheLoop/README.md
+      - "4.4 · Reasoning innen drin":   04_AgenticSystems/04_ReasoningInside/README.md
+      - "4.5 · Protokolle & Skalierung": 04_AgenticSystems/05_ProtocolsAndScale/README.md
+      - "4.6 · Wann NICHT bauen":       04_AgenticSystems/06_WhenNotToBuild/README.md
+      - "4.7 · Dynamic Tool Agent":     04_AgenticSystems/07_DynamicToolAgent/README.md
+
 # ---------------------------------------------------------------------------
 #  Theme — Material for MkDocs, mit unserer Serien-Palette
 # ---------------------------------------------------------------------------
 theme:
+
   name: material
   language: de
 
@@ -178,5 +209,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/sritter/The-Computational-Minimum
+      link: https://github.com/boehmt/The-Computational-Minimum
   generator: false     # "Made with MkDocs Material"-Footer ausblenden
+
+

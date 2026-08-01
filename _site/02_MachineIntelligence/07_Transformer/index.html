@@ -1,0 +1,2623 @@
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
+Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen Sprachmodell, alles selbst geschrieben ohne Frameworks.
+">
+      
+      
+        <meta name="author" content="Dr. Thilo Böhm">
+      
+      
+        <link rel="canonical" href="https://boehmt.github.io/The-Computational-Minimum/02_MachineIntelligence/07_Transformer/">
+      
+      
+        <link rel="prev" href="../06_Seq2Seq/">
+      
+      
+        <link rel="next" href="../../03_LanguageModelling/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>2.7 · Transformer - The Computational Minimum</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ki-meilenstein-7-der-transformer" class="md-skip">
+          Zum Inhalt
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Kopfzeile">
+    <a href="../.." title="The Computational Minimum" class="md-header__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Computational Minimum
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2.7 · Transformer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu dunklem Modus wechseln"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Zu dunklem Modus wechseln" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Zu hellem Modus wechseln"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Zu hellem Modus wechseln" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Suche" placeholder="Suche" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Suche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Zurücksetzen" aria-label="Zurücksetzen" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Suche wird initialisiert
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Hauptnavigation" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Startseite
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../PREFACE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Vorwort
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../STYLE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Style-Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil I · Computing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../01_Computing/grundlagen/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Grundlagen (Deep Dives)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil II · Maschinelle Intelligenz
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../03_LanguageModelling/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil III · Entwicklung der Sprachmodelle
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../04_AgenticSystems/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Teil IV · Agentic Systems
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="The Computational Minimum" class="md-nav__button md-logo" aria-label="The Computational Minimum" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    The Computational Minimum
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/boehmt/The-Computational-Minimum" title="Zum Repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    The-Computational-Minimum
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startseite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PREFACE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorwort
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../STYLE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Style-Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil I · Computing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil I · Computing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/00_Fundament/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    00 · Fundament
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/01_CPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01 · CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/02_OS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02 · Betriebssystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/03_Compiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03 · Compiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/04_PerceptronOnCPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04 · Perceptron auf CPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/05_GPU/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    05 · GPU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/06_Networks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    06 · Netzwerk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../01_Computing/grundlagen/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grundlagen (Deep Dives)
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grundlagen (Deep Dives)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/schaltnetze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schaltnetze und Schaltwerke
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/von_neumann/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Von-Neumann-Architektur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Computing/grundlagen/moderne_prozessoren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Moderne Prozessoren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil II · Maschinelle Intelligenz
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Perceptron/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.1 · Perceptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_MLP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.2 · Multi-Layer-Perzeptron
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_CNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.3 · CNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_Word2Vec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.4 · Word2Vec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_RNN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.5 · RNN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_Seq2Seq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.6 · Seq2Seq
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2.7 · Transformer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vom-seq2seq-zum-reinen-attention-modell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌉 Vom Seq2Seq zum reinen Attention-Modell
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-aufgabe-zahl-deutsches-zahlwort-wie-in-meilenstein-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Die Aufgabe: Zahl → deutsches Zahlwort (wie in Meilenstein 6)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modellarchitektur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧩 Modellarchitektur
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧩 Modellarchitektur">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-scaled-dot-product-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Scaled Dot-Product Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-multi-head-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Multi-Head Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-positional-encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Positional Encoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-layer-normalization-residual-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Layer Normalization + Residual Connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gesamt-architektur-encoder-decoder-wie-in-vaswani-2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gesamt-Architektur (Encoder-Decoder wie in Vaswani 2017)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚙️ Training
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-startest-du-das-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ▶️ So startest du das Programm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispielausgabe-echter-forward-pass-untrainiert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📈 Beispielausgabe (echter Forward-Pass, untrainiert)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ehrliche-diskussion-was-phase-1-zeigt-und-was-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❗ Ehrliche Diskussion: Was Phase 1 zeigt und was nicht
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-steht-der-transformer-heute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo steht der Transformer heute?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abschlieende-bemerkungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Abschließende Bemerkungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nachstes-kapitel-mini-gpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Nächstes Kapitel: Mini-GPT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../03_LanguageModelling/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil III · Entwicklung der Sprachmodelle
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/01_TinyGPT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.1 · TinyGPT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/02_TinyInstruct/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.2 · TinyInstruct
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/03_TinyChat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.3 · TinyChat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/04_TinyMoE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.4 · TinyMoE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_LanguageModelling/05_TinyReason/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3.5 · TinyReason
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../04_AgenticSystems/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Teil IV · Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Teil IV · Agentic Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/01_TextInTextOut/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.1 · Text-in / Text-out
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/02_ToolsAndPlanning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.2 · Tools & Planning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/03_TheLoop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.3 · Der Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/04_ReasoningInside/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.4 · Reasoning innen drin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/05_ProtocolsAndScale/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.5 · Protokolle & Skalierung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/06_WhenNotToBuild/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.6 · Wann NICHT bauen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_AgenticSystems/07_DynamicToolAgent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4.7 · Dynamic Tool Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Inhaltsverzeichnis">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Inhaltsverzeichnis
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vom-seq2seq-zum-reinen-attention-modell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌉 Vom Seq2Seq zum reinen Attention-Modell
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historischer-kontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🕰️ Historischer Kontext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#die-aufgabe-zahl-deutsches-zahlwort-wie-in-meilenstein-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Die Aufgabe: Zahl → deutsches Zahlwort (wie in Meilenstein 6)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modellarchitektur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧩 Modellarchitektur
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🧩 Modellarchitektur">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-scaled-dot-product-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Scaled Dot-Product Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-multi-head-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Multi-Head Attention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-positional-encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Positional Encoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-layer-normalization-residual-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Layer Normalization + Residual Connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gesamt-architektur-encoder-decoder-wie-in-vaswani-2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gesamt-Architektur (Encoder-Decoder wie in Vaswani 2017)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#training" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚙️ Training
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#so-startest-du-das-programm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ▶️ So startest du das Programm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispielausgabe-echter-forward-pass-untrainiert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📈 Beispielausgabe (echter Forward-Pass, untrainiert)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ehrliche-diskussion-was-phase-1-zeigt-und-was-nicht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ❗ Ehrliche Diskussion: Was Phase 1 zeigt und was nicht
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ubungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Übungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wo-steht-der-transformer-heute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧭 Wo steht der Transformer heute?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abschlieende-bemerkungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🧠 Abschließende Bemerkungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nachstes-kapitel-mini-gpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Nächstes Kapitel: Mini-GPT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referenzen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 Referenzen
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ki-meilenstein-7-der-transformer">KI-Meilenstein 7: Der Transformer<a class="headerlink" href="#ki-meilenstein-7-der-transformer" title="Permanent link">¶</a></h1>
+<blockquote>
+<p><strong>🎯 Warum ist das cool?</strong>
+Wir werfen die Rekurrenz komplett über Bord und behalten nur die <strong>Attention</strong>. Das Ergebnis ist die Architektur, auf der heute <em>alles</em> aufbaut — ChatGPT, Claude, Gemini, DeepL, BERT, Stable Diffusion. Und wir sehen, was der zentrale Gedanke von 2017 wirklich war: <strong>„Attention Is All You Need."</strong> Jede Position schaut auf jede andere Position — parallel, ohne Zeitschleife.</p>
+<p>⚠️ <strong>Hinweis: Dieses Kapitel ist in zwei Phasen aufgeteilt.</strong>
+<strong>Phase 1 (jetzt):</strong> komplette Forward-Architektur mit sichtbarer Multi-Head-Attention — aber <strong>ohne Training</strong>. Das Modell zeigt, wie der Datenfluss aussieht, wie Encoder und Decoder zusammenspielen und wie mehrere Köpfe parallel „schauen". Die Vorhersagen sind zufällig, weil die Gewichte noch nicht angelernt sind — die <em>Struktur</em> aber ist vollständig.
+<strong>Phase 2 (Ausblick):</strong> Backward-Pass und Training-Loop. Das ist der aufwendigste Teil (~400 zusätzliche Zeilen inkl. Debugging). Er folgt in einem eigenen Update dieses Kapitels.</p>
+</blockquote>
+<h2 id="vom-seq2seq-zum-reinen-attention-modell">🌉 Vom Seq2Seq zum reinen Attention-Modell<a class="headerlink" href="#vom-seq2seq-zum-reinen-attention-modell" title="Permanent link">¶</a></h2>
+<p>Im letzten Meilenstein (Seq2Seq mit Attention) hatten wir zwei RNNs, die per Attention miteinander verbunden waren. Attention war ein <strong>Zusatz</strong> neben der Rekurrenz. Sie half dem Decoder, an jede Stelle der Eingabe zurückzuschauen — aber die Wörter wurden immer noch <strong>Schritt für Schritt</strong> durch die RNNs geschickt.</p>
+<p>Das war der Flaschenhals. Rekurrenz erzwingt Sequenz: erst Wort 1, dann Wort 2, dann Wort 3. Auf einer modernen GPU mit tausenden Kernen ist das eine massive Verschwendung — der ganze Chip wartet auf einen einzigen Hidden-State.</p>
+<p>2017 stellten <strong>Vaswani, Shazeer, Parmar et al.</strong> eine radikale Frage:</p>
+<blockquote>
+<p><em>„Wenn Attention den ganzen Job erledigt — brauchen wir die Rekurrenz überhaupt noch?"</em></p>
+</blockquote>
+<p>Die Antwort war ein epochales <em>„Nein"</em>. Sie fassten sie im Titel ihres Papers zusammen:</p>
+<blockquote>
+<p><strong>„Attention Is All You Need."</strong> (Vaswani et al., 2017)</p>
+</blockquote>
+<p>Der Transformer war geboren. Er wirft die Rekurrenz komplett weg und behält <em>nur</em> Attention — jetzt sogar in einer noch mächtigeren Form: <strong>Self-Attention</strong> (jede Position schaut auf <em>alle</em> Positionen der eigenen Sequenz) und <strong>Multi-Head-Attention</strong> (mehrere Köpfe schauen parallel unter verschiedenen Blickwinkeln). Und weil kein RNN mehr da ist, kann die gesamte Sequenz <strong>parallel</strong> verarbeitet werden.</p>
+<hr />
+<h2 id="historischer-kontext">🕰️ Historischer Kontext<a class="headerlink" href="#historischer-kontext" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Jahr</th>
+<th>Ereignis</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2015</strong></td>
+<td>Bahdanau et al.: Attention</td>
+<td>Zusatz zum RNN-Seq2Seq — Decoder darf auf Eingabe zurückschauen</td>
+</tr>
+<tr>
+<td><strong>2017</strong></td>
+<td><strong>Vaswani et al.: <em>„Attention Is All You Need"</em></strong></td>
+<td>Der Transformer. Rekurrenz weg, nur Attention</td>
+</tr>
+<tr>
+<td><strong>2018</strong></td>
+<td><strong>BERT</strong> (Devlin et al.)</td>
+<td>Erster Encoder-only-Transformer für Textverständnis — SOTA in fast jedem NLP-Benchmark</td>
+</tr>
+<tr>
+<td><strong>2018</strong></td>
+<td><strong>GPT-1</strong> (Radford et al.)</td>
+<td>Erster Decoder-only-Transformer als autoregressives Sprachmodell</td>
+</tr>
+<tr>
+<td><strong>2019</strong></td>
+<td>GPT-2 (Radford et al.)</td>
+<td>1.5 Mrd. Parameter — erstmals <em>öffentlich</em> beeindruckende Textgenerierung</td>
+</tr>
+<tr>
+<td><strong>2020</strong></td>
+<td>GPT-3 (Brown et al.)</td>
+<td>175 Mrd. Parameter — Few-Shot-Lernen wird sichtbar</td>
+</tr>
+<tr>
+<td><strong>2020</strong></td>
+<td>Vision Transformer (Dosovitskiy et al.)</td>
+<td>Transformer schafft es in die Bildverarbeitung</td>
+</tr>
+<tr>
+<td><strong>2022</strong></td>
+<td>ChatGPT (OpenAI)</td>
+<td>Erste massentaugliche KI-Anwendung — 100 Mio. Nutzer in 2 Monaten</td>
+</tr>
+<tr>
+<td><strong>heute</strong></td>
+<td>Claude, Gemini, LLaMA, Mistral, DeepSeek, ...</td>
+<td>Alle sind Transformer-Varianten. Die Architektur ist der Konsens.</td>
+</tr>
+</tbody>
+</table>
+<p>Der Transformer ist damit <strong>kein Zwischenschritt</strong> wie RNN oder Seq2Seq — er ist der <strong>aktuelle Standard</strong>. Alle großen Sprachmodelle heute sind Varianten davon. Wenn du diese Architektur verstehst, verstehst du den Kern von ChatGPT.</p>
+<hr />
+<h2 id="die-aufgabe-zahl-deutsches-zahlwort-wie-in-meilenstein-6">🧠 Die Aufgabe: Zahl → deutsches Zahlwort (wie in Meilenstein 6)<a class="headerlink" href="#die-aufgabe-zahl-deutsches-zahlwort-wie-in-meilenstein-6" title="Permanent link">¶</a></h2>
+<p>Wir übersetzen ganze Zahlen von 0 bis 999 in ihre <strong>deutsche Wortform</strong> — <strong>exakt dieselbe Aufgabe</strong> wie im Seq2Seq-Kapitel:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>   23  -&gt;  drei und zwanzig
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  100  -&gt;  einhundert
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  342  -&gt;  dreihundert zwei und vierzig
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  999  -&gt;  neunhundert neun und neunzig
+</span></code></pre></div>
+<p><strong>Warum wieder diese Aufgabe?</strong> Weil wir jetzt einen <strong>direkten Vergleich</strong> zwischen Seq2Seq und Transformer machen können:</p>
+<ol>
+<li><strong>Gleiche Daten</strong> — 1 000 Beispiele, 800/200 Train/Test-Split, identischer <code>data.py</code> wie in Meilenstein 6.</li>
+<li><strong>Gleiche Metrik</strong> — exakter Match auf Testset.</li>
+<li><strong>Verschiedene Architekturen</strong> — RNN-Encoder-Decoder mit Attention vs. reiner Attention-Encoder-Decoder.</li>
+<li><strong>Attention wird sichtbar wandern</strong> — im Deutschen kommt der <em>Einer vor dem Zehner</em> (<em>„dreiundzwanzig"</em>). Das Modell muss also nicht linear von links nach rechts arbeiten, sondern <strong>springen</strong>. Perfekt für Multi-Head-Heatmaps.</li>
+</ol>
+<p>Der ganze Sinn dieses Kapitels ist die <em>Architektur</em>, nicht die Genauigkeit. Deswegen bleibt die Aufgabe klein und die Attention klar sichtbar.</p>
+<hr />
+<h2 id="modellarchitektur">🧩 Modellarchitektur<a class="headerlink" href="#modellarchitektur" title="Permanent link">¶</a></h2>
+<p>Der Transformer besteht aus <strong>vier neuen Bausteinen</strong> gegenüber dem Seq2Seq:</p>
+<h3 id="1-scaled-dot-product-attention">1. Scaled Dot-Product Attention<a class="headerlink" href="#1-scaled-dot-product-attention" title="Permanent link">¶</a></h3>
+<p>Das Herzstück. Für Query <span class="arithmatex">\(Q\)</span>, Key <span class="arithmatex">\(K\)</span>, Value <span class="arithmatex">\(V\)</span>:</p>
+<div class="arithmatex">\[
+\text{Attn}(Q, K, V) = \text{softmax}\!\left(\frac{Q K^T}{\sqrt{d_k}}\right) V
+\]</div>
+<p>Für jede Query-Position wird die Ähnlichkeit zu jeder Key-Position berechnet (Dot-Product), daraus über Softmax eine Verteilung gebildet, und die Values werden entsprechend gemischt. Die Skalierung mit <span class="arithmatex">\(1/\sqrt{d_k}\)</span> verhindert, dass die Dot-Products bei großer Dimension zu extremen Werten explodieren.</p>
+<h3 id="2-multi-head-attention">2. Multi-Head Attention<a class="headerlink" href="#2-multi-head-attention" title="Permanent link">¶</a></h3>
+<p>Statt <em>einer</em> großen Attention machen wir <strong>h Attention-Köpfe parallel</strong>. Jeder Kopf projiziert <span class="arithmatex">\(Q\)</span>, <span class="arithmatex">\(K\)</span>, <span class="arithmatex">\(V\)</span> in einen kleineren Unterraum <span class="arithmatex">\(d_k = d_{\text{model}}/h\)</span> und macht dort seine eigene Scaled-Dot-Product-Attention. Am Ende werden alle Köpfe konkateniert und linear projiziert.</p>
+<p>Warum? Jeder Kopf kann einen <strong>anderen Blickwinkel</strong> lernen — einer schaut auf Positionen, einer auf Wortarten, einer auf lange Distanzen. Wir werden das in den Heatmaps sehen.</p>
+<h3 id="3-positional-encoding">3. Positional Encoding<a class="headerlink" href="#3-positional-encoding" title="Permanent link">¶</a></h3>
+<p>Ein Transformer hat keinen Begriff von <em>Reihenfolge</em> — er sieht alle Positionen gleichzeitig. Deshalb müssen wir die Position <strong>explizit</strong> in den Vektor hineincodieren. Vaswani et al. nutzen dazu eine schöne Konstruktion aus Sinus und Kosinus in verschiedenen Frequenzen:</p>
+<div class="arithmatex">\[
+\text{PE}(pos, 2i) = \sin\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right) \qquad
+\text{PE}(pos, 2i+1) = \cos\!\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
+\]</div>
+<p>Diese Position-Vektoren werden auf die Token-Embeddings <strong>aufaddiert</strong> — sie sind nicht trainierbar, sondern deterministisch berechnet.</p>
+<h3 id="4-layer-normalization-residual-connections">4. Layer Normalization + Residual Connections<a class="headerlink" href="#4-layer-normalization-residual-connections" title="Permanent link">¶</a></h3>
+<p>Jeder Sublayer wird eingerahmt von:
+- <strong>Residual Connection</strong> (<code>x + Sublayer(x)</code>) — der Gradient kann direkt zurückfließen.
+- <strong>Layer Norm</strong> — normiert jeden Token-Vektor auf Mittelwert 0 und Standardabweichung 1.</p>
+<p>Ohne diese beiden Tricks lassen sich tiefe Transformer nicht sinnvoll trainieren.</p>
+<h3 id="gesamt-architektur-encoder-decoder-wie-in-vaswani-2017">Gesamt-Architektur (Encoder-Decoder wie in Vaswani 2017)<a class="headerlink" href="#gesamt-architektur-encoder-decoder-wie-in-vaswani-2017" title="Permanent link">¶</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Src-IDs (3 Ziffern)                       Tgt-IDs (Wörter + &lt;sos&gt;)
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>     │                                             │
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     ▼                                             ▼
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>[ Embedding + Positional Encoding ]      [ Embedding + Positional Encoding ]
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>     │                                             │
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>     ▼                                             ▼
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a> ┌───────────────────────────┐            ┌────────────────────────────┐
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a> │ Encoder-Block × N          │            │ Decoder-Block × N          │
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a> │   • Multi-Head Self-Attn   │            │   • Masked Self-Attn       │
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a> │   • Feed-Forward MLP       │            │   • Cross-Attn (schaut     │
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a> │   • Layer Norm + Residual  │◀───────────│      auf Encoder)          │
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a> │                            │            │   • Feed-Forward MLP       │
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a> └───────────────────────────┘            │   • Layer Norm + Residual  │
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>                                           └────────────────────────────┘
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>                                                    │
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>                                                    ▼
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>                                       [ Dense: d_model → V_out → Softmax ]
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>                                                    │
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>                                                    ▼
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>                                              nächstes Wort
+</span></code></pre></div>
+<p><strong>Größenordnungen (unser konkretes Modell):</strong>
+- <code>d_model = 64</code> (Vaswani-Original: 512)
+- <code>n_heads = 4</code> (Vaswani-Original: 8)
+- <code>d_ff = 128</code> (Vaswani-Original: 2048)
+- <code>N = 2</code> (Encoder- und Decoder-Blöcke; Vaswani-Original: 6)
+- Parameter: <strong>~172 000</strong> (vs. ~40 000 beim Seq2Seq)
+- GPT-4 (zum Vergleich): ~1.7 Billionen Parameter, also <strong>10⁷-mal so groß</strong></p>
+<p>Wir sind bewusst deutlich unter dem Original-Paper, weil bei dieser Aufgabe (10 Ziffern → 42 Wörter) alles darüber Overkill wäre.</p>
+<hr />
+<h2 id="training">⚙️ Training<a class="headerlink" href="#training" title="Permanent link">¶</a></h2>
+<p><strong>Kurz gesagt:</strong> Beim Training minimieren wir den <strong>Cross-Entropy-Verlust</strong> über alle Ziel-Positionen — dieselbe Idee wie beim Seq2Seq, nur ohne Zeitschleife. Weil der Decoder eine <strong>Causal Mask</strong> hat, kann er beim Training alle Positionen <em>gleichzeitig</em> verarbeiten, ohne dabei „in die Zukunft zu schauen".</p>
+<p><strong>Teacher Forcing</strong> funktioniert wie beim Seq2Seq: Beim Training bekommt der Decoder als „vorheriges Wort" immer das <em>wahre</em> vorherige Wort, nicht seine eigene Vorhersage.</p>
+<p><strong>Optimierer:</strong> Adagrad mit Gradient-Clipping bei ±5, wie in den vorherigen Kapiteln.</p>
+<blockquote>
+<p>⚠️ <strong>Phase 1: Training noch nicht implementiert.</strong>
+Der Backward-Pass durch Multi-Head-Attention, Layer Norm und die Encoder-Decoder-Blöcke ist der komplexeste Teil des ganzen Kapitels. Er kommt in Phase 2.</p>
+<p>In Phase 1 initialisieren wir das Modell nur mit <strong>zufälligen Gewichten</strong> und zeigen den Forward-Pass. Das genügt, um die <em>Architektur</em> sichtbar zu machen.</p>
+</blockquote>
+<p><strong>Hyperparameter (geplant für Phase 2):</strong>
+- Epochen: 60 (wie Seq2Seq)
+- Lernrate: 0.1
+- Gradient Clipping: ±5</p>
+<hr />
+<h2 id="so-startest-du-das-programm">▶️ So startest du das Programm<a class="headerlink" href="#so-startest-du-das-programm" title="Permanent link">¶</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>Transformer/src
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>python<span class="w"> </span>main.py
+</span></code></pre></div>
+<p>Das Programm:
+1. lädt alle 1 000 Zahl→Wort-Paare,
+2. initialisiert einen Encoder-Decoder-Transformer mit <strong>zufälligen Gewichten</strong>,
+3. macht einen Forward-Pass durch das Modell und sammelt die Cross-Attention-Gewichte des letzten Decoder-Blocks,
+4. rendert für einige Beispiele die <strong>Multi-Head-Attention-Heatmaps</strong> (alle 4 Köpfe parallel).</p>
+<hr />
+<h2 id="beispielausgabe-echter-forward-pass-untrainiert">📈 Beispielausgabe (echter Forward-Pass, untrainiert)<a class="headerlink" href="#beispielausgabe-echter-forward-pass-untrainiert" title="Permanent link">¶</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Datensatz: 1000 Paare  |  Eingabe-Vokabular 10  |  Ausgabe-Vokabular 42
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Modell:   d_model=64, n_heads=4, n_layers=2, d_ff=128
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Parameter: 172,074
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>PHASE 1: Forward-Only Demo (Modell ist NICHT trainiert)
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  n=199  Ziel: einhundert neun und neunzig               Vorhersage (untrainiert): achthundert achthundert achthundert achthundert ...
+</span></code></pre></div>
+<p><strong>Und der Star des Kapitels — die Multi-Head-Heatmap:</strong></p>
+<p>Für die Zahl <code>199</code> produziert der Decoder in seinem letzten Cross-Attention-Layer für jede Ausgabe-Position <strong>vier verschiedene Attention-Vektoren</strong> (einen pro Kopf), die parallel gerendert werden:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>              Kopf 0                           Kopf 1                           Kopf 2                           Kopf 3
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>               |  1    9    9  |                |  1    9    9  |                |  1    9    9  |                |  1    9    9  |
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>               +---------------+                +---------------+                +---------------+                +---------------+
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  achthundert |  O    O    o  |    achthundert |  O    o    o  |    achthundert |  #    o    o  |    achthundert |  o    o    O  |
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  achthundert |  o    O    o  |    achthundert |  O    o    o  |    achthundert |  O    o    o  |    achthundert |  o    o    O  |
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  achthundert |  o    O    o  |    achthundert |  O    o    o  |    achthundert |  O    o    o  |    achthundert |  o    o    O  |
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  achthundert |  o    O    o  |    achthundert |  O    o    o  |    achthundert |  O    o    o  |    achthundert |  o    o    O  |
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>               +---------------+                +---------------+                +---------------+                +---------------+
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  Legende:  .  =  0.00..0.05   *  =  ..0.15   o  =  ..0.35   O  =  ..0.60   #  =  ..1.00
+</span></code></pre></div>
+<p><strong>Was hier sichtbar wird — obwohl das Modell untrainiert ist:</strong></p>
+<ol>
+<li><strong>Vier Köpfe schauen alle auf verschiedene Stellen.</strong> Kopf 0 schaut leicht auf die mittlere <code>9</code>, Kopf 2 stark auf die erste <code>1</code>, Kopf 3 auf die letzte <code>9</code>. Jeder Kopf hat einen eigenen zufälligen Blickwinkel. <strong>Nach dem Training</strong> wird dieser Blickwinkel <em>strukturiert</em> — z. B. „Kopf 0 = Hunderter-Position, Kopf 3 = Einer-Position".</li>
+<li><strong>Die Vorhersagen sind Wortmüll</strong> (<em>achthundert</em> für 199). Das ist erwartet — das Modell ist untrainiert.</li>
+<li><strong>Aber die Architektur läuft.</strong> Alle Shapes stimmen. Der Encoder-Decoder-Datenfluss ist vollständig. Wenn wir jetzt in Phase 2 den Backward-Pass ergänzen und trainieren, wird sich in genau diesen Heatmaps Struktur zeigen.</li>
+</ol>
+<p><strong>Das ist der pädagogische Höhepunkt von Phase 1:</strong> Wir sehen, wie <strong>Multi-Head-Attention parallel operiert</strong> — und wir sehen, dass alle Ausgabe-Positionen (nicht nur eine nach der anderen wie beim RNN) <em>gleichzeitig</em> berechnet werden. Kein Zeitschleifen-Code mehr, nur Matrizen.</p>
+<hr />
+<h2 id="ehrliche-diskussion-was-phase-1-zeigt-und-was-nicht">❗ Ehrliche Diskussion: Was Phase 1 zeigt und was nicht<a class="headerlink" href="#ehrliche-diskussion-was-phase-1-zeigt-und-was-nicht" title="Permanent link">¶</a></h2>
+<p><strong>Was Phase 1 zeigt:</strong>
+- Die komplette <strong>Architektur</strong> — Encoder, Decoder, alle Blöcke.
+- <strong>Multi-Head-Attention</strong> parallel gerendert.
+- <strong>Positional Encoding</strong> in Aktion (sonst würde der Transformer die Reihenfolge nicht kennen).
+- <strong>Layer Norm + Residual Connections</strong> — die Stabilisierungs-Tricks.
+- <strong>Parallele Verarbeitung</strong> — alle Positionen in einem Rutsch, nicht sequenziell.</p>
+<p><strong>Was Phase 1 nicht zeigt:</strong>
+- <strong>Konvergenz</strong>. Wir haben keinen Trainings-Loop.
+- <strong>Strukturierte Attention-Muster</strong>. Weil die Gewichte zufällig sind, sind die Heatmaps auch zufällig verteilt.
+- <strong>Genauigkeit</strong>. Die Vorhersagen sind Wortmüll.</p>
+<p><strong>Was Phase 2 ergänzen wird:</strong>
+- Backward-Pass durch alle Bausteine (Softmax, Multi-Head-Attention, Layer Norm, FFN, Encoder/Decoder-Blöcke).
+- Trainings-Loop mit Adagrad und Teacher Forcing.
+- Auswertung: Testgenauigkeit vs. Seq2Seq, echte Attention-Heatmaps mit strukturierten Mustern.</p>
+<p><strong>Warum diese Aufteilung?</strong> Ein vollständiger Encoder-Decoder-Transformer inklusive korrekt implementiertem Backward-Pass ist mit ~700 Zeilen NumPy-Code das komplexeste Modell dieser Reihe. Debugging ohne PyTorch-Autograd ist mühsam — deshalb bauen wir zuerst die <strong>Struktur</strong> und zeigen, dass sie stimmt (Shape-Check, Attention-Rendering). Der Trainings-Teil folgt danach, wenn die Basis solide ist.</p>
+<hr />
+<h2 id="ubungen">📝 Übungen<a class="headerlink" href="#ubungen" title="Permanent link">¶</a></h2>
+<p><strong>1. Ändere die Anzahl der Köpfe.</strong> Setze in <code>main.py</code> den <code>N_HEADS = 2</code> oder <code>N_HEADS = 8</code>. Wie ändert sich die Multi-Head-Heatmap? Wichtig: <code>d_model</code> muss durch <code>n_heads</code> teilbar sein.</p>
+<p><strong>2. Vergleiche mit einem Seq2Seq-Beispiel.</strong> Führe das Seq2Seq-Programm aus Meilenstein 6 und dann diesen Transformer aus. Vergleiche die Attention-Heatmaps: eine einzelne (Seq2Seq) vs. mehrere parallele Köpfe (Transformer).</p>
+<p><strong>3. Positional Encoding visualisieren.</strong> Rufe <code>positional_encoding(seq_len=16, d_model=64)</code> auf und drucke die Matrix aus. Welche Zeile bekommt welche Position? Warum sehen die Dimensionen unterschiedlich aus?</p>
+<p><strong>4. Causal Mask prüfen.</strong> Rufe <code>make_causal_mask(5)</code> auf. Warum wird gerade die <em>obere</em> Dreiecksmatrix maskiert und nicht die untere?</p>
+<p><strong>5. Andere Layer-Anzahl.</strong> Erhöhe <code>N_LAYERS = 4</code>. Wie ändert sich die Parameterzahl? Läuft das Modell noch in einer akzeptablen Zeit?</p>
+<hr />
+<h2 id="wo-steht-der-transformer-heute">🧭 Wo steht der Transformer heute?<a class="headerlink" href="#wo-steht-der-transformer-heute" title="Permanent link">¶</a></h2>
+<p><strong>Kurz gesagt:</strong> Der Transformer ist die <strong>dominante Architektur</strong> der modernen KI. Anders als alle vorherigen Kapitel dieser Reihe ist er <em>kein</em> Zwischenschritt — sondern der aktuelle Stand.</p>
+<ul>
+<li><strong>Sprachmodelle</strong>: GPT (1–4), Claude, Gemini, LLaMA, Mistral, DeepSeek, Qwen — alle sind Transformer. Sie unterscheiden sich in Größe, Trainingsdaten und feinen Design-Entscheidungen, aber die Grundarchitektur ist die aus Vaswani 2017.</li>
+<li><strong>Textverständnis (Encoder-only)</strong>: BERT, RoBERTa, DeBERTa. Werden in fast jeder NLP-Pipeline eingesetzt: Suche, Klassifikation, Named-Entity-Erkennung.</li>
+<li><strong>Textgenerierung (Decoder-only)</strong>: GPT-Familie und alle modernen LLMs. Hier gehen wir in Meilenstein 8 (Mini-GPT) weiter.</li>
+<li><strong>Übersetzung (Encoder-Decoder wie hier)</strong>: DeepL, Google Translate seit 2018, T5, mT5, BART.</li>
+<li><strong>Bildverarbeitung</strong>: Vision Transformer (ViT), Swin Transformer. Konkurrieren zunehmend mit CNNs bei großen Datensätzen.</li>
+<li><strong>Multimodalität</strong>: CLIP, GPT-4V, LLaVA. Bild und Text im selben Transformer-Framework.</li>
+</ul>
+<p><strong>Was hat sich seit 2017 geändert?</strong> Vor allem drei Dinge, die man aus dem Original-Paper nicht ablesen kann:</p>
+<ol>
+<li><strong>Skalierung.</strong> Vaswani hatte ~65 Mio. Parameter. GPT-4 hat ~1.7 Bio. Das ist ein Faktor 25 000. Die Grundarchitektur ist erstaunlich unverändert.</li>
+<li><strong>Nur-Decoder statt Encoder-Decoder.</strong> Für Sprachgenerierung ist der Encoder oft überflüssig — man macht alles im Decoder als autoregressives Modell. Das ist der Übergang zu Meilenstein 8 (Mini-GPT).</li>
+<li><strong>Effizienz-Verbesserungen.</strong> Flash Attention, Rotary Position Embeddings, Group-Query Attention, Sparse Attention. Alles Optimierungen, um dieselbe Grundidee größer und schneller zu machen.</li>
+</ol>
+<p>Wenn du diesen Meilenstein durcharbeitest, hast du <strong>den Kern moderner KI</strong> verstanden. Alles Weitere ist Skalierung und Feinschliff.</p>
+<hr />
+<h2 id="abschlieende-bemerkungen">🧠 Abschließende Bemerkungen<a class="headerlink" href="#abschlieende-bemerkungen" title="Permanent link">¶</a></h2>
+<p>Wenn du dir dieses Kapitel angesehen hast — auch in seiner Phase-1-Form —, hast du drei zentrale Ideen der modernen KI in Aktion gesehen:</p>
+<ol>
+<li><strong>Attention statt Rekurrenz.</strong> Für Sequenzverarbeitung braucht man kein RNN. Es reicht, alle Positionen gegenseitig aufeinander schauen zu lassen. Das ist der Kern.</li>
+<li><strong>Multi-Head als Parallelisierung des Blickwinkels.</strong> Ein einzelner Attention-Kopf ist eine Perspektive. h Köpfe sind h Perspektiven parallel. Genau das macht den Transformer so ausdrucksstark.</li>
+<li><strong>Positional Encoding als expliziter Reihenfolge-Hinweis.</strong> Wenn wir die Zeitschleife weglassen, geht die Reihenfolge verloren — es sei denn, wir stecken sie <em>explizit</em> in die Vektoren hinein. Sinus/Kosinus ist eine schöne, deterministische Lösung.</li>
+</ol>
+<p>Und eine subtile, aber wichtige Einsicht: <strong>Attention ist eine Wichtungs-Operation, kein Speicher.</strong> Anders als beim RNN gibt es keinen versteckten Zustand, der Information über die Zeit trägt. Stattdessen entscheidet jede Query in jedem Moment neu, wo sie hinschauen möchte. Das macht Attention <em>stateless</em> — und genau deshalb parallelisierbar.</p>
+<hr />
+<h2 id="nachstes-kapitel-mini-gpt">🚀 Nächstes Kapitel: Mini-GPT<a class="headerlink" href="#nachstes-kapitel-mini-gpt" title="Permanent link">¶</a></h2>
+<p>Der Transformer, den wir hier gebaut haben, ist ein <strong>Encoder-Decoder</strong> — er ist gebaut für Übersetzung. In Meilenstein 8 werfen wir sogar den Encoder weg und behalten nur den <strong>Decoder</strong>. Warum?</p>
+<p>Weil für Sprachgenerierung (also <em>„das nächste Wort vorhersagen"</em>, wie schon beim RNN) ein Encoder überflüssig ist. Der Decoder allein — mit Self-Attention und Causal Mask — reicht aus. Das ist die Architektur von <strong>GPT</strong> (Radford et al. 2018) und aller nachfolgenden LLMs.</p>
+<p>Wir werden ein <strong>Mini-GPT</strong> auf den Grimm-Märchen (Meilenstein 4/5) trainieren und ihm eigene kleine Märchen erzeugen lassen. Der Höhepunkt der Reihe.</p>
+<hr />
+<h2 id="referenzen">📚 Referenzen<a class="headerlink" href="#referenzen" title="Permanent link">¶</a></h2>
+<ul>
+<li>Bahdanau, D., Cho, K., &amp; Bengio, Y. (2015). <em>Neural Machine Translation by Jointly Learning to Align and Translate</em>. ICLR. arXiv:1409.0473.</li>
+<li><strong>Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., &amp; Polosukhin, I. (2017). <em>Attention Is All You Need</em>. NeurIPS. arXiv:1706.03762.</strong></li>
+<li>Devlin, J., Chang, M.-W., Lee, K., &amp; Toutanova, K. (2018). <em>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</em>. arXiv:1810.04805.</li>
+<li>Radford, A., Narasimhan, K., Salimans, T., &amp; Sutskever, I. (2018). <em>Improving Language Understanding by Generative Pre-Training</em>. OpenAI Technical Report (GPT-1).</li>
+<li>Brown, T. B. et al. (2020). <em>Language Models are Few-Shot Learners</em>. NeurIPS (GPT-3). arXiv:2005.14165.</li>
+<li>Dosovitskiy, A. et al. (2020). <em>An Image is Worth 16×16 Words: Transformers for Image Recognition at Scale</em>. arXiv:2010.11929.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Zurück zum Seitenanfang
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024–2026 Dr. Thilo Böhm. Text und Code stehen unter permissiver Lizenz — Details im Repo.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/boehmt/The-Computational-Minimum" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "In Zwischenablage kopiert", "clipboard.copy": "In Zwischenablage kopieren", "search.result.more.one": "1 weiteres Suchergebnis auf dieser Seite", "search.result.more.other": "# weitere Suchergebnisse auf dieser Seite", "search.result.none": "Keine Suchergebnisse", "search.result.one": "1 Suchergebnis", "search.result.other": "# Suchergebnisse", "search.result.placeholder": "Suchbegriff eingeben", "search.result.term.missing": "Es fehlt", "select.version": "Version ausw\u00e4hlen"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

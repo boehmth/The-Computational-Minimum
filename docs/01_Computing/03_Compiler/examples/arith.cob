@@ -1,0 +1,18 @@
+IDENTIFICATION DIVISION.
+       PROGRAM-ID. ARITHMETIK.
+       AUTHOR. STUDIERENDE.
+       DATE-WRITTEN. 2024-01-15.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 X PIC 9.
+       01 Y PIC 9.
+       01 Z PIC 9.
+       PROCEDURE DIVISION.
+       BEGIN-PROGRAM.
+           COMPUTE X = 3.
+           COMPUTE Y = 4.
+           ADD Y TO X GIVING Z.
+           SUBTRACT 1 FROM Z.
+           DISPLAY Z.
+           STOP RUN.
+       END-PROGRAM.

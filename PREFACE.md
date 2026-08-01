@@ -55,13 +55,14 @@ Dieses Buch geht einen **vierten Weg**:
 
 ## Struktur der Reihe
 
-Diese Reihe ist Teil eines **dreiteiligen Projekts**:
+Diese Reihe ist Teil eines **vierteiligen Projekts**:
 
 - **[01_Computing](01_Computing/)** — *Milestones in Computing:* Wie funktioniert ein Computer überhaupt? Rechnerarchitektur, Betriebssystem, Compiler, Netzwerke — die zeitlosen Grundlagen der Informatik, jeweils als selbst gebautes Miniaturmodell.
 - **[02_MachineIntelligence](02_MachineIntelligence/)** — *Milestones in Machine Intelligence:* Sechzig Jahre neuronale Netze in acht Meilensteinen. Vom Perceptron (1958) über CNN, Word2Vec, RNN, Seq2Seq, Attention und Transformer bis zum eigenen kleinen GPT (2018). Alles selbst programmiert, alles nachvollziehbar. Der Begriff *„Machine Intelligence"* stammt aus Turings ursprünglichem Aufsatz von 1950 und vermeidet den Marketing-Ton von „AI".
-- **[03_AgenticSystems](03_AgenticSystems/)** *(in Vorbereitung)* — *Milestones in Agentic Systems:* Was in den letzten zehn Jahren aus diesen Grundlagen konkret gebaut wurde. LLMs im Detail, Mixture-of-Experts, Domänen-Transformer (Zeitreihen, Tabellen, Proteine), Reasoning-Modelle (DeepSeek-R1, o1), Multimodalität, Werkzeug-Nutzung, autonome Agenten. Der Übergang von *„Text produzieren"* zu *„Aufgaben erledigen"*.
+- **[03_LanguageModelling](03_LanguageModelling/)** *(in Vorbereitung)* — *Die Entwicklung der Sprachmodelle:* Was in den letzten zehn Jahren aus diesen Grundlagen konkret gebaut wurde — aus Sicht des Modells. LLMs im Detail, Instruktions-Feinjustierung, Präferenz-Ausrichtung, Mixture-of-Experts, Reasoning-Modelle (DeepSeek-R1, o1). Der Weg vom *„Text produzieren"* zum *„reasoning-fähigen Modell"*.
+- **[04_AgenticSystems](04_AgenticSystems/)** *(in Vorbereitung)* — *Agentic Systems:* Die systemische Fortsetzung. Wie diese Modelle zur Laufzeit als Agenten, Tool-Nutzer und Laufzeit-Systeme eingesetzt werden — Werkzeuge, Loops, Protokolle (MCP/A2A), und schließlich der Agent, der sich seine Werkzeuge selbst schreibt. Der Übergang von *„reasoning-fähig"* zu *„handelnd"*.
 
-Am Ende dieser drei Teile hat der Leser **von Bit und Byte bis zum autonomen KI-Agenten** einen durchgängigen Bogen. Kein Zauber. Nur Handwerk. Und ein sechzig­jähriger Wissenschaftspfad, den man Schritt für Schritt gehen kann.
+Am Ende dieser vier Teile hat der Leser **von Bit und Byte bis zum autonomen KI-Agenten** einen durchgängigen Bogen. Kein Zauber. Nur Handwerk. Und ein sechzig­jähriger Wissenschaftspfad, den man Schritt für Schritt gehen kann.
 
 ---
 

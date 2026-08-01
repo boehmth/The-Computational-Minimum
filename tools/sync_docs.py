@@ -15,13 +15,15 @@ Was gespiegelt wird
 - Root-Dateien: index.md, PREFACE.md, ROADMAP.md, STYLE.md
 - Teil 1 komplett: 01_Computing/**/*.md, plus die assets/-Unterordner
 - Die grundlagen/-Deep-Dives
+- Teil 2 komplett: 02_MachineIntelligence/**/*.md
+- Teil 3 komplett: 03_LanguageModelling/**/*.md
+- Teil 4 komplett: 04_AgenticSystems/**/*.md
 - stylesheets/ und javascripts/
 
 Was nicht gespiegelt wird
 -------------------------
-- 02_MachineIntelligence/ und 03_AgenticSystems/ (noch nicht in der Buch-
-  Fassung)
 - tools/, slides_appendix/ (nicht Teil des Buchs)
+
 - kap1_extracted.txt (Zwischenextrakt)
 - ROADMAP.md-Dateien in Unterordnern (interne Planung)
 - assets_prompts.md (Autoren-Notizen)
@@ -68,9 +70,13 @@ ROOT_FILES = [
 # Ganze Ordner, die rekursiv gespiegelt werden. (src → dst-Suffix relativ zu docs/)
 FOLDERS_TO_MIRROR = [
     ("01_Computing", "01_Computing"),
+    ("02_MachineIntelligence", "02_MachineIntelligence"),
+    ("03_LanguageModelling", "03_LanguageModelling"),
+    ("04_AgenticSystems", "04_AgenticSystems"),
     ("stylesheets",  "stylesheets"),
     ("javascripts",  "javascripts"),
 ]
+
 
 # Muster, die bei einem rekursiven Sync ausgeschlossen werden.
 # Alles was hier passt, wird uebersprungen.

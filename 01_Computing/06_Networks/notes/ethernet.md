@@ -139,7 +139,7 @@ Damit beginnt Teil 2 (`02_MachineIntelligence/`): 60 Jahre neuronale
 Netze, in denen aus einem einzelnen Neuron (Perceptron 1958) über MLP,
 CNN, Word2Vec, RNN, Seq2Seq, Transformer schrittweise die Fähigkeit
 entsteht, Bedeutung aus Text zu extrahieren. Und danach in Teil 3
-(`03_AgenticSystems/`) die letzten zehn Jahre: aus einem Sprachmodell
+(`03_LanguageModelling/`) die letzten zehn Jahre: aus einem Sprachmodell
 wird ein Assistent, aus dem Assistenten ein reasoning-fähiges Modell, aus
 dem reasoning-fähigen Modell ein Agent.
 

@@ -8,15 +8,17 @@ Zielgruppe: **Abiturienten und Studienanfänger**, die Mathematik auf Oberstufen
 
 ## 🎬 Die große Erzählung: Vom Darstellen über das Erkennen zum Verstehen — und dann zu den Anwendungen
 
-Diese Reihe ist Teil eines dreiteiligen Projekts, das den Bogen von den zeitlosen Grundlagen der Informatik bis zur KI der Gegenwart schlägt:
+Diese Reihe ist Teil eines vierteiligen Projekts, das den Bogen von den zeitlosen Grundlagen der Informatik bis zur KI der Gegenwart schlägt:
 
 > **Teil 1** (separate Reihe): **Darstellen** — wie Zeichen, Texte und Zahlen in einem Computer gespeichert, übertragen und verarbeitet werden. Information, Kodierung, Algorithmen, Berechenbarkeit, Rechnerarchitektur, Compiler, Netzwerke.
 >
 > **Teil 2** (diese Reihe): **Erkennen** *(Meilenstein 1–3)* und **Verstehen** *(Meilenstein 4–8)* — 60 Jahre neuronale Netze in acht Meilensteinen.
 >
-> **Teil 3** (in Vorbereitung): **Anwenden und Skalieren** — was in den letzten 10 Jahren aus diesen Grundlagen gebaut wurde: LLMs im Detail, Domänen-Transformer (Zeitreihen, tabellarische Daten), Reasoning-Modelle wie DeepSeek-R1, Agenten mit LLMs als Gehirn.
+> **Teil 3** (in Vorbereitung): **Die Entwicklung der Sprachmodelle** — was in den letzten 10 Jahren aus diesen Grundlagen gebaut wurde, aus Sicht des Modells: LLMs im Detail, Instruktions-Feinjustierung, Präferenz-Ausrichtung, Mixture-of-Experts, Reasoning-Modelle wie DeepSeek-R1.
+>
+> **Teil 4** (in Vorbereitung): **Agentic Systems** — die systemische Fortsetzung: wie diese Modelle zur Laufzeit als Agenten, Tool-Nutzer und Laufzeit-Systeme eingesetzt werden.
 
-Am Ende von Teil 1 kann der Computer Text **einlesen und übertragen**. In den Meilensteinen 1–3 dieser Reihe lernt er, Text zu **erkennen** (z. B. handgeschriebene Ziffern). Ab Meilenstein 4 geht es darum, Text auch zu **verstehen** — Bedeutung erfassen, Sätze bilden, eigene Texte erzeugen. Teil 3 dann fragt: *Was hat man daraus gebaut?*
+Am Ende von Teil 1 kann der Computer Text **einlesen und übertragen**. In den Meilensteinen 1–3 dieser Reihe lernt er, Text zu **erkennen** (z. B. handgeschriebene Ziffern). Ab Meilenstein 4 geht es darum, Text auch zu **verstehen** — Bedeutung erfassen, Sätze bilden, eigene Texte erzeugen. Teil 3 dann fragt: *Was hat man aus dem Modell gebaut?* — und Teil 4 fragt: *Was baut man mit dem Modell zur Laufzeit?*
 
 ### 📐 Die schöne Zeitsymmetrie
 
@@ -137,21 +139,32 @@ Optionaler Bonus-Meilenstein 9: **„Vom Basismodell zum Chatbot"** (Instruction
 
 ---
 
-## 🔭 Ausblick auf Teil 3
+## 🔭 Ausblick auf Teil 3 und Teil 4
 
-Wer alle acht Meilensteine dieser Reihe durchgearbeitet hat, versteht die **Bausteine** aller heutigen Sprachmodelle. **Teil 3** beschäftigt sich dann mit der Frage, was in den letzten zehn Jahren aus diesen Bausteinen konkret gebaut wurde. Geplante Themen:
+Wer alle acht Meilensteine dieser Reihe durchgearbeitet hat, versteht die **Bausteine** aller heutigen Sprachmodelle. **Teil 3** beschäftigt sich dann mit der Frage, was in den letzten zehn Jahren aus diesen Bausteinen konkret gebaut wurde — aus Sicht des Modells. **Teil 4** ist die systemische Fortsetzung: was man *mit* diesen Modellen zur Laufzeit baut.
+
+### Teil 3 · Die Entwicklung der Sprachmodelle
 
 | Meilenstein | Thema | Kernidee |
 |-------------|-------|----------|
-| **T3-1** | **LLMs im Detail** | Skalierungs­gesetze (Chinchilla), Instruction Tuning, RLHF, DPO. Wie wird aus Mini-GPT → ChatGPT? |
-| **T3-2** | **Domänen-Transformer** | Dieselbe Architektur, andere Daten: TimeGPT/Chronos (Zeitreihen), TabPFN (Tabellen), AlphaFold-Nachfolger (Proteine). |
-| **T3-3** | **Reasoning-Modelle** | DeepSeek-R1, OpenAI o1: Chain-of-Thought, verzögertes Antworten, RL auf Reasoning. |
-| **T3-4** | **Multimodalität** | Vision-Language-Models (CLIP, LLaVA, GPT-4V) — Bilder und Text im selben Vektorraum. |
-| **T3-5** | **Retrieval-augmented Generation (RAG)** | LLMs mit externem Wissen: Vektor-Datenbanken, semantische Suche. |
-| **T3-6** | **Werkzeug-Nutzung** | Function-Calling, Code-Execution — vom Text-Generator zum Aufgabenlöser. |
-| **T3-7** | **Agenten** | LLMs als Gehirn, das mehrere Schritte plant, Werkzeuge orchestriert, den Browser bedient. |
-| **T3-8** | **Alignment und Sicherheit** | Wie hält man ein System bei der Wahrheit? Constitutional AI, Red-Teaming, Interpretierbarkeit. |
+| **3.1** | **TinyGPT** | Ein reines Sprachmodell (GPT-1-artig) auf echten Webtext-Daten — autoregressive Nächstes-Token-Vorhersage. |
+| **3.2** | **TinyInstruct** | Instruktions-Feinjustierung durch maskierten Loss (FLAN, T0, Alpaca, LIMA) — aus dem Text-Vervollständiger wird ein Instruction-Follower. |
+| **3.3** | **TinyChat** | Präferenz-Ausrichtung (RLHF, dann DPO) — aus dem Instruction-Follower wird ein konsistenter Chat-Assistent. |
+| **3.4** | **TinyMoE** | Mixture of Experts (Shazeer, Switch, Mixtral, DeepSeek-MoE) — Kapazität wächst, ohne dass die Kosten pro Token proportional mitwachsen. |
+| **3.5** | **TinyReason** | Trainiertes Reasoning (CoT → STaR → PRM → o1 → DeepSeek-R1) — das Modell lernt, *vor* der Antwort zu denken. |
 
-Teil 3 wird stärker als Teil 2 auf **Frameworks** setzen (weil man ein modernes LLM nicht mehr sinnvoll from-scratch bauen kann), aber die Modelle bleiben **klein und interaktiv**, damit man tatsächlich mit ihnen experimentieren kann. Ohne das Verständnis aus Teil 2 wären viele der Ideen in Teil 3 nur Beschwörungs­formeln — mit ihm werden sie transparent.
+### Teil 4 · Agentic Systems
+
+| Kapitel | Thema | Kernidee |
+|---------|-------|----------|
+| **4.1** | **Text-in / Text-out** | Was ein LLM aus API-Sicht wirklich ist — ein Sechs-Zeiler beweist: Text rein, Text raus. |
+| **4.2** | **Tools & Planning** | Werkzeuge und der erste Plan — das Modell entscheidet die Schritte zur Laufzeit. |
+| **4.3** | **Der Loop** | Der externe Loop und was er kostet — `while not done: LLM → parse → tool → observe`. |
+| **4.4** | **Reasoning innen drin** | Der zweite Loop, unsichtbar — Thinking-Streams im Modell. |
+| **4.5** | **Protokolle & Skalierung** | MCP und A2A als lauffähige Miniaturen — Werkzeug- und Agent-Schnittstellen standardisieren. |
+| **4.6** | **Wann NICHT bauen** | Das Urteil — wann lohnt sich der ganze Aufwand überhaupt? |
+| **4.7** | **Dynamic Tool Agent** | Der Agent, der seine eigenen Werkzeuge schreibt — Runtime-Code-Generierung mit Sandbox. |
+
+Teil 3 wird stärker als Teil 2 auf **Frameworks** setzen (weil man ein modernes LLM nicht mehr sinnvoll from-scratch bauen kann), aber die Modelle bleiben **klein und interaktiv**, damit man tatsächlich mit ihnen experimentieren kann. Teil 4 baut bewusst **ohne Agent-Frameworks** — jeder Prompt, jeder Tool-Call, jede Retry-Entscheidung ist im Code sichtbar. Ohne das Verständnis aus Teil 2 wären viele der Ideen in Teil 3 und 4 nur Beschwörungs­formeln — mit ihm werden sie transparent.
 
 Viel Spaß beim Durcharbeiten!
