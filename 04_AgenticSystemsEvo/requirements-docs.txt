@@ -1,0 +1,9 @@
+# Docs-Build (nicht Runtime)
+# Aufruf:
+#   pip install -r requirements-docs.txt
+#   python tools/sync_docs.py
+#   python -m mkdocs serve
+
+mkdocs>=1.6
+mkdocs-material>=9.5
+pymdown-extensions>=10.7
