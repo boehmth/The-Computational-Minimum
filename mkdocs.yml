@@ -19,14 +19,15 @@
 #
 # =============================================================================
 
-site_name: "The Computational Minimum"
+site_name: "The Computational Minimum — Lehrbuch über Rechnerarchitektur, Machine Intelligence & Agentic Systems"
 site_description: >
-  Ein Lehrbuch ueber Rechnerarchitektur, Machine Intelligence und
-
-  Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-faehigen
-  Sprachmodell, alles selbst geschrieben ohne Frameworks.
+  Ein freies Lehrbuch über Rechnerarchitektur, Machine Intelligence und
+  Agentic Systems — vom 4-Bit-CPU-Simulator bis zum reasoning-fähigen
+  Sprachmodell und dem Agenten, der seine eigenen Werkzeuge schreibt.
+  Alles selbst geschrieben, ohne Frameworks, mit lauffähigen Python-Simulatoren.
 site_author: "Dr. Thilo Böhm"
 site_url: "https://boehmt.github.io/The-Computational-Minimum/"
+
 copyright: >
   Copyright &copy; 2024–2026 Dr. Thilo Böhm.
   Text und Code stehen unter permissiver Lizenz — Details im Repo.
@@ -55,7 +56,6 @@ not_in_nav: |
 nav:
   - "Startseite":              index.md
   - "Vorwort":                 PREFACE.md
-  - "Style-Guide":             STYLE.md
 
   - "Teil I · Computing":
       - "Übersicht":                    01_Computing/README.md
@@ -67,12 +67,6 @@ nav:
       - "05 · GPU":                     01_Computing/05_GPU/README.md
       - "06 · Netzwerk":                01_Computing/06_Networks/README.md
 
-  - "Grundlagen (Deep Dives)":
-      - "Übersicht":                    01_Computing/grundlagen/README.md
-      - "Schaltnetze und Schaltwerke":  01_Computing/grundlagen/schaltnetze.md
-      - "Von-Neumann-Architektur":      01_Computing/grundlagen/von_neumann.md
-      - "Moderne Prozessoren":          01_Computing/grundlagen/moderne_prozessoren.md
-
   - "Teil II · Maschinelle Intelligenz":
       - "Übersicht":                    02_MachineIntelligence/README.md
       - "2.1 · Perceptron":             02_MachineIntelligence/01_Perceptron/README.md
@@ -82,6 +76,7 @@ nav:
       - "2.5 · RNN":                    02_MachineIntelligence/05_RNN/README.md
       - "2.6 · Seq2Seq":                02_MachineIntelligence/06_Seq2Seq/README.md
       - "2.7 · Transformer":            02_MachineIntelligence/07_Transformer/README.md
+
 
   - "Teil III · Entwicklung der Sprachmodelle":
       - "Übersicht":                    03_LanguageModelling/README.md
@@ -108,6 +103,12 @@ theme:
 
   name: material
   language: de
+
+  # Overrides fuer SEO-Meta-Tags (Open Graph / Twitter Cards) in
+  # overrides/main.html
+  custom_dir: overrides
+
+
 
   # Fonts kommen aus Google Fonts; die konkreten Farben liegen in extra.css.
   font:
@@ -202,6 +203,23 @@ extra_javascript:
 plugins:
   - search:
       lang: de
+  # SEO: erzeugt automatisch sitemap.xml (Google findet alle Seiten schneller)
+  # Eigenes Plugin in tools/sitemap.py + tools/pyproject.toml (MkDocs 1.6 hat
+  # das Kern-Plugin entfernt; das Community-Paket ist auf PyPI nicht verfuegbar).
+  # Installation:  pip install -e tools/
+  - sitemap
+
+
+  # SEO: erzeugt Open-Graph- und Twitter-Card-Meta-Tags aus den Seiten-Titeln
+  - meta
+  # SEO: minifiziert HTML/CSS/JS fuer schnellere Ladezeiten (Ranking-Faktor)
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+        remove_empty_space: true
 
 # ---------------------------------------------------------------------------
 #  Weitere Einstellungen
@@ -211,5 +229,6 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/boehmt/The-Computational-Minimum
   generator: false     # "Made with MkDocs Material"-Footer ausblenden
+
 
 

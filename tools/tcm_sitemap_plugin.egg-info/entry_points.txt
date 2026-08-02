@@ -1,0 +1,2 @@
+[mkdocs.plugins]
+sitemap = sitemap:SitemapPlugin

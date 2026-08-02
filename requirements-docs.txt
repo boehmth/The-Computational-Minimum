@@ -4,8 +4,9 @@
 #
 #  Lokaler Betrieb:
 #      pip install -r requirements-docs.txt
-#      mkdocs serve       # http://127.0.0.1:8000
-#      mkdocs build       # baut nach _site/
+#      pip install -e tools/   # eigenes Sitemap-Plugin (siehe unten)
+#      mkdocs serve            # http://127.0.0.1:8000
+#      mkdocs build            # baut nach _site/
 #
 #  In der GitHub Action verwenden wir exakt dieselbe Datei, damit
 #  lokaler und CI-Build identisch sind.
@@ -22,3 +23,22 @@ pymdown-extensions>=10.7
 # Social-Card-Generierung (Pillow+Cairo) laesst sich mit dem Extra
 # "mkdocs-material[imaging]" nachziehen, braucht dann aber
 # System-Bibliotheken (libcairo). Fuer eine reine Text-Site nicht noetig.
+
+# SEO: minifiziert HTML/CSS/JS fuer schnellere Ladezeiten (Google-Ranking-Faktor)
+mkdocs-minify-plugin>=0.8.0
+
+# ---------------------------------------------------------------------------
+#  Eigenes Sitemap-Plugin (tools/sitemap.py + tools/pyproject.toml)
+# ---------------------------------------------------------------------------
+#  MkDocs 1.6 hat das Kern-Sitemap-Plugin entfernt; das Community-Paket ist
+#  auf PyPI nicht verfuegbar. Deshalb liegt hier ein eigenes, minimales
+#  Plugin im Repo, das sitemap.xml erzeugt. Es wird NICHT ueber diese Datei,
+#  sondern separat installiert:
+#
+#      pip install -e tools/
+#
+#  (Die GitHub Action macht das automatisch im "Install Dependencies"-Schritt.)
+# ---------------------------------------------------------------------------
+
+
+

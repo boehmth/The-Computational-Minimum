@@ -1,0 +1,25 @@
+{#-
+  Override fuer das Material-Theme (SEO).
+  Erweitert base.html und ergaenzt den <head>-Bereich um Open-Graph-,
+  Twitter-Card- und weitere SEO-Meta-Tags.
+-#}
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {# Open Graph #}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="{{ config.site_name }}" />
+  <meta property="og:title" content="{{ page.title | default(config.site_name, true) }}" />
+  <meta property="og:description" content="{{ config.site_description }}" />
+  <meta property="og:url" content="{{ page.canonical_url }}" />
+  <meta property="og:locale" content="de_DE" />
+
+  {# Twitter Card #}
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{{ page.title | default(config.site_name, true) }}" />
+  <meta name="twitter:description" content="{{ config.site_description }}" />
+
+  {# Zusaetzliche SEO-Meta-Tags #}
+  <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="Lehrbuch, Rechnerarchitektur, Machine Intelligence, Sprachmodelle, Agentic Systems, CPU, Transformer, LLM, Agent, KI, Informatik" />
+{% endblock %}

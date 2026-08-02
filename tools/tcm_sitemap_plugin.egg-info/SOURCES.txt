@@ -1,0 +1,7 @@
+pyproject.toml
+sitemap.py
+tcm_sitemap_plugin.egg-info/PKG-INFO
+tcm_sitemap_plugin.egg-info/SOURCES.txt
+tcm_sitemap_plugin.egg-info/dependency_links.txt
+tcm_sitemap_plugin.egg-info/entry_points.txt
+tcm_sitemap_plugin.egg-info/top_level.txt

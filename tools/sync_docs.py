@@ -12,7 +12,8 @@ en wir die relevanten Dateien vor jedem Build.
 
 Was gespiegelt wird
 -------------------
-- Root-Dateien: index.md, PREFACE.md, ROADMAP.md, STYLE.md
+- Root-Dateien: index.md, PREFACE.md, ROADMAP.md, STYLE.md, robots.txt
+
 - Teil 1 komplett: 01_Computing/**/*.md, plus die assets/-Unterordner
 - Die grundlagen/-Deep-Dives
 - Teil 2 komplett: 02_MachineIntelligence/**/*.md
@@ -65,7 +66,9 @@ ROOT_FILES = [
     "PREFACE.md",
     "ROADMAP.md",
     "STYLE.md",
+    "robots.txt",   # SEO: erlaubt Suchmaschinen das Crawlen + Sitemap-Verweis
 ]
+
 
 # Ganze Ordner, die rekursiv gespiegelt werden. (src → dst-Suffix relativ zu docs/)
 FOLDERS_TO_MIRROR = [

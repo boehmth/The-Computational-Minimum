@@ -1,0 +1,8 @@
+# robots.txt für "The Computational Minimum"
+# Erlaubt allen Suchmaschinen das Crawlen der gesamten Site.
+# Die Sitemap hilft Google, alle Seiten schnell zu finden.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://boehmt.github.io/The-Computational-Minimum/sitemap.xml

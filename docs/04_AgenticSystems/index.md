@@ -1,10 +1,5 @@
----
-hide:
-  - navigation
-  - toc
----
+# The Computational Minimum — Teil 4: Agentic Systems
 
-# Milestones in Agentic Systems
 
 **Sieben Meilensteine, die zeigen, wie aus einem Sprachmodell ein autonom handelndes System wird — vom "Hello, LLM"-Sechs-Zeiler bis zum Agent, der sich seine Werkzeuge selbst schreibt. Alles selbst programmiert, ohne Frameworks.**
 

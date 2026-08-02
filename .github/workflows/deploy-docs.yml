@@ -69,9 +69,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-docs.txt
+          # Eigenes Sitemap-Plugin (tools/pyproject.toml) als lokales Paket
+          # installieren, damit das "sitemap"-Plugin in mkdocs.yml gefunden wird.
+          pip install -e tools/
 
-      - name: Sync Buch-Dateien nach docs/
-        run: python tools/sync_docs.py
 
       - name: Build MkDocs Site
         run: mkdocs build --verbose
