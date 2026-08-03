@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/title.svg" alt="02 · Betriebssystem — Radio-Aktive Prozesse" width="100%"/>
+  <img src="assets/title.svg" alt="02 · Betriebssystem — Rechenaktivität" width="100%"/>
 </p>
 
 <p align="center">
